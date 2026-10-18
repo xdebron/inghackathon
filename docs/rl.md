@@ -379,6 +379,21 @@ Kullanıcının bulduğu durum düzeldi: P05'te PP'nin 3 aylık getirisi −15 p
 - **Denenen ve reddedilen:** Karar kuralını beklenen dağılıma en yakın aksiyona çevirmek (`tools/gbrl/karar_kurali.py`). Doğrulamada argmax'tan kötü çıktı (tohum skoru ≈ −0,027'ye karşı ≈ 0), bu yüzden argmax kaldı.
 - **Çözüm:** Hazır senaryolar artık `whatif.apply` ile tutarlı uygulanıyor (`rl_ne_olursa senaryo.tur`).
 
+**Beklenen dağılımı doğrudan öneri yapmak (2026-10-18, reddedildi).** Olasılık ağırlıklı dağılım Σ π(a)·A[a] daha çeşitlendirilmiş ve girdi değişikliğine karşı daha kararlı. Bu yüzden en olası dağılımın (mod) yerine öneri olarak kullanılmasını ölçtük (`tools/gbrl/beklenen_degerlendir.py`).
+- **Kurulum:** Test dönemini eğitimde görmemiş v14 6M modelleri (`pilot_v14/tut10_s0`, `s1`). Senaryo izleri ve simülatör eğitimdekiyle aynı. Profil cezaları ağırlık vektörünün fonksiyonu olarak yeniden hesaplanıyor (wᵀΣw, Σw², likidite, gelir, sadelik, döviz). Ürüne çevrilmeyecek küçük paylar için alt eşik τ ∈ {0, 5, 10, 15} puan.
+- **Simülatör kontrolü:** Mod politikasının yeniden oynatılan test sonucu, eğitimde kaydedilen sonuçla birebir aynı (s0: ödül 0,1099, reel kazanç %13,21).
+- **Karar kuralı (önceden belirlendi):** Karar ve τ yalnızca doğrulama izlerine göre verildi: görülmemiş profiller + persona doğrulama izleri. Beklenen dağılım modu en az eşit sonuçla geçerse öneri olacaktı.
+
+| Doğrulama (görülmemiş profiller) | Ödül s0 / s1 | Reel kazanç s0 / s1 | Anapara altı bitiş s0 / s1 |
+|---|---|---|---|
+| Mod (canlıdaki) | 0,0225 / 0,0246 | %4,50 / %4,73 | %14,1 / %11,9 |
+| Beklenen, τ=0 | 0,0168 / 0,0169 | %3,18 / %3,19 | %16,9 / %16,5 |
+| Beklenen, τ=15 (doğrulamada en iyi τ) | 0,0186 / 0,0204 | %3,60 / %3,78 | %15,7 / %14,2 |
+
+- **Sonuç:** İki tohumda da beklenen dağılım modun gerisinde kaldı; τ büyüdükçe (moda yaklaştıkça) açık kapanıyor. Mod öneri olarak kalıyor. Beklenen dağılım yalnızca belirsizlik bilgisi olarak gösteriliyor.
+- **Test (yalnızca raporlama, karar sonrası okundu):** Sonuç karışık. Görülmemiş profillerde s0'da beklenen τ=15 daha iyi (ödül 0,1192 / 0,1099), s1'de mod daha iyi (0,1304 / 0,1290).
+- **Yorum:** Politika ayrık aksiyonlar üzerinden eğitildi; ortalamaya hiç eğitilmedi. Ortalama, düşük olasılıklı dağılımları da karıştırıp modelin eğilimini sulandırıyor. Ortalamayı öneri yapmak istersek doğru yol, sürekli dağılım üreten bir politikayı (ör. Dirichlet) bu amaçla eğitmek.
+
 UI kontrolü (canlı v14, argmax, 4 hazır senaryo × P03/P04/P05):
 - **Yanlış yönde tepki yok.**
 - **P03:** Kur şokunda +%20 kıymetli maden. Faiz indirimi ve enflasyon artışında mevduat %60'tan %20'ye iniyor.
