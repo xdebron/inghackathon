@@ -6,6 +6,7 @@ Her içe aktarım dosya adı ve zamanıyla kayıt altına alınır; aynı fon/ta
 from __future__ import annotations
 
 import io
+import threading
 import json
 import math
 import re
@@ -343,6 +344,7 @@ def compute_metrics(prices: pd.DataFrame) -> dict[str, dict]:
 
 
 _CACHE: dict = {}
+_CACHE_LOCK = threading.RLock()   # eşzamanlı ilk istekler 1,9 mn satırı birden çok kez okumasın
 
 
 def data_version() -> tuple:
@@ -352,30 +354,32 @@ def data_version() -> tuple:
 
 def load() -> tuple[dict[str, dict], dict]:
     """Kayıtlı fiyat geçmişinden metrikleri ve içe aktarım metasını döndürür (veri değişmedikçe önbellekten)."""
-    meta = _load_meta()
-    key = ("metrics", data_version())
-    if key not in _CACHE:
-        prices = store.fund_prices("tefas_export")
-        if prices.empty:
-            return {}, meta
-        _CACHE.clear()
-        _CACHE[key] = compute_metrics(prices)
-    return _CACHE[key], meta
+    with _CACHE_LOCK:
+        meta = _load_meta()
+        key = ("metrics", data_version())
+        if key not in _CACHE:
+            prices = store.fund_prices("tefas_export")
+            if prices.empty:
+                return {}, meta
+            _CACHE.clear()
+            _CACHE[key] = compute_metrics(prices)
+        return _CACHE[key], meta
 
 
 def price_matrix(codes: list[str]) -> pd.DataFrame | None:
     """Verilen fonların günlük fiyatları (satır: tarih, sütun: fon kodu). Dosya değişmedikçe önbellekten."""
-    key = ("prices", data_version())
-    if key not in _PRICE_CACHE:
-        df = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
-        if df.empty:
-            return None
-        df["tarih"] = pd.to_datetime(df["tarih"])
-        _PRICE_CACHE.clear()
-        _PRICE_CACHE[key] = df.pivot_table(index="tarih", columns="kod", values="fiyat", aggfunc="last").sort_index()
-    wide = _PRICE_CACHE[key]
-    present = [c for c in codes if c in wide.columns]
-    return wide[present].copy() if present else None
+    with _CACHE_LOCK:
+        key = ("prices", data_version())
+        if key not in _PRICE_CACHE:
+            df = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
+            if df.empty:
+                return None
+            df["tarih"] = pd.to_datetime(df["tarih"])
+            _PRICE_CACHE.clear()
+            _PRICE_CACHE[key] = df.pivot_table(index="tarih", columns="kod", values="fiyat", aggfunc="last").sort_index()
+        wide = _PRICE_CACHE[key]
+        present = [c for c in codes if c in wide.columns]
+        return wide[present].copy() if present else None
 
 
 _PRICE_CACHE: dict = {}
@@ -383,11 +387,12 @@ _PRICE_CACHE: dict = {}
 
 def price_names() -> dict[str, str]:
     """Fon kodu → son bilinen fon adı."""
-    key = ("names", data_version())
-    if key not in _PRICE_CACHE:
-        df = store.fund_prices("tefas_export", ("tarih", "kod", "ad"))
-        _PRICE_CACHE[key] = df.dropna(subset=["ad"]).sort_values("tarih").groupby("kod")["ad"].last().to_dict()
-    return _PRICE_CACHE[key]
+    with _CACHE_LOCK:
+        key = ("names", data_version())
+        if key not in _PRICE_CACHE:
+            df = store.fund_prices("tefas_export", ("tarih", "kod", "ad"))
+            _PRICE_CACHE[key] = df.dropna(subset=["ad"]).sort_values("tarih").groupby("kod")["ad"].last().to_dict()
+        return _PRICE_CACHE[key]
 
 
 # --- İkincil kaynak: TEFAS API fiyatları (yalnızca çapraz kontrol) ----------------------------
@@ -397,25 +402,26 @@ API_TOL = 1e-4  # göreli fiyat farkı eşiği (kaynaklar 6 ondalıklı fiyat ve
 
 def api_cross_check() -> tuple[dict[str, dict], dict | None]:
     """Asıl kaynak (elle dışa aktarım) ile ikincil kaynak (API) fiyatlarını ortak günlerde karşılaştırır."""
-    meta = store.document("tefas_api_meta")
-    key = ("api", data_version())
-    if key not in _API_CACHE:
-        a = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
-        b = store.fund_prices("tefas_api", ("tarih", "kod", "fiyat"))
-        if a.empty or b.empty:
-            return {}, None
-        _API_CACHE.clear()
-        m = a.merge(b, on=["kod", "tarih"], suffixes=("", "_api"))
-        m["fark"] = (m["fiyat"] - m["fiyat_api"]).abs() / m["fiyat_api"].abs()
-        out = {}
-        for kod, g in m.groupby("kod"):
-            bad = g[g["fark"] > API_TOL]
-            out[kod] = {"karsilastirilan_gun": int(len(g)), "uyumsuz_gun": int(len(bad)),
-                        "max_goreli_fark": float(g["fark"].max()),
-                        "ornek": None if bad.empty else {"tarih": str(bad.iloc[0]["tarih"]), "dis_aktarim": float(bad.iloc[0]["fiyat"]),
-                                                         "api": float(bad.iloc[0]["fiyat_api"])}}
-        _API_CACHE[key] = out
-    return _API_CACHE[key], meta
+    with _CACHE_LOCK:
+        meta = store.document("tefas_api_meta")
+        key = ("api", data_version())
+        if key not in _API_CACHE:
+            a = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
+            b = store.fund_prices("tefas_api", ("tarih", "kod", "fiyat"))
+            if a.empty or b.empty:
+                return {}, None
+            _API_CACHE.clear()
+            m = a.merge(b, on=["kod", "tarih"], suffixes=("", "_api"))
+            m["fark"] = (m["fiyat"] - m["fiyat_api"]).abs() / m["fiyat_api"].abs()
+            out = {}
+            for kod, g in m.groupby("kod"):
+                bad = g[g["fark"] > API_TOL]
+                out[kod] = {"karsilastirilan_gun": int(len(g)), "uyumsuz_gun": int(len(bad)),
+                            "max_goreli_fark": float(g["fark"].max()),
+                            "ornek": None if bad.empty else {"tarih": str(bad.iloc[0]["tarih"]), "dis_aktarim": float(bad.iloc[0]["fiyat"]),
+                                                             "api": float(bad.iloc[0]["fiyat_api"])}}
+            _API_CACHE[key] = out
+        return _API_CACHE[key], meta
 
 
 _API_CACHE: dict = {}

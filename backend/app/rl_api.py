@@ -23,6 +23,7 @@ from .sources import tefas_import
 
 router = APIRouter(prefix="/api/rl")
 _DS_CACHE: dict = {}
+_DS_LOCK = __import__("threading").RLock()
 
 META_KEYS = ("olusturma", "sure_dk", "cihaz", "guncelleme", "en_iyi_guncelleme", "en_iyi_dogrulama_odul", "donem",
              "profil_sayisi", "profil_istatistik", "kategoriler", "kategori_rd", "kategori_medyan_fon", "gosterge_adlari",
@@ -35,10 +36,11 @@ def _dataset(feature_set: str | None = None) -> dict:
         _, meta = rc._load_model()
         feature_set = (meta or {}).get("gosterge_seti", "v1")   # çıkarım modelin eğitildiği setle yapılır
     key = (tefas_import.data_version(), config_hash(), feature_set)
-    if key not in _DS_CACHE:
-        _DS_CACHE.clear()
-        _DS_CACHE[key] = rc.build_dataset(feature_set)
-    return _DS_CACHE[key]
+    with _DS_LOCK:   # eşzamanlı ilk istekler aynı ağır veri setini birden çok kez kurmasın
+        if key not in _DS_CACHE:
+            _DS_CACHE.clear()
+            _DS_CACHE[key] = rc.build_dataset(feature_set)
+        return _DS_CACHE[key]
 
 
 def _live_log(n: int = 400) -> list[dict]:

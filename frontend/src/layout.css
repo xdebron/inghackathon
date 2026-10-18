@@ -177,3 +177,5 @@ aside.ws-side { overflow-y: auto; }
 .json-input { font-family: ui-monospace, Consolas, monospace; font-size: 12px; width: 100%; }
 .upload-inline { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
 .danger-text { color: var(--err); }
+.choice { justify-content: flex-start; text-align: left; width: auto; }
+.choice input[type="checkbox"] { width: auto; flex: none; padding: 0; }

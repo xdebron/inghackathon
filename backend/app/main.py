@@ -29,6 +29,21 @@ app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http
                    allow_methods=["*"], allow_headers=["*"])
 
 
+@app.on_event("startup")
+def _warm_up():
+    """Ağır önbellekleri (TEFAS metrikleri, RL veri seti) arka planda ısıtır: ilk RM isteği beklemesin."""
+    import threading
+
+    def work():
+        try:
+            tefas_import.load()
+            from .rl_api import _dataset
+            _dataset()
+        except Exception as exc:  # ısıtma başarısız olursa ilk istek yine kurar
+            print(f"Önbellek ısıtma atlandı: {type(exc).__name__}: {exc}")
+    threading.Thread(target=work, daemon=True).start()
+
+
 @app.get("/api/personas")
 def personas():
     return pipeline.list_personas()

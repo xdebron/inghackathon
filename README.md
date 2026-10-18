@@ -266,7 +266,8 @@ Tüm liste: [docs/teslim/04_test_ve_ogrenimler.md](docs/teslim/04_test_ve_ogreni
 | **What-if:** "Kur şoku" tutarlı senaryosu, belirsizlik uyarısı | ![](docs/ekran/05_whatif_kur_soku.png) |
 | **Müşteri portalı:** yalnızca RM onaylı özet ve yanıtlar | ![](docs/ekran/06_musteri_portali.png) |
 | **Değerlendirme:** test sonuçları, başarı göstergeleri, hata analizi | ![](docs/ekran/07_degerlendirme.png) |
-| **Veri kaynakları:** TEFAS yükleme, gösterge durumu | ![](docs/ekran/08_veri.png) |
+| **Veri kaynakları:** TEFAS yükleme, veri tabanı ve otomatik toplayıcılar (son çekim, durum, satır), tablo boyutları, gösterge durumu | ![](docs/ekran/08_veri.png) |
+| **Müşteri ekleme:** seçerek (tanınan değerler, öncelik ve kısıt kataloğu) ya da JSON içe aktarım | ![](docs/ekran/09_musteri_ekle.png) |
 
 ## 10. Kurulum ve çalıştırma
 

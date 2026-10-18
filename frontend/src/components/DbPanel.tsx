@@ -12,7 +12,7 @@ interface Status {
 const TABLE_LABEL: Record<string, string> = {
   fon_fiyat: 'Fon fiyatı (gün)', seri_deger: 'Seri değeri', fon_bilgi: 'KAP fon bilgisi', fon_getiri: 'Fon getirisi',
   platform_fon: 'ING platform fonu', mevduat: 'Mevduat oranı', stopaj: 'Stopaj', stopaj_donem: 'Stopaj dönemi', gosterge: 'Gösterge',
-  seri: 'Zaman serisi', benchmark: 'Benchmark', belge: 'Kaynak belgesi', ham_tablo: 'Ham tablo satırı', cekim: 'Çekim kaydı',
+  seri: 'Zaman serisi', benchmark: 'Benchmark', belge: 'Kaynak belgesi', ham_tablo: 'Ham tablo satırı', cekim: 'Çekim kaydı', musteri: 'Eklenen müşteri',
 }
 const fmt = (s?: string | null) => (s ? new Date(s).toLocaleString('tr-TR') : '—')
 const STATUS: Record<string, string> = { basarili: 'başarılı', kismi: 'kısmi', hata: 'hata', calisiyor: 'çalışıyor' }
