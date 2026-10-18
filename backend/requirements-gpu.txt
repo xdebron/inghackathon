@@ -1,0 +1,4 @@
+# Yalnızca RL eğitimini GPUda çalıştırmak için (çevrimiçi kullanım gerektirmez).
+# RTX 50xx (Blackwell) için CUDA 12.8+ sürümü gerekir:
+# pip install -r requirements-gpu.txt --index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0

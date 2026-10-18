@@ -1,0 +1,79 @@
+{
+ "olusturma": "2026-10-15T20:29:39+03:00",
+ "model_olusturma": "2026-10-15T20:14:26+03:00",
+ "delta": 1.2167,
+ "taban": "%50 para piyasası + %50 mevduat (izinli değilse borçlanma)",
+ "secim": "doğrulama dönemi, görülmemiş profiller",
+ "izgara": [
+  {
+   "delta": 0.0,
+   "odul": 0.5586,
+   "reel": 0.5586,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.841
+  },
+  {
+   "delta": 0.0823,
+   "odul": 0.5608,
+   "reel": 0.5608,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.786
+  },
+  {
+   "delta": 0.1724,
+   "odul": 0.5741,
+   "reel": 0.5741,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.64
+  },
+  {
+   "delta": 0.2558,
+   "odul": 0.5874,
+   "reel": 0.5874,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.498
+  },
+  {
+   "delta": 0.309,
+   "odul": 0.5938,
+   "reel": 0.5938,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.425
+  },
+  {
+   "delta": 0.3819,
+   "odul": 0.5999,
+   "reel": 0.5999,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.351
+  },
+  {
+   "delta": 0.6997,
+   "odul": 0.6125,
+   "reel": 0.6125,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.2
+  },
+  {
+   "delta": 1.2167,
+   "odul": 0.6251,
+   "reel": 0.6251,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.083
+  },
+  {
+   "delta": null,
+   "odul": 0.6215,
+   "reel": 0.6215,
+   "anapara_alti": 0.0,
+   "model_karar_orani": 0.0
+  }
+ ],
+ "ozet": {
+  "secilen_delta": 1.2167,
+  "dogrulama_odul": 0.6251,
+  "dqn_odul": 0.5586,
+  "taban_odul": 0.6215,
+  "model_karar_orani": 0.083
+ }
+}

@@ -1,0 +1,16 @@
+{
+  "persona_id": "P03",
+  "profil": "Teknoloji kurucusu",
+  "yas": 34,
+  "risk_profili": "Agresif",
+  "durum": "Şirket satışından gelen nakdi bulunuyor",
+  "yatirim_amaci": "Nakdi uzun vadeli değerlendirmek",
+  "yatirim_ufku": "5+ yıl",
+  "likidite_ihtiyaci": "Düşük",
+  "doviz_maruz_kalma_tercihi": "Açık",
+  "gelir_nakit_akisi_ihtiyaci": "Düşük",
+  "anapara_koruma_tercihi": "Düşük",
+  "oncelikler": ["uzun vadeli büyüme", "çeşitlendirme", "fırsat maliyetini azaltma"],
+  "acik_kisitlar": ["kısa vadeli nakit ihtiyacı varsayılmamalı"],
+  "rm_notu": "Dalgalanmayı tolere edebiliyor; uzun vadeli yaklaşımın gerekçesini görmek istiyor."
+}

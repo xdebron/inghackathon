@@ -1,0 +1,216 @@
+{
+ "senaryolar": {
+  "faiz_indirimi": {
+   "n": 780,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.938,
+   "ort_degisim": -0.1798,
+   "girdi_gorunur": 1.0
+  },
+  "faiz_artisi": {
+   "n": 780,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.938,
+   "ort_degisim": 0.1452,
+   "girdi_gorunur": 1.0
+  },
+  "enflasyon_artisi": {
+   "n": 780,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.292,
+   "ort_degisim": -0.0219,
+   "girdi_gorunur": 1.0
+  },
+  "enflasyon_dususu": {
+   "n": 780,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.282,
+   "ort_degisim": 0.0125,
+   "girdi_gorunur": 1.0
+  },
+  "kur_soku": {
+   "n": 108,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 1.0,
+   "ort_degisim": 0.1977,
+   "girdi_gorunur": 1.0
+  },
+  "kur_gevsemesi": {
+   "n": 108,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.731,
+   "ort_degisim": -0.0296,
+   "girdi_gorunur": 1.0
+  },
+  "borsa_dususu": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.736,
+   "ort_degisim": -0.0333,
+   "girdi_gorunur": 1.0
+  },
+  "borsa_yukselisi": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.986,
+   "ort_degisim": 0.0615,
+   "girdi_gorunur": 1.0
+  },
+  "kat_para_piyasasi_dusus": {
+   "n": 744,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.875,
+   "ort_degisim": -0.1109,
+   "girdi_gorunur": 1.0
+  },
+  "kat_para_piyasasi_artis": {
+   "n": 744,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.961,
+   "ort_degisim": 0.1355,
+   "girdi_gorunur": 1.0
+  },
+  "kat_borclanma_dusus": {
+   "n": 744,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.968,
+   "ort_degisim": -0.0886,
+   "girdi_gorunur": 1.0
+  },
+  "kat_borclanma_artis": {
+   "n": 744,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.968,
+   "ort_degisim": 0.1927,
+   "girdi_gorunur": 1.0
+  },
+  "kat_katilim_dusus": {
+   "n": 600,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.96,
+   "ort_degisim": -0.1896,
+   "girdi_gorunur": 1.0
+  },
+  "kat_katilim_artis": {
+   "n": 600,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.96,
+   "ort_degisim": 0.2078,
+   "girdi_gorunur": 1.0
+  },
+  "kat_kiymetli_maden_dusus": {
+   "n": 24,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.0,
+   "ort_degisim": -0.0101,
+   "girdi_gorunur": 1.0
+  },
+  "kat_kiymetli_maden_artis": {
+   "n": 24,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.708,
+   "ort_degisim": 0.0307,
+   "girdi_gorunur": 1.0
+  },
+  "kat_karma_degisken_dusus": {
+   "n": 228,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.732,
+   "ort_degisim": -0.031,
+   "girdi_gorunur": 1.0
+  },
+  "kat_karma_degisken_artis": {
+   "n": 228,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.996,
+   "ort_degisim": 0.0683,
+   "girdi_gorunur": 1.0
+  },
+  "kat_fon_sepeti_dusus": {
+   "n": 228,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.482,
+   "ort_degisim": -0.0205,
+   "girdi_gorunur": 1.0
+  },
+  "kat_fon_sepeti_artis": {
+   "n": 228,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.996,
+   "ort_degisim": 0.0604,
+   "girdi_gorunur": 1.0
+  },
+  "kat_hisse_dusus": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.486,
+   "ort_degisim": -0.0199,
+   "girdi_gorunur": 1.0
+  },
+  "kat_hisse_artis": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.847,
+   "ort_degisim": 0.0302,
+   "girdi_gorunur": 1.0
+  },
+  "kat_yabanci_hisse_dusus": {
+   "n": 24,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.0,
+   "ort_degisim": -0.0058,
+   "girdi_gorunur": 1.0
+  },
+  "kat_yabanci_hisse_artis": {
+   "n": 24,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.0,
+   "ort_degisim": 0.012,
+   "girdi_gorunur": 1.0
+  },
+  "kat_eurobond_doviz_dusus": {
+   "n": 108,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.343,
+   "ort_degisim": -0.0179,
+   "girdi_gorunur": 1.0
+  },
+  "kat_eurobond_doviz_artis": {
+   "n": 108,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 1.0,
+   "ort_degisim": 0.0506,
+   "girdi_gorunur": 1.0
+  },
+  "kat_bist30_hisse_dusus": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.375,
+   "ort_degisim": -0.0178,
+   "girdi_gorunur": 1.0
+  },
+  "kat_bist30_hisse_artis": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.889,
+   "ort_degisim": 0.0272,
+   "girdi_gorunur": 1.0
+  }
+ },
+ "makro": {
+  "yanlis_yon": 0.0,
+  "dogru_tepki": 0.638
+ },
+ "kategori": {
+  "yanlis_yon": 0.0,
+  "dogru_tepki": 0.886,
+  "en_kotu": 0.0
+ },
+ "yanlis_yon": 0.0,
+ "dogru_tepki": 0.792,
+ "en_kotu_senaryo_yanlis": 0.0,
+ "makul": true,
+ "ust_olasilik": 0.131,
+ "model": "rl_ppo_v14_pilot",
+ "durum": 780
+}

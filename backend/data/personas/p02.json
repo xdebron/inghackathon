@@ -1,0 +1,16 @@
+{
+  "persona_id": "P02",
+  "profil": "İhracatçı şirket sahibi",
+  "yas": 48,
+  "risk_profili": "Dengeli",
+  "durum": "Döviz geliri bulunuyor",
+  "yatirim_amaci": "Birikimini değerlendirirken kur riskini yönetmek",
+  "yatirim_ufku": "1-3 yıl",
+  "likidite_ihtiyaci": "Orta",
+  "doviz_maruz_kalma_tercihi": "Mevcut döviz gelirini dikkate alarak kontrollü",
+  "gelir_nakit_akisi_ihtiyaci": "Orta",
+  "anapara_koruma_tercihi": "Orta",
+  "oncelikler": ["kur riskini yönetme", "çeşitlendirme", "erişilebilir likidite"],
+  "acik_kisitlar": ["döviz maruziyetini gerekçesiz artırmama"],
+  "rm_notu": "Şirket nakit akışı ile kişisel yatırım portföyünün maruziyetlerini birlikte düşünmek istiyor."
+}

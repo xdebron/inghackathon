@@ -1,0 +1,101 @@
+{
+ "model": "rl_ppo_v12_100m",
+ "tarih": 177,
+ "kirpilan_oran": 0.040006107802717975,
+ "persona": {
+  "P01": {
+   "farkli_karar": 11,
+   "en_sik_pay": 0.633,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.76,
+     "borclanma": 0.19
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 1.0
+    }
+   }
+  },
+  "P02": {
+   "farkli_karar": 9,
+   "en_sik_pay": 0.633,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.35,
+     "borclanma": 0.05,
+     "karma_degisken": 0.26,
+     "fon_sepeti": 0.3
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 1.0
+    }
+   }
+  },
+  "P03": {
+   "farkli_karar": 11,
+   "en_sik_pay": 0.503,
+   "en_sik": {
+    "mevduat_tl": 0.6,
+    "kiymetli_maden": 0.4
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.07,
+     "kiymetli_maden": 0.2,
+     "fon_sepeti": 0.12,
+     "hisse": 0.2,
+     "yabanci_hisse": 0.18,
+     "bist30_hisse": 0.2
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.63,
+     "kiymetli_maden": 0.37
+    }
+   }
+  },
+  "P04": {
+   "farkli_karar": 12,
+   "en_sik_pay": 0.655,
+   "en_sik": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.5
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 0.05,
+     "para_piyasasi": 0.24,
+     "borclanma": 0.1,
+     "karma_degisken": 0.21,
+     "fon_sepeti": 0.29,
+     "eurobond_doviz": 0.11
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.5,
+     "para_piyasasi": 0.5
+    }
+   }
+  },
+  "P05": {
+   "farkli_karar": 7,
+   "en_sik_pay": 0.819,
+   "en_sik": {
+    "para_piyasasi": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.8,
+     "borclanma": 0.2
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "para_piyasasi": 1.0
+    }
+   }
+  }
+ }
+}

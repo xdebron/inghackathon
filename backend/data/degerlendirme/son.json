@@ -1,0 +1,330 @@
+{
+ "calisma_zamani": "2026-10-18T17:42:25+03:00",
+ "senaryolar": [
+  {
+   "grup": "Uçtan uca persona",
+   "ad": "P01 hazırlık",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 13.9,
+   "kisa_liste": 5,
+   "dislanan": 1942,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [
+     "fon.BGP.valor_gun",
+     "fon.PPI.valor_gun"
+    ],
+    "veri_noktasi": 104
+   },
+   "tekrar_ayni_liste": true,
+   "tekrar_ayni_rl": true,
+   "rl_dagilim": {
+    "mevduat_tl": 1.0
+   },
+   "rl_secilen_olasilik": 24.8,
+   "run_id": "20261018-174225-P01-71167f"
+  },
+  {
+   "grup": "Uçtan uca persona",
+   "ad": "P02 hazırlık",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 5.5,
+   "kisa_liste": 5,
+   "dislanan": 1727,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [
+     "fon.BGP.valor_gun",
+     "fon.PPI.valor_gun"
+    ],
+    "veri_noktasi": 106
+   },
+   "tekrar_ayni_liste": true,
+   "tekrar_ayni_rl": true,
+   "rl_dagilim": {
+    "mevduat_tl": 1.0
+   },
+   "rl_secilen_olasilik": 8.0,
+   "run_id": "20261018-174253-P02-446659"
+  },
+  {
+   "grup": "Uçtan uca persona",
+   "ad": "P03 hazırlık",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 1.8,
+   "kisa_liste": 5,
+   "dislanan": 1333,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [],
+    "veri_noktasi": 118
+   },
+   "tekrar_ayni_liste": true,
+   "tekrar_ayni_rl": true,
+   "rl_dagilim": {
+    "mevduat_tl": 0.6,
+    "bist30_hisse": 0.4
+   },
+   "rl_secilen_olasilik": 1.2,
+   "run_id": "20261018-174304-P03-1b1eff"
+  },
+  {
+   "grup": "Uçtan uca persona",
+   "ad": "P04 hazırlık",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 1.0,
+   "kisa_liste": 5,
+   "dislanan": 1711,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [],
+    "veri_noktasi": 84
+   },
+   "tekrar_ayni_liste": true,
+   "tekrar_ayni_rl": true,
+   "rl_dagilim": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.5
+   },
+   "rl_secilen_olasilik": 2.4,
+   "run_id": "20261018-174308-P04-044071"
+  },
+  {
+   "grup": "Uçtan uca persona",
+   "ad": "P05 hazırlık",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 5.9,
+   "kisa_liste": 5,
+   "dislanan": 1912,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [
+     "fon.BGP.valor_gun",
+     "fon.PPI.valor_gun"
+    ],
+    "veri_noktasi": 103
+   },
+   "tekrar_ayni_liste": true,
+   "tekrar_ayni_rl": true,
+   "rl_dagilim": {
+    "para_piyasasi": 1.0
+   },
+   "rl_secilen_olasilik": 5.9,
+   "run_id": "20261018-174310-P05-4cfdfb"
+  },
+  {
+   "grup": "Veri kesintisi",
+   "ad": "tcmb kapalı (P05)",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 0.9,
+   "kisa_liste": 5,
+   "uydurulmus_deger": [],
+   "eksik_veya_bayat_isaretli": 11,
+   "uyari_sayisi": 9,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [
+     "fon.BGP.valor_gun",
+     "fon.PPI.valor_gun"
+    ],
+    "veri_noktasi": 100
+   },
+   "run_id": "20261018-174322-P05-9a8a69"
+  },
+  {
+   "grup": "Veri kesintisi",
+   "ad": "evds kapalı (P05)",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 1.1,
+   "kisa_liste": 5,
+   "uydurulmus_deger": [],
+   "eksik_veya_bayat_isaretli": 13,
+   "uyari_sayisi": 6,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [
+     "fon.BGP.valor_gun",
+     "fon.PPI.valor_gun"
+    ],
+    "veri_noktasi": 98
+   },
+   "run_id": "20261018-174322-P05-de2787"
+  },
+  {
+   "grup": "Veri kesintisi",
+   "ad": "tefas kapalı (P05)",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 11.1,
+   "kisa_liste": 5,
+   "uydurulmus_deger": [],
+   "eksik_veya_bayat_isaretli": 8,
+   "uyari_sayisi": 9,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [],
+    "veri_noktasi": 72
+   },
+   "run_id": "20261018-174324-P05-ea95e3"
+  },
+  {
+   "grup": "Veri kesintisi",
+   "ad": "manuel kapalı (P05)",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 10.9,
+   "kisa_liste": 5,
+   "uydurulmus_deger": [],
+   "eksik_veya_bayat_isaretli": 11,
+   "uyari_sayisi": 9,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [
+     "fon.BGP.valor_gun"
+    ],
+    "veri_noktasi": 96
+   },
+   "run_id": "20261018-174335-P05-8f9abe"
+  },
+  {
+   "grup": "Eksik / çelişkili bilgi",
+   "ad": "P01 risk profili silindi",
+   "gecti": true,
+   "durum": "rm_teyidi_bekliyor",
+   "sure_sn": 0.0,
+   "sorular": [
+    "Müşterinin risk profili bilgisi nedir?"
+   ],
+   "run_id": "20261018-174345-P01-c023e5"
+  },
+  {
+   "grup": "Eksik / çelişkili bilgi",
+   "ad": "P01 risk Agresif (anapara koruma Yüksek ile çelişki)",
+   "gecti": true,
+   "durum": "rm_teyidi_bekliyor",
+   "sure_sn": 0.0,
+   "sorular": [
+    "Müşteri agresif risk profilinde ama anapara korumasını yüksek öncelik görüyor. Hangisi esas alınmalı?",
+    "Risk profili 'Agresif' yüksek riskli ürünlere izin veriyor ama müşteri yüksek riskli ürün istemiyor. Kısıt mı, profil mi güncel?"
+   ],
+   "run_id": "20261018-174345-P01-4a9ceb"
+  },
+  {
+   "grup": "Jüri tipi değişiklik",
+   "ad": "P03 risk Agresif → Dengeli",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 1.0,
+   "rd_siniri": [
+    7,
+    5
+   ],
+   "rl_dagilim": [
+    {
+     "mevduat_tl": 0.6,
+     "bist30_hisse": 0.4
+    },
+    {
+     "mevduat_tl": 1.0
+    }
+   ],
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [],
+    "veri_noktasi": 101
+   },
+   "run_id": "20261018-174347-P03-ee6bdd"
+  },
+  {
+   "grup": "Jüri tipi değişiklik",
+   "ad": "P04 + 'yüksek riskli ürünlerden kaçınma' kısıtı",
+   "gecti": true,
+   "durum": "rm_teyidi_bekliyor",
+   "sure_sn": 0.0,
+   "sorular": [
+    "Risk profili 'Dengeli' yüksek riskli ürünlere izin veriyor ama müşteri yüksek riskli ürün istemiyor. Kısıt mı, profil mi güncel?"
+   ],
+   "uygulanan_kurallar": [],
+   "rl_dagilim": null,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": false,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [],
+    "veri_noktasi": 0
+   },
+   "run_id": "20261018-174348-P04-747c2f"
+  }
+ ],
+ "ozet": {
+  "senaryo": 13,
+  "gecen": 13,
+  "kural_ihlali": 0,
+  "guard_ihlali": 0,
+  "kaynaksiz_veri": 0,
+  "alinma_zamani_yok": 11,
+  "uydurulmus_deger": 0,
+  "veri_noktasi": 982,
+  "ortalama_sure_sn": 4.1
+ }
+}

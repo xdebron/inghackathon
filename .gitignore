@@ -1,0 +1,48 @@
+# Ortam ve gizli bilgiler
+.env
+backend/.env
+backend/.venv/
+__pycache__/
+.pytest_cache/
+
+# Derleme çıktıları ve bağımlılıklar
+frontend/node_modules/
+frontend/dist/
+
+# Çalıştırma kayıtları (kişisel deneme kayıtları; örnek kayıt docs/teslim/kanit_ornegi.json içinde)
+backend/evidence/
+backend/catboost_info/
+
+# Veri: ham indirmeler, önbellek ve yedekler repo dışında; çalıştırmak için gereken snapshot'lar repoda
+backend/data/raw/
+backend/data/cache/
+backend/data/snapshots/_yedek_*/
+
+# Modeller: yalnızca arayüzün ve testlerin kullandığı dışa aktarılmış modeller repoda.
+# Deneme checkpoint'leri (hpo, pilot, tohumlar, SB3 zip), eğitim ortamları ve loglar ~4 GB; repo dışında.
+backend/models/*
+!backend/models/rl_kategori/
+!backend/models/rl_kategori_v2/
+!backend/models/rl_kategori_v3/
+!backend/models/rl_kategori_v4/
+!backend/models/rl_ppo_v8/
+!backend/models/rl_ppo_v9/
+!backend/models/rl_ppo_v10/
+!backend/models/rl_ppo_v11_100m/
+!backend/models/rl_ppo_v11_tum100m/
+!backend/models/rl_ppo_v14_tum6m/
+!backend/models/duyarlilik_*.json
+!backend/models/whatif_*.json
+backend/models/rl_kategori/egitim_log.jsonl
+backend/models/rl_kategori/durum.json
+
+# Başka ekip üyesinin çalışma klasörü ve toplanan ham çıktılar
+gamze_work/
+tefascrawl/out/
+
+# Editör / sistem
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

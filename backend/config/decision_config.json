@@ -1,0 +1,696 @@
+{
+  "_aciklama": "Karar motorunun tüm varsayımları. Kod bu değerleri sabit yazmaz; her çalıştırmada bu dosyanın hash'i kanıt kaydına girer.",
+  "risk_profilleri": {
+    "_gerekce": "Personalardaki 4 profil artandan azalan riske sıralandı. Üst sınırlar SPK risk değeri (RD 1-7) ölçeğinde; yaygın banka uygunluk testi pratiği (RD 1-3 düşük, 4 orta, 5-6 yüksek, 7 çok yüksek) esas alındı. Mentor: kurum spesifik tanım zorunlu değil, gerekçelendirilmesi yeterli.",
+    "Muhafazakâr": {
+      "seviye": 0.1,
+      "max_rd": 2
+    },
+    "Temkinli": {
+      "seviye": 0.3,
+      "max_rd": 3
+    },
+    "Dengeli": {
+      "seviye": 0.6,
+      "max_rd": 5
+    },
+    "Agresif": {
+      "seviye": 1.0,
+      "max_rd": 7
+    }
+  },
+  "seviye_degerleri": {
+    "_gerekce": "Persona alanlarındaki metinsel seviyeler 0-1 ölçeğine çevrilir. Listede olmayan bir değer gelirse sistem tahmin etmez, RM'e teyit sorusu üretir.",
+    "Düşük": 0.2,
+    "Orta": 0.5,
+    "Yüksek": 1.0
+  },
+  "doviz_tercihi_kaliplari": {
+    "_gerekce": "Döviz maruziyeti tercihi serbest metin. Anahtar kelime eşleşmesiyle 0-1 ölçeğine çevrilir; eşleşme yoksa RM teyidi istenir.",
+    "kaliplar": [
+      {
+        "anahtar": "sınırlı",
+        "deger": 0.2
+      },
+      {
+        "anahtar": "kontrollü",
+        "deger": 0.4
+      },
+      {
+        "anahtar": "çeşitlendirilmiş",
+        "deger": 0.6
+      },
+      {
+        "anahtar": "açık",
+        "deger": 1.0
+      }
+    ]
+  },
+  "ufuk_kaliplari": {
+    "_gerekce": "Yatırım ufku yıl cinsinden alt sınıra çevrilir.",
+    "kaliplar": [
+      {
+        "anahtar": "0-1",
+        "yil": 0.5
+      },
+      {
+        "anahtar": "1-3",
+        "yil": 1
+      },
+      {
+        "anahtar": "3-5",
+        "yil": 3
+      },
+      {
+        "anahtar": "5+",
+        "yil": 5
+      }
+    ]
+  },
+  "kategoriler": {
+    "_gerekce": "Ürün kategorilerinin yapısal özellikleri. Değerler genel kabul görmüş ürün yapısı varsayımlarıdır (piyasa verisi değildir); UI'da 'Varsayım' etiketiyle gösterilir. valor_gun: satış bedelinin hesaba geçme süresi için kategori varsayılanı; fon bazında resmi bilgi yüklenirse o kullanılır.",
+    "mevduat_tl": {
+      "ad": "TL vadeli mevduat",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.9,
+      "anapara_koruma": 1.0,
+      "valor_gun": null,
+      "varsayilan_rd": 1,
+      "yapi_sadeligi": 1.0
+    },
+    "katilim_hesabi": {
+      "ad": "Katılım hesabı (kâr payı)",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.8,
+      "anapara_koruma": 0.9,
+      "valor_gun": null,
+      "varsayilan_rd": 1,
+      "yapi_sadeligi": 0.9
+    },
+    "para_piyasasi": {
+      "ad": "Para piyasası fonu",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.8,
+      "anapara_koruma": 0.9,
+      "valor_gun": 1,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 1.0
+    },
+    "borclanma": {
+      "ad": "Borçlanma araçları fonu",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.7,
+      "anapara_koruma": 0.7,
+      "valor_gun": 1,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.8
+    },
+    "katilim": {
+      "ad": "Katılım fonu",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.6,
+      "anapara_koruma": 0.6,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.7
+    },
+    "eurobond_doviz": {
+      "ad": "Eurobond / döviz fonu",
+      "para_birimi": "USD",
+      "gelir_uretimi": 0.6,
+      "anapara_koruma": 0.5,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.7
+    },
+    "kiymetli_maden": {
+      "ad": "Kıymetli maden fonu",
+      "para_birimi": "XAU",
+      "gelir_uretimi": 0.0,
+      "anapara_koruma": 0.3,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.7
+    },
+    "karma_degisken": {
+      "ad": "Karma / değişken fon",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.3,
+      "anapara_koruma": 0.4,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.5
+    },
+    "fon_sepeti": {
+      "ad": "Fon sepeti fonu",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.3,
+      "anapara_koruma": 0.4,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.4
+    },
+    "hisse": {
+      "ad": "Hisse senedi fonu",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.1,
+      "anapara_koruma": 0.1,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.6
+    },
+    "yabanci_hisse": {
+      "ad": "Yabancı hisse senedi fonu",
+      "para_birimi": "USD",
+      "gelir_uretimi": 0.1,
+      "anapara_koruma": 0.1,
+      "valor_gun": 3,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.5
+    },
+    "bist30_hisse": {
+      "ad": "BIST 30 hisse senedi (doğrudan)",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.1,
+      "anapara_koruma": 0.05,
+      "valor_gun": 2,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.5
+    },
+    "serbest": {
+      "ad": "Serbest fon",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.3,
+      "anapara_koruma": 0.3,
+      "valor_gun": 3,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.2
+    },
+    "dibs_tl": {
+      "ad": "Devlet tahvili (sabit faizli TL, doğrudan)",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.9,
+      "anapara_koruma": 0.8,
+      "valor_gun": 1,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.8
+    },
+    "dibs_tufe": {
+      "ad": "Devlet tahvili (TÜFE'ye endeksli, doğrudan)",
+      "para_birimi": "TRY",
+      "gelir_uretimi": 0.7,
+      "anapara_koruma": 0.9,
+      "valor_gun": 1,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.6
+    },
+    "mevduat_doviz": {
+      "ad": "Döviz vadeli mevduat",
+      "para_birimi": "USD",
+      "gelir_uretimi": 0.5,
+      "anapara_koruma": 0.9,
+      "valor_gun": null,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 1.0
+    },
+    "maden_hesabi": {
+      "ad": "Kıymetli maden hesabı (banka)",
+      "para_birimi": "XAU",
+      "gelir_uretimi": 0.0,
+      "anapara_koruma": 0.3,
+      "valor_gun": 0,
+      "varsayilan_rd": null,
+      "yapi_sadeligi": 0.9
+    }
+  },
+  "kategori_tespiti": {
+    "_gerekce": "SPK fon unvan kuralı gereği fon adı türünü içerir. Ad içinde ilk eşleşen kalıp kategoriyi belirler (sıra önemli). Eşleşmeyen fon 'bilinmiyor' olur ve gerekçesiyle dışlanır. Sıra: katılım fonları türüne göre ayrılır (katılım hisse senedi → hisse, kira sertifikası → katılım, çoklu varlık katılım → karma/değişken); 'katılım' yalnızca son yedek kalıptır. Adında \"yabancı\" geçen fonlar (yabancı BYF fon sepetleri dahil) döviz maruziyetli yabancı kategorisine gider; yabancı borçlanma → eurobond/döviz. Altın/kıymetli maden fon sepetleri de kıymetli maden kategorisine gider (altın maruziyeti, döviz/altın tavanına tabi).",
+    "kaliplar": [
+      [
+        "serbest",
+        "serbest"
+      ],
+      [
+        "yabancı borçlanma",
+        "eurobond_doviz"
+      ],
+      [
+        "yabancı",
+        "yabanci_hisse"
+      ],
+      [
+        "altın",
+        "kiymetli_maden"
+      ],
+      [
+        "kıymetli maden",
+        "kiymetli_maden"
+      ],
+      [
+        "gümüş",
+        "kiymetli_maden"
+      ],
+      [
+        "fon sepeti",
+        "fon_sepeti"
+      ],
+      [
+        "para piyasası",
+        "para_piyasasi"
+      ],
+      [
+        "eurobond",
+        "eurobond_doviz"
+      ],
+      [
+        "dış borçlanma",
+        "eurobond_doviz"
+      ],
+      [
+        "döviz",
+        "eurobond_doviz"
+      ],
+      [
+        "hisse senedi",
+        "hisse"
+      ],
+      [
+        "kira sertifika",
+        "katilim"
+      ],
+      [
+        "çoklu varlık",
+        "karma_degisken"
+      ],
+      [
+        "değişken",
+        "karma_degisken"
+      ],
+      [
+        "karma",
+        "karma_degisken"
+      ],
+      [
+        "borçlanma araçları",
+        "borclanma"
+      ],
+      [
+        "tahvil",
+        "borclanma"
+      ],
+      [
+        "katılım",
+        "katilim"
+      ]
+    ]
+  },
+  "rd_tahmini": {
+    "_gerekce": "Resmi RD (KAP) yoksa yıllıklandırılmış volatiliteden SPK bantlarıyla tahmin edilir. Bantlar SPK 'Yatırım Fonlarına İlişkin Rehber' (25.08.2025) risk değeri tablosundan alınmıştır (Gamze Akkurt'un çıkarımı, data/processed/spk_risk_bands.json). SPK hesaplaması 5 yıllık haftalık getiriyle yapılır; bizim tahminimiz son 1 yılın günlük verisiyle yapıldığından yaklaşıktır, resmi değer varsa her zaman o kullanılır. Resmi değerle 2+ kademe fark varsa çelişki uyarısı verilir ve muhafazakâr (yüksek) değer kullanılır.",
+    "kaynak": "https://spk.gov.tr/data/61e4a3a01b41c60d1404d7d2/Yat%C4%B1r%C4%B1m%20Fonlar%C4%B1na%20%C4%B0li%C5%9Fkin%20Rehber_25082025.pdf",
+    "bantlar_yillik_vol": [
+      0.02,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.3
+    ]
+  },
+  "veri_kalitesi": {
+    "_gerekce": "Fon fiyat serisi kalite eşikleri.",
+    "min_gozlem": 60,
+    "max_gunluk_sicrama": 0.2,
+    "bayat_veri_gun": 7,
+    "min_fon_buyuklugu_tl": 50000000,
+    "min_yatirimci": 100
+  },
+  "capraz_kontrol": {
+    "_gerekce": "İki bağımsız kaynak arasındaki fark bu eşikleri aşarsa veri 'çelişkili' (conflict) işaretlenir veya RM'e teyit uyarısı düşer. Mevduat bandı: vade gününe göre TCMB sektör ortalaması bandı seçilir.",
+    "tefas_getiri_fark_puan": 0.02,
+    "mevduat_sektor_sapma_puan": 0.05,
+    "mevduat_bantlari": [
+      {
+        "max_gun": 32,
+        "gosterge": "mevduat_sektor_ortalamasi_1a"
+      },
+      {
+        "max_gun": 92,
+        "gosterge": "mevduat_sektor_ortalamasi_3a"
+      },
+      {
+        "max_gun": 182,
+        "gosterge": "mevduat_sektor_ortalamasi_6a"
+      },
+      {
+        "max_gun": 366,
+        "gosterge": "mevduat_sektor_ortalamasi_1y"
+      }
+    ]
+  },
+  "puanlama": {
+    "_gerekce": "Ağırlıklar persona alanlarından türetilir, sonra toplamı 1 olacak şekilde normalize edilir. Taban değer + persona sinyali katkısı UI'da ayrıştırılarak gösterilir.",
+    "oncelik_kaliplari": [
+      {
+        "anahtar": "gelir",
+        "kriter": "gelir",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "dalgalanma",
+        "kriter": "dusuk_oynaklik",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "likidite",
+        "kriter": "likidite",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "korunma",
+        "kriter": "anapara",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "büyüme",
+        "kriter": "getiri",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "fırsat maliyeti",
+        "kriter": "getiri",
+        "ek": 0.3
+      },
+      {
+        "anahtar": "kur riski",
+        "kriter": "doviz_uyumu",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "sade",
+        "kriter": "sadelik",
+        "ek": 0.5
+      },
+      {
+        "anahtar": "dayanıklılık",
+        "kriter": "dusuk_oynaklik",
+        "ek": 0.3
+      }
+    ],
+    "maliyet_taban": 0.3,
+    "sadelik_taban": 0.1,
+    "doviz_taban": 0.3
+  },
+  "secim": {
+    "_gerekce": "Kısa liste RM'in görüşmede tartışabileceği boyutta tutulur. Aynı kategoriden en fazla 2 ürün (yoğunlaşma kısıtı varsa 1).",
+    "kisa_liste_boyutu": 5,
+    "kategori_basina_max": 2,
+    "yogunlasma_kisiti_kategori_basina_max": 1,
+    "yogunlasma_kisiti_min_kategori": 3
+  },
+  "metin_guard": {
+    "_gerekce": "Brief kural 6 ve 9: getiri vaadi yok, nihai tavsiye dili yok.",
+    "yasakli_ifadeler": [
+      "garanti",
+      "kesin getiri",
+      "risksiz",
+      "kesinlikle kazan",
+      "kayıp yaşamazsınız",
+      "mutlaka yükselir",
+      "tavsiye ediyorum",
+      "kesin kazanç"
+    ],
+    "zorunlu_ibare": "Bu metin RM görüşme hazırlığı içindir; yatırım tavsiyesi değildir ve RM onayı olmadan müşteriyle paylaşılamaz.",
+    "kod_istisnalari": [
+      "PDF",
+      "PPF",
+      "TL",
+      "USD",
+      "EUR",
+      "RD",
+      "KAP",
+      "SPK",
+      "ING",
+      "TCMB",
+      "EVDS",
+      "BIST",
+      "TEFAS",
+      "DIBS",
+      "TMSF",
+      "TUFE",
+      "RM",
+      "BES",
+      "BYF",
+      "ETF",
+      "TRY",
+      "HMB",
+      "KYD"
+    ],
+    "_kod_istisnalari_gerekce": "Bazı TEFAS fon kodları yaygın kısaltmalarla aynıdır (örn. 'PDF', 'PPF'). Bu kısaltmalar metinde kaynak/terim olarak geçtiğinde 'dışlanan ürün' ihlali sayılmaz (15.10.2026 hata analizi)."
+  },
+  "rl": {
+    "_gerekce": "Kısa listedeki ürünler arasında dinamik dağılım: her karar adımında (≈3 ay, vade sonu) ajan dağılımı yeniden seçer. Ürün evreni kural motorunun kısa listesidir; ajan yalnızca izinli ağırlık ızgarasından seçer (her fon ≤ %50; yoğunlaşma kısıtı varsa her ürün ≤ %50). Ödül = reel (enflasyondan arındırılmış), stopaj sonrası servet değişimi − anapara cezası − işlem maliyeti; ufuk rastgele ve ajana gizli. Senaryolar sıralıdır (durağan blok bootstrap, ortalama 4 çeyrek); durum o tarihte bilinen piyasa göstergeleridir (TÜFE 35 gün, mevduat faizi 7 gün gecikmeli). İki ajan eğitilir: DQN (numpy MLP, göstergeleri görür) ve tablo tabanlı Q (göstergeleri görmez, karşılaştırma tabanı). Seçim eğitim döneminin son %20'sinde (doğrulama) yapılır; test dönemi seçimde kullanılmaz. Bu bir getiri tahmini değil, geçmiş verilerle yapılan bir simülasyondur. Bugünkü göstergeler eğitim dağılımının 3σ dışındaysa (dağılım dışı) başlangıç dağılımı göstergeleri kullanmayan tablo tabanlı ajandan alınır.",
+    "adim_is_gunu": 63,
+    "adim_takvim_gunu": 91,
+    "izgara": 0.25,
+    "adim_butcesi": 30000,
+    "degerlendirme_bolum": 1000,
+    "tohum": 42,
+    "test_baslangic": "2025-07-01",
+    "degistirme_maliyeti": 0.002,
+    "ceza": {
+      "_gerekce": "anapara_koruma_tercihi seviyesine göre. Her karar adımı sonunda reel servet < anapara ise: ceza = lambda × açık + sabit.",
+      "Yüksek": {
+        "lambda": 5.0,
+        "sabit": 0.02
+      },
+      "Orta": {
+        "lambda": 1.0,
+        "sabit": 0.0
+      },
+      "Düşük": {
+        "lambda": 0.0,
+        "sabit": 0.0
+      }
+    },
+    "ufuk_ceyrek": {
+      "_gerekce": "Persona ufkunun alt sınırına (yıl) göre bölüm uzunluğu aralığı, çeyrek cinsinden.",
+      "0.5": [
+        1,
+        4
+      ],
+      "1": [
+        4,
+        12
+      ],
+      "3": [
+        12,
+        20
+      ],
+      "5": [
+        20,
+        40
+      ]
+    },
+    "durum_max_adim": 12,
+    "servet_bantlari": [
+      0.95,
+      1.0,
+      1.05,
+      1.15,
+      1.3
+    ],
+    "yogunlasma_max_agirlik": 0.5,
+    "min_gecmis_gun": 250,
+    "egitim_min_ay": 6,
+    "blok_ornek": 32,
+    "fon_basina_max_agirlik": 0.5,
+    "blok_ceyrek": 4,
+    "tufe_gecikme_gun": 35,
+    "dogrulama_orani": 0.2,
+    "dqn": {
+      "_gerekce": "Küçük numpy MLP (2×32 gizli, ReLU), Adam, Huber kaybı, deneyim tamponu, hedef ağ. Piyasa dışsal olduğundan her geçişte tüm aksiyonların hedefi hesaplanır.",
+      "gizli": 32,
+      "ogrenme_orani": 0.001,
+      "batch": 32,
+      "guncelleme": 6000,
+      "hedef_senkron": 250
+    },
+    "ood_esik_sigma": 3.0
+  },
+  "rl_kategori": {
+    "_gerekce": "Profile koşullu kategori düzeyi DQN (app/rl_category.py). Eğitim profilleri, brief'teki 5 personanın alan değerleri ve açık kısıtlarının TÜM çelişkisiz kombinasyonlarıdır (27.648 ham → 11.520 çelişkisiz → RL açısından 2.400 farklı); yeni değer uydurulmaz, müşteri verisi değildir. %10'u genelleme testi için ayrılır. Öneri yalnızca verilen personalar için üretilir. Aksiyon: 10 varlık kategorisine %25 adımlı ağırlık, fon kategorisi başına en fazla %50. Döviz tavanı profilin döviz tercihine göre.",
+    "max_gunluk_sicrama": 0.2,
+    "min_fon_sayisi": 2,
+    "politika_gecikme_gun": 45,
+    "doviz_tavan": {
+      "0.2": 0.25,
+      "0.4": 0.5,
+      "0.6": 1.0,
+      "1.0": 1.0
+    },
+    "profil_tohum": 2026,
+    "gizli": 128,
+    "ogrenme_orani": 0.0005,
+    "paralel_bolum": 128,
+    "batch": 256,
+    "hedef_aksiyon": 8,
+    "hedef_senkron": 1000,
+    "tampon": 200000,
+    "eps_son": 0.05,
+    "eps_azalma_orani": 0.5,
+    "degerlendirme_aralik": 10000,
+    "degerlendirme_profil": 300,
+    "degerlendirme_senaryo": 4,
+    "uzun_guncelleme": 400000,
+    "gpu": {
+      "_gerekce": "GPU eğitimi. Teşhis: ham göstergelerle politika eğitim döneminde iyileşirken doğrulama döneminde bozuluyordu (0,53 → 0,26; rejim farkına aşırı uyum). Düzeltme: göstergeler ±2σ kırpılır (çıkarımda da), öğrenmede göstergelere N(0; 0,5σ) gürültü, AdamW ağırlık çökmesi 1e-4. Ablasyon ve varyant sonuçları docs/rl.md'de. Aksiyon sayısı ~3 bine çıktığı için batch 4096 (hedef hesabı: 4096×16 sonraki durum × ~3 bin aksiyon).",
+      "gizli": 256,
+      "ogrenme_orani": 0.0003,
+      "paralel_bolum": 4096,
+      "batch": 4096,
+      "hedef_aksiyon": 16,
+      "tampon": 2000000,
+      "hedef_senkron": 2000,
+      "eps_son": 0.05,
+      "eps_azalma_orani": 0.5,
+      "guncelleme": 300000,
+      "degerlendirme_aralik": 5000,
+      "degerlendirme_profil": 1000,
+      "degerlendirme_senaryo": 8,
+      "ozellik_kirp": 2.0,
+      "ozellik_gurultu": 0.5,
+      "agirlik_cokmesi": 0.0001,
+      "inanc_basligi": true,
+      "inanc_agirligi": 0.5,
+      "_inanc_gerekce": "Beklenen getiri inanç başlığı: ortak gövdeden kategori başına sonraki adımın vergi sonrası reel getirisinin ortalaması ve std'si (Gauss NLL). Q kaybına 0,5 ağırlıkla yardımcı görev olarak eklenir. Kalibrasyon doğrulama havuzunda saf tahminle (eğitim ortalaması) kıyaslanarak raporlanır."
+    },
+    "profil_kaynagi": "brief_kombinasyonlari",
+    "profil_holdout_orani": 0.1,
+    "izgara": {
+      "_gerekce": "%10 adımlı tam ızgara 85.943 aksiyon eder (DQN hedef hesabı için GPU belleğine sığmaz). Bu yüzden ince ızgarada bir dağılım en fazla 3 kategori içerir (2.458 aksiyon; RM için de okunur). Önceki %25 adımlı ızgara (625, 4 kategoriye kadar) korunur: yeni aksiyon kümesi eskisini kapsar.",
+      "adim": 0.1,
+      "max_kategori": 3,
+      "kaba_izgarayi_koru": true
+    },
+    "eslesme": {
+      "_gerekce": "Kategori ağırlığının fonlara aktarımı. Model eğitimde kategori endeksini (medyan fon) gördüğü için seçilen fonun endeksten sapması (yıllık takip farkı) sınırlanır: düşük oynaklıklı kategorilerde %3, oynak kategorilerde %12. Eşik içinde aday yoksa en iyi skorlu aday uyarıyla seçilir. %30 ve üzeri kategori payı tek fona yığılmasın diye en iyi 2 fona eşit bölünür.",
+      "pencere_gun": 252,
+      "takip_farki_esik": {
+        "dusuk": 0.03,
+        "yuksek": 0.12
+      },
+      "dusuk_oynaklik_kategorileri": [
+        "mevduat_tl",
+        "para_piyasasi",
+        "borclanma",
+        "katilim"
+      ],
+      "bolme_esigi": 0.3,
+      "bolme_fon_sayisi": 2
+    },
+    "bist30": {
+      "_gerekce": "Doğrudan BIST 30 hisseleri ayrı bir kategori (v2 gösterge setiyle). Kategori endeksi: hisselerin günlük toplam getirilerinin (Yahoo düzeltilmiş kapanış, temettü dahil) eşit ağırlıklı ortalaması. Kaynak resmi Borsa İstanbul değil; bileşim teyit edilmedi ve güncel bileşim 2021'e geriye uygulanır (hayatta kalma yanlılığı). Stopaj: Türkiye'de yerleşik gerçek kişinin BIST hisse alım-satım kazancında stopaj %0 varsayıldı (temettüde stopaj ayrıca kesilir; düzeltilmiş kapanış brüt temettü içerir). Kategori payı tek hisseye yığılmasın diye en yüksek skorlu 5 hisseye eşit bölünür; takip farkı seçilen sepet için ölçülür.",
+      "min_hisse": 20,
+      "stopaj": 0.0,
+      "stopaj_notu": "BIST hisse alım-satım kazancı, yerleşik gerçek kişi; temettü stopajı ayrıca, RM teyit etmeli",
+      "sepet_hisse_sayisi": 5,
+      "sepet_takip_farki_esik": 0.12,
+      "valor_gun": 2,
+      "komisyon_notu": "Aracı kurum komisyonu ve BSMV ürün başına bilinmiyor; devir maliyeti (%0,2) tüm kategorilerde aynı varsayıldı."
+    },
+    "profil_odulu": {
+      "_gerekce": "Profilin tamamı ödülde: r = reel getiri − Σ c_k·w_k·ceza_k. w_k deterministik skorlamanın kriter ağırlıkları (risk, ufuk, likidite, gelir ihtiyacı, anapara, öncelikler, yatırım amacı, kısıtlar). c_k ceza birimini çeyreklik getiriye çevirir; ağırlığı 0,25 olan bir kriter için tipik etki çeyreklik 0,1–0,5 puan, getiri farklarıyla aynı mertebe. Değerler deneyden önce belirlendi.",
+      "dusuk_oynaklik": 10.0,
+      "likidite": 0.01,
+      "gelir": 0.01,
+      "sadelik": 0.005,
+      "cesitlendirme": 0.01,
+      "doviz_uyumu": 0.01,
+      "maliyet_carpani": 2.0
+    },
+    "kategori_max_agirlik": 0.4,
+    "dusuk_oynaklik_max_agirlik": 1.0,
+    "_dusuk_oynaklik_gerekce": "Kullanıcının kuralı 'fon başına %50'. Düşük oynaklıklı kategori (para piyasası, borçlanma, katılım) payı %100'e kadar çıkabilir; eşleme payı en az ceil(pay/%50) fona böler. Önceki kategori düzeyi %50 sınırı fon kuralından daha sıkıydı (örn. kilitli temkinli profilde para piyasası %50'de takılıyordu).",
+    "degerlendirme_max_ceyrek": 4,
+    "secim_olcutu": "en_kotu_donem",
+    "_duzeltme_gerekce": "v5/NN-PPO teşhisi (docs/rl.md): (1) kısa test/doğrulama pencerelerinde 20-40 çeyreklik bölümler aynı çeyrekleri tekrar örnekleyip tek rejimi onlarca kez bileşikliyordu; değerlendirme bölümleri 4 çeyrekle sınırlı (eğitim tam ufukta). (2) Tek kategoriye (örn. altın) %50 bahis agresif profilde rejim dönünce çok büyük kayıp üretti; kategori başına tavan %40. (3) Kontrol noktası doğrulama döneminin iki yarısının en kötüsüne göre seçilir: tek alt dönemi kovalayan noktayı ödüllendirmez.",
+    "anapara_tabani": "nominal",
+    "ceza_tavan": 0.25,
+    "_anapara_gerekce": "Anapara cezası nominal servete bağlı: müşterinin 'anapara korunsun' ifadesinin olağan anlamı; reel getiri yine ödülün kendisidir. Reel taban 2022-23 negatif reel faiz döneminde neredeyse her adımda ceza kesip politikayı TL'den kaçmaya itiyordu (v2 deneyi, docs/rl.md). Adım başına ceza 0,25 ile sınırlı: birikimli cezanın Q ölçeğini şişirip öğrenmeyi salındırmasını önler.",
+    "mevcut_portfoy_olasiligi": 0.5,
+    "gosterge_seti": "v2",
+    "veri_baslangic": "2021-01-04",
+    "max_bosluk_gun": 10,
+    "_gosterge_seti_gerekce": "v2: snapshots/gecmis/ tarihçe serileri (TCMB EVDS, 2021 sonrası). Politika faizi karar tarihli adım serisi (BIS aylık serisi 1-2 ay gecikmeli olduğu için), TLREF ve BIST 100 toplam getiri eklendi. Eğitim verisi 2021 sonrasını kapsar: 2021-22 enflasyon şoku, 2023 sıkılaşma, 2024-25 dezenflasyon rejimleri. Mevcut model v1 ile eğitildi; çıkarım modelin kendi setiyle yapılır. max_bosluk_gun (10): bayram tatilleri 9 güne kadar sürebildiği için daha kısa aralıklar boşluk sayılmaz; fiyat verisinde bu kadar takvim gününden uzun boşluk varsa boşluğu içeren pencereler dışlanır."
+  },
+  "alternatif_urunler": {
+    "_gerekce": "Fon dışı alternatifler için varsayımlar. Hepsi kaynaklı piyasa verisinden türetilir; buradaki değerler yalnızca verinin olmadığı yapısal boşlukları doldurur ve 'Varsayım' olarak gösterilir.",
+    "dibs": {
+      "seriler": [
+        [
+          "dibs_tl_sabit_1y",
+          "dibs_tl",
+          1
+        ],
+        [
+          "dibs_tl_sabit_2y",
+          "dibs_tl",
+          2
+        ],
+        [
+          "dibs_tl_sabit_5y",
+          "dibs_tl",
+          5
+        ],
+        [
+          "dibs_tl_sabit_10y",
+          "dibs_tl",
+          10
+        ],
+        [
+          "dibs_tufe_reel_5y",
+          "dibs_tufe",
+          5
+        ],
+        [
+          "dibs_tufe_reel_10y",
+          "dibs_tufe",
+          10
+        ]
+      ],
+      "rd_vadeye_gore": {
+        "1": 2,
+        "2": 3,
+        "5": 4,
+        "10": 5
+      },
+      "rd_gerekce": "Doğrudan tahvilin resmi RD'si yoktur. Vadeye göre faiz riski (süre/duration) artar; borçlanma araçları fonlarının tipik RD aralığıyla uyumlu kademeli varsayım.",
+      "max_ihale_yasi_gun": 180,
+      "not": "Getiri, son ihalenin ortalama yıllık bileşik faizidir (birincil piyasa). Vade sonuna kadar tutulursa nominal getiri bilinir; ara satışta faiz riskine açıktır."
+    },
+    "doviz_mevduat": {
+      "kademe_tl_karsiligi": 1000000,
+      "vadeler": [
+        32,
+        92,
+        181
+      ],
+      "rd_kaynagi": "TL bazlı yatırımcı açısından kur oynaklığı: ilgili kurun son 1 yıllık günlük getiri volatilitesinden SPK bandı."
+    },
+    "maden_hesabi": {
+      "seriler": [
+        [
+          "altin_gram_tl",
+          "XAU",
+          "Altın"
+        ],
+        [
+          "gumus_gram_tl",
+          "XAG",
+          "Gümüş"
+        ]
+      ],
+      "not": "Banka alış-satış makası ve saklama koşulları veride yok; RM teyit etmeli. Gelir/faiz üretmez."
+    }
+  }
+}

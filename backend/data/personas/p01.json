@@ -1,0 +1,16 @@
+{
+  "persona_id": "P01",
+  "profil": "Emekli girişimci",
+  "yas": 62,
+  "risk_profili": "Muhafazakâr",
+  "durum": "Varlığı TL mevduat ağırlıklı",
+  "yatirim_amaci": "Düzenli gelir ve sermayenin korunmasını önceliklendirmek",
+  "yatirim_ufku": "1-3 yıl",
+  "likidite_ihtiyaci": "Orta",
+  "doviz_maruz_kalma_tercihi": "Sınırlı",
+  "gelir_nakit_akisi_ihtiyaci": "Yüksek",
+  "anapara_koruma_tercihi": "Yüksek",
+  "oncelikler": ["düzenli gelir", "likiditeyi koruma", "sınırlı dalgalanma"],
+  "acik_kisitlar": ["yüksek riskli ürünlerden kaçınma"],
+  "rm_notu": "Mevcut portföyün mevduat yoğunluğunu azaltabilecek alternatifleri anlamak istiyor."
+}

@@ -1,0 +1,259 @@
+{
+ "kaynak": "KAP fon ölçüt sorgusu (BYF, yürürlükte)",
+ "url": "https://www.kap.org.tr/tr/api/fund/criteria/BYF/Y",
+ "alinma": "2026-10-15T18:37:43+03:00",
+ "fonlar": [
+  {
+   "kod": "APGLD",
+   "ad": "AK PORTFÖY ALTIN KATILIM BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d9b827483019c1db5701a7f99",
+   "kurucu": null
+  },
+  {
+   "kod": "APMDL",
+   "ad": "AK PORTFÖY BIST 100 ENDEKSİ MODEL PORTFÖY HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d98455cf60198984e136404eb",
+   "kurucu": null
+  },
+  {
+   "kod": "APX30",
+   "ad": "AK PORTFÖY BIST 30 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c89555baa0189d5a2037942c9",
+   "kurucu": null
+  },
+  {
+   "kod": "APBDL",
+   "ad": "AK PORTFÖY BIST BANKA DIŞI LİKİT 10 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c89555baa0189d5a2325742f1",
+   "kurucu": null
+  },
+  {
+   "kod": "APLIB",
+   "ad": "AK PORTFÖY BIST LİKİT BANKA ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c89555baa0189d5a2513d4303",
+   "kurucu": null
+  },
+  {
+   "kod": "ISGLK",
+   "ad": "İŞ PORTFÖY ALTIN KATILIM BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c8e21cef7018e2d7fbcab3103",
+   "kurucu": null
+  },
+  {
+   "kod": "ISMDL",
+   "ad": "İŞ PORTFÖY BIST 100 ENDEKSİ MODEL PORTFÖY HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d9f52dddc019fa3aac5b419f8",
+   "kurucu": null
+  },
+  {
+   "kod": "ISX30",
+   "ad": "İŞ PORTFÖY BIST 30 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c9f52dc40019f9495b1f7688b",
+   "kurucu": null
+  },
+  {
+   "kod": "NPTLR",
+   "ad": "NUROL PORTFÖY BIST TLREF ENDEKSİ (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c9af2405e019b4608916165b4",
+   "kurucu": null
+  },
+  {
+   "kod": "OPGLD",
+   "ad": "OSMANLI PORTFÖY ALTIN KATILIM BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c9f52dc3f01a08b0bbf4d1ee6",
+   "kurucu": null
+  },
+  {
+   "kod": "OPX30",
+   "ad": "OSMANLI PORTFÖY BIST 30 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d89555d7f018a936430a54eeb",
+   "kurucu": null
+  },
+  {
+   "kod": "OPT25",
+   "ad": "OSMANLI PORTFÖY BIST TEMETTÜ 25 ENDEKSİ HİSSE SENEDİ YOĞUN (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d9132fce7019159f1a1657893",
+   "kurucu": null
+  },
+  {
+   "kod": "OPTLR",
+   "ad": "OSMANLI PORTFÖY BIST TLREF ENDEKSİ (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d969f29540196edc9f3e17b1f",
+   "kurucu": null
+  },
+  {
+   "kod": "OPD25",
+   "ad": "OSMANLI PORTFÖY DEĞER TEMALI 25 ENDEKSİ HİSSE SENEDİ YOĞUN (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c9f52dc3f01a08b0b99ae1edb",
+   "kurucu": null
+  },
+  {
+   "kod": "OPTGY",
+   "ad": "OSMANLI PORTFÖY KAR PAYI ÖDEYEN BIST GYO ENDEKSİ HİSSE SENEDİ YOĞUN (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d949955a90194b79d752a2d09",
+   "kurucu": null
+  },
+  {
+   "kod": "OPK30",
+   "ad": "OSMANLI PORTFÖY KATILIM 30 ENDEKSİ HİSSE SENEDİ YOĞUN (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d949955a90194b79d9afd2d14",
+   "kurucu": null
+  },
+  {
+   "kod": "GLDTR",
+   "ad": "QNB PORTFÖY ALTIN KATILIM BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "33E5FED811AF00EAE0530A4A622B2AEA",
+   "kurucu": null
+  },
+  {
+   "kod": "USDTR",
+   "ad": "QNB PORTFÖY AMERİKAN DOLARI YABANCI BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "33E5FED811BF00EAE0530A4A622B2AEA",
+   "kurucu": null
+  },
+  {
+   "kod": "GMSTR",
+   "ad": "QNB PORTFÖY GÜMÜŞ KATILIM BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "33E5FED811B100EAE0530A4A622B2AEA",
+   "kurucu": null
+  },
+  {
+   "kod": "QTEMZ",
+   "ad": "QNB PORTFÖY QNB TEMİZ ENERJİ ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "33E5FED811B300EAE0530A4A622B2AEA",
+   "kurucu": null
+  },
+  {
+   "kod": "ZGOLD",
+   "ad": "ZİRAAT PORTFÖY ALTIN KATILIM BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c71bc39bf0172091a592e1ab4",
+   "kurucu": null
+  },
+  {
+   "kod": "ZPMDL",
+   "ad": "ZİRAAT PORTFÖY BIST 100 ENDEKSİ MODEL PORTFÖY HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d9f52dddd019febe1f6fd0a6e",
+   "kurucu": null
+  },
+  {
+   "kod": "ZPX30",
+   "ad": "ZİRAAT PORTFÖY BIST 30 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c6faf9e5101701ebb7b6b0e12",
+   "kurucu": null
+  },
+  {
+   "kod": "Z30EA",
+   "ad": "ZİRAAT PORTFÖY BIST 30 EŞİT AĞIRLIKLI ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c72f8dbc50173481b80ce5737",
+   "kurucu": null
+  },
+  {
+   "kod": "ZELOT",
+   "ad": "ZİRAAT PORTFÖY BIST 50-30 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c794d2f8a017a41e4bd1144b5",
+   "kurucu": null
+  },
+  {
+   "kod": "ZPBDL",
+   "ad": "ZİRAAT PORTFÖY BIST BANKA DIŞI LİKİT 10 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c6faf9e5101701ec2d85e0e6b",
+   "kurucu": null
+  },
+  {
+   "kod": "ZPMDK",
+   "ad": "ZİRAAT PORTFÖY BIST KATILIM 100 ENDEKSİ MODEL PORTFÖY HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d9f52dddd019febe1c6850a5f",
+   "kurucu": null
+  },
+  {
+   "kod": "Z30KP",
+   "ad": "ZİRAAT PORTFÖY BIST KATILIM 30 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d74f01f5601755478ed0d7cc3",
+   "kurucu": null
+  },
+  {
+   "kod": "Z30KE",
+   "ad": "ZİRAAT PORTFÖY BIST KATILIM 30 EŞİT AĞIRLIKLI ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d74f01f560175547cf2897cfe",
+   "kurucu": null
+  },
+  {
+   "kod": "ZPLIB",
+   "ad": "ZİRAAT PORTFÖY BIST LİKİT BANKA ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c6faf9e5101701ec5b0a00ef1",
+   "kurucu": null
+  },
+  {
+   "kod": "ZSR25",
+   "ad": "ZİRAAT PORTFÖY BIST SÜRDÜRÜLEBİLİRLİK 25 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c86845fa80186bbc043a173bd",
+   "kurucu": null
+  },
+  {
+   "kod": "ZTM25",
+   "ad": "ZİRAAT PORTFÖY BIST TEMETTÜ 25 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c72f8dbc50173481e12205746",
+   "kurucu": null
+  },
+  {
+   "kod": "ZTLRF",
+   "ad": "ZİRAAT PORTFÖY BIST TLREF ENDEKSİ (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d998eebe8019a0c3afddb168c",
+   "kurucu": null
+  },
+  {
+   "kod": "ZTLRK",
+   "ad": "ZİRAAT PORTFÖY BIST TLREFK ENDEKSİ KATILIM (TL) BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328d998eebe8019a0c3ad2261681",
+   "kurucu": null
+  },
+  {
+   "kod": "ZRE20",
+   "ad": "ZİRAAT PORTFÖY RİSK EŞİT BANKA DIŞI 20 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c72f8dbc5017348204af7575b",
+   "kurucu": null
+  },
+  {
+   "kod": "ZPT10",
+   "ad": "ZİRAAT PORTFÖY YILDIZ PAZAR TEKNOLOJİ VE İLETİŞİM 10 ENDEKSİ HİSSE SENEDİ YOĞUN BORSA YATIRIM FONU",
+   "durum": "Y",
+   "fundOid": "4028328c794d2f8a017a41e2c37244a6",
+   "kurucu": null
+  }
+ ]
+}

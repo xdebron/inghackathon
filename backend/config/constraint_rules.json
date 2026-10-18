@@ -1,0 +1,493 @@
+{
+  "_aciklama": "Personanın serbest metin 'acik_kisitlar' alanını deterministik kurallara bağlar. Bir kısıt hiçbir kurala eşleşmezse sistem tahmin yürütmez: çalışma 'RM teyidi bekliyor' durumunda durur ve teyit sorusu üretir. Kural türleri: dislama (ürün süzgeci), portfoy (yalnızca dağılım düzeyinde: RL maskesi), secim (kısa liste), agirlik (kriter ağırlığı). Her kuralın 'rl' alanı RL kategori modelindeki karşılığını tanımlar. 'ornek' arayüzde seçilebilir kısıt metnidir. Brief'teki 5 kısıta ek kısıtlar katalogdur; persona üretmez.",
+  "kurallar": [
+    {
+      "id": "K_YUKSEK_RISK",
+      "anahtarlar": [
+        "yüksek riskli"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "min_rd": 5,
+        "kategoriler": [
+          "hisse",
+          "bist30_hisse",
+          "serbest"
+        ]
+      },
+      "aciklama": "Yüksek riskli ürün yasağı: RD ≥ 5 olan ya da yapısı gereği yüksek riskli kategorideki (hisse fonu, doğrudan BIST 30 hissesi, serbest) ürünler dışlanır.",
+      "ornek": "yüksek riskli ürünlerden kaçınma"
+    },
+    {
+      "id": "K_LIKIDITE_KILIDI",
+      "anahtarlar": [
+        "kilitli",
+        "düşük likidite"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "max_valor_gun": 2,
+        "max_mevduat_vade_gun": 32
+      },
+      "aciklama": "Kilitli/düşük likiditeli ürün yasağı: satış valörü 2 iş gününü aşan fonlar ve 32 günden uzun vadeli mevduat dışlanır. Valörü bilinmeyen ürün dışlanmaz ama 'teyit gerekli' işaretlenir.",
+      "ornek": "uzun süre kilitli veya düşük likiditeli seçeneklerden kaçınma"
+    },
+    {
+      "id": "K_DOVIZ_ARTIRMAMA",
+      "anahtarlar": [
+        "döviz maruziyet"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "para_birimleri_haric": [
+          "USD",
+          "EUR",
+          "XAU",
+          "XAG"
+        ]
+      },
+      "aciklama": "Döviz maruziyetini gerekçesiz artırmama: müşterinin zaten döviz geliri olduğundan döviz/altın bazlı ürünler kısa listeye otomatik girmez. RM gerekçe yazarak manuel ekleyebilir.",
+      "ornek": "döviz maruziyetini gerekçesiz artırmama"
+    },
+    {
+      "id": "K_YOGUNLASMA",
+      "anahtarlar": [
+        "yoğunlaş"
+      ],
+      "tip": "secim",
+      "parametre": {},
+      "aciklama": "Tek ürün/varlık sınıfında yoğunlaşmama: kısa listede her kategoriden en fazla 1 ürün ve en az 3 farklı kategori bulunur.",
+      "ornek": "tek ürün veya tek varlık sınıfında yoğunlaşmama"
+    },
+    {
+      "id": "K_KISA_VADE_NAKIT_YOK",
+      "anahtarlar": [
+        "kısa vadeli nakit ihtiyacı varsayılmamalı"
+      ],
+      "tip": "agirlik",
+      "parametre": {
+        "kriter": "likidite",
+        "sabit_agirlik": 0.05
+      },
+      "aciklama": "Kısa vadeli nakit ihtiyacı varsayılmaz: likidite kriterinin ağırlığı sabit ve düşük tutulur; metin müşteriye kısa vadeli nakit ihtiyacı atfetmez.",
+      "ornek": "kısa vadeli nakit ihtiyacı varsayılmamalı"
+    },
+    {
+      "id": "K_FAIZSIZ",
+      "anahtarlar": [
+        "faizsiz",
+        "katılım esaslı",
+        "faiz hassasiyet",
+        "faiz içermeyen",
+        "faize duyarlı"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "yalniz_kategoriler": [
+          "katilim",
+          "katilim_hesabi",
+          "kiymetli_maden",
+          "maden_hesabi"
+        ]
+      },
+      "rl": {
+        "yalniz": [
+          "mevduat_tl",
+          "katilim",
+          "kiymetli_maden"
+        ]
+      },
+      "ornek": "faizsiz (katılım esaslı) ürünler",
+      "aciklama": "Faiz hassasiyeti: yalnızca katılım esaslı ürünler (katılım fonları, katılım hesabı) ve kıymetli maden. RL'de mevduat kategorisi yalnızca katılım hesabıyla eşlenir (deterministik süzgeç TL vadeli mevduatı dışlar)."
+    },
+    {
+      "id": "K_TL_DISI_YOK",
+      "anahtarlar": [
+        "yalnızca tl",
+        "sadece tl",
+        "döviz ürünü istem",
+        "döviz istem",
+        "kur riski almak istem",
+        "tl dışı"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "para_birimleri_haric": [
+          "USD",
+          "EUR",
+          "GBP",
+          "XAU",
+          "XAG"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "kiymetli_maden",
+          "yabanci_hisse",
+          "eurobond_doviz"
+        ]
+      },
+      "ornek": "yalnızca TL ürünler (döviz ve altın yok)",
+      "aciklama": "Yalnızca TL: döviz ve kıymetli maden bazlı ürünler dışlanır (döviz maruziyetini artırmamadan daha katı: gerekçeyle manuel ekleme beklenmez)."
+    },
+    {
+      "id": "K_ALTIN_YOK",
+      "anahtarlar": [
+        "altın istem",
+        "kıymetli maden istem",
+        "altın olmasın",
+        "altın yok",
+        "emtia istem"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "kategoriler_haric": [
+          "kiymetli_maden",
+          "maden_hesabi"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "kiymetli_maden"
+        ]
+      },
+      "ornek": "altın / kıymetli maden istememe",
+      "aciklama": "Kıymetli maden fonları ve maden hesapları dışlanır."
+    },
+    {
+      "id": "K_HISSE_YOK",
+      "anahtarlar": [
+        "hisse istem",
+        "hisse senedi olmasın",
+        "borsa istem",
+        "borsa riski almak istem",
+        "hisse yok",
+        "hisse senedi istem",
+        "borsa riski"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "kategoriler_haric": [
+          "hisse",
+          "bist30_hisse",
+          "yabanci_hisse"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "hisse",
+          "bist30_hisse",
+          "yabanci_hisse"
+        ]
+      },
+      "ornek": "hisse senedi / borsa riski istememe",
+      "aciklama": "Hisse senedi fonları, yabancı hisse fonları ve doğrudan hisseler dışlanır."
+    },
+    {
+      "id": "K_DOGRUDAN_HISSE_YOK",
+      "anahtarlar": [
+        "doğrudan hisse",
+        "tek şirket",
+        "tekil hisse",
+        "tek tek hisse"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "kategoriler_haric": [
+          "bist30_hisse"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "bist30_hisse"
+        ]
+      },
+      "ornek": "doğrudan hisse / tek şirket riski istememe",
+      "aciklama": "Doğrudan hisse senedi (tek şirket riski) dışlanır; hisse fonlarına izin vardır."
+    },
+    {
+      "id": "K_YURT_DISI_YOK",
+      "anahtarlar": [
+        "yurt dışı",
+        "yabancı piyasa",
+        "yurtdışı"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "kategoriler_haric": [
+          "yabanci_hisse"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "yabanci_hisse"
+        ]
+      },
+      "ornek": "yurt dışı piyasalara yatırım istememe",
+      "aciklama": "Yabancı hisse fonları dışlanır (eurobond Türkiye ihraççılıdır, dışlanmaz)."
+    },
+    {
+      "id": "K_KARMASIK_URUN_YOK",
+      "anahtarlar": [
+        "karmaşık",
+        "anlaşılması zor",
+        "yapılandırılmış",
+        "basit ürün"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "kategoriler_haric": [
+          "fon_sepeti",
+          "karma_degisken",
+          "serbest"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "fon_sepeti",
+          "karma_degisken"
+        ]
+      },
+      "ornek": "karmaşık / yapılandırılmış ürün istememe",
+      "aciklama": "Yapı sadeliği düşük kategoriler (fon sepeti, karma/değişken, serbest) dışlanır."
+    },
+    {
+      "id": "K_GELIR_URETEN",
+      "anahtarlar": [
+        "gelir getirmeyen",
+        "düzenli kupon",
+        "getirisi düzenli olmayan",
+        "gelir üretmeyen"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "kategoriler_haric": [
+          "kiymetli_maden",
+          "maden_hesabi",
+          "hisse",
+          "bist30_hisse",
+          "yabanci_hisse"
+        ]
+      },
+      "rl": {
+        "haric": [
+          "kiymetli_maden",
+          "hisse",
+          "bist30_hisse",
+          "yabanci_hisse"
+        ]
+      },
+      "ornek": "gelir üretmeyen varlık istememe",
+      "aciklama": "Gelir üretimi düşük kategoriler (config gelir_uretimi < 0,3: kıymetli maden, hisse, yabancı hisse, doğrudan hisse) dışlanır."
+    },
+    {
+      "id": "K_DUSUK_MALIYET",
+      "anahtarlar": [
+        "yüksek ücret",
+        "masraf",
+        "maliyet hassas",
+        "yönetim ücreti yüksek",
+        "düşük maliyet",
+        "yönetim ücreti"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "max_yonetim_ucreti": 0.02
+      },
+      "rl": {},
+      "ornek": "yıllık yönetim ücreti %2'yi aşan fon istememe",
+      "aciklama": "Yıllık yönetim ücreti %2'yi aşan fonlar dışlanır (ürün düzeyi; ücret bilinmiyorsa teyit istenir). RL'de kategori düzeyinde karşılığı yoktur; eşleme süzgeçten geçen fonlarla yapılır."
+    },
+    {
+      "id": "K_KUCUK_FON_YOK",
+      "anahtarlar": [
+        "küçük fon",
+        "fon büyüklüğü",
+        "büyük fon"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "min_fon_buyuklugu_tl": 500000000
+      },
+      "rl": {},
+      "ornek": "500 mn TL'den küçük fonlardan kaçınma",
+      "aciklama": "Büyüklüğü 500 mn TL altındaki fonlar dışlanır (ürün düzeyi)."
+    },
+    {
+      "id": "K_ING_PLATFORM",
+      "anahtarlar": [
+        "ing platform",
+        "ing üzerinden",
+        "bankanın platform",
+        "kendi bankası",
+        "ing platformu",
+        "ıng platform",
+        "ING platform"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "yalniz_ing_platformu": true
+      },
+      "rl": {},
+      "ornek": "yalnızca ING platformunda işlem gören fonlar",
+      "aciklama": "ING fon listesinde olmayan fonlar dışlanır (ürün düzeyi; mevduat ve doğrudan ürünler etkilenmez)."
+    },
+    {
+      "id": "K_VADE_SINIRI",
+      "anahtarlar": [
+        "vadesi",
+        "vade sınırı",
+        "uzun vade istem",
+        "vadeli mevduatta en fazla"
+      ],
+      "tip": "dislama",
+      "parametre": {
+        "max_mevduat_vade_gun": 32,
+        "vade_metinden": true
+      },
+      "rl": {
+        "haric_vade_asarsa": {
+          "mevduat_tl": 92
+        }
+      },
+      "ornek": "vadesi 1 ayı aşan mevduat istememe",
+      "aciklama": "Metindeki süreyi (örn. '1 ay', '60 gün') aşan vadeli mevduatlar dışlanır; süre yoksa 32 gün. RL'de 3 aylık mevduat kategorisi, sınır 92 günün altındaysa kapanır."
+    },
+    {
+      "id": "K_RISKLI_PAY_SINIRI",
+      "anahtarlar": [
+        "riskli varlık",
+        "riskli ürünlerde en fazla",
+        "riskli pay",
+        "riskli kısım"
+      ],
+      "tip": "portfoy",
+      "parametre": {
+        "oran": 0.3,
+        "oran_metinden": true
+      },
+      "rl": {
+        "max_toplam": {
+          "min_rd": 5
+        }
+      },
+      "ornek": "riskli varlıklarda en fazla %30",
+      "aciklama": "Risk değeri 5 ve üzeri kategorilerin toplam payı en fazla metindeki oran (varsayılan %30). Portföy düzeyi: RL dağılımında uygulanır."
+    },
+    {
+      "id": "K_DOVIZ_PAY_SINIRI",
+      "anahtarlar": [
+        "döviz payı",
+        "dövizde en fazla",
+        "döviz ağırlığı en fazla",
+        "altın payı",
+        "döviz ve altın payı"
+      ],
+      "tip": "portfoy",
+      "parametre": {
+        "oran": 0.2,
+        "oran_metinden": true
+      },
+      "rl": {
+        "max_toplam": {
+          "kategoriler": [
+            "kiymetli_maden",
+            "yabanci_hisse",
+            "eurobond_doviz"
+          ]
+        }
+      },
+      "ornek": "döviz ve altın payı en fazla %20",
+      "aciklama": "Döviz ve kıymetli maden kategorilerinin toplam payı en fazla metindeki oran (varsayılan %20)."
+    },
+    {
+      "id": "K_MIN_LIKIT",
+      "anahtarlar": [
+        "hemen erişilebilir",
+        "günlük erişim",
+        "acil durum",
+        "likit kısım",
+        "hızlı erişim"
+      ],
+      "tip": "portfoy",
+      "parametre": {
+        "oran": 0.3,
+        "oran_metinden": true
+      },
+      "rl": {
+        "min_toplam": {
+          "kategoriler": [
+            "para_piyasasi",
+            "borclanma"
+          ]
+        }
+      },
+      "ornek": "portföyün en az %30'u hemen erişilebilir olsun",
+      "aciklama": "Satış valörü T+1 ve altı kategorilerin (para piyasası, borçlanma) payı en az metindeki oran (varsayılan %30)."
+    },
+    {
+      "id": "K_MIN_KORUMALI",
+      "anahtarlar": [
+        "güvenli kısım",
+        "korumalı kısım",
+        "en az yarısı güvenli",
+        "temkinli kısım",
+        "mevduat / para piyasas",
+        "en az yarısı mevduat"
+      ],
+      "tip": "portfoy",
+      "parametre": {
+        "oran": 0.5,
+        "oran_metinden": true
+      },
+      "rl": {
+        "min_toplam": {
+          "kategoriler": [
+            "mevduat_tl",
+            "para_piyasasi"
+          ]
+        }
+      },
+      "ornek": "portföyün en az %50'si mevduat / para piyasasında",
+      "aciklama": "Mevduat ve para piyasası payı en az metindeki oran (varsayılan %50)."
+    },
+    {
+      "id": "K_MAX_KATEGORI",
+      "anahtarlar": [
+        "tek varlık sınıfına en fazla",
+        "her varlık sınıfı en fazla",
+        "tek kategoride en fazla"
+      ],
+      "tip": "portfoy",
+      "parametre": {
+        "oran": 0.3,
+        "oran_metinden": true
+      },
+      "rl": {
+        "max_kategori_payi": true
+      },
+      "ornek": "tek varlık sınıfına en fazla %30",
+      "aciklama": "Her kategorinin payı en fazla metindeki oran (varsayılan %30; yoğunlaşma kısıtından daha katı)."
+    },
+    {
+      "id": "K_MIN_CESIT",
+      "anahtarlar": [
+        "en az üç",
+        "en az 3",
+        "en az dört",
+        "en az 4",
+        "farklı varlık sınıfı"
+      ],
+      "tip": "secim",
+      "parametre": {
+        "min_kategori": 3,
+        "sayi_metinden": true
+      },
+      "rl": {
+        "min_kategori_sayisi": true
+      },
+      "ornek": "en az 3 farklı varlık sınıfı",
+      "aciklama": "Kısa listede ve RL dağılımında en az N farklı kategori (metindeki sayı; varsayılan 3)."
+    }
+  ]
+}

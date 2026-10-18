@@ -1,0 +1,16 @@
+{
+  "persona_id": "P04",
+  "profil": "Aile ofisi temsilcisi",
+  "yas": 55,
+  "risk_profili": "Dengeli",
+  "durum": "Aile servetinin yönetiminde rol alıyor",
+  "yatirim_amaci": "Çeşitlendirme ve servetin sonraki kuşağa aktarımını desteklemek",
+  "yatirim_ufku": "5+ yıl",
+  "likidite_ihtiyaci": "Orta",
+  "doviz_maruz_kalma_tercihi": "Çeşitlendirilmiş",
+  "gelir_nakit_akisi_ihtiyaci": "Orta",
+  "anapara_koruma_tercihi": "Orta",
+  "oncelikler": ["çeşitlendirme", "uzun vadeli dayanıklılık", "kuşaklar arası planlama"],
+  "acik_kisitlar": ["tek ürün veya tek varlık sınıfında yoğunlaşmama"],
+  "rm_notu": "Alternatiflerin portföy içindeki rolünün açık anlatılmasını bekliyor."
+}

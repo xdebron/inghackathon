@@ -1,0 +1,16 @@
+{
+  "persona_id": "P05",
+  "profil": "Hekim",
+  "yas": 45,
+  "risk_profili": "Temkinli",
+  "durum": "Düzenli birikim yapıyor",
+  "yatirim_amaci": "Birikimini değerlendirirken kısa sürede likiditeye erişebilmek",
+  "yatirim_ufku": "1-3 yıl",
+  "likidite_ihtiyaci": "Yüksek",
+  "doviz_maruz_kalma_tercihi": "Sınırlı",
+  "gelir_nakit_akisi_ihtiyaci": "Orta",
+  "anapara_koruma_tercihi": "Yüksek",
+  "oncelikler": ["yüksek likidite", "sermayenin korunması", "sade ürün yapısı"],
+  "acik_kisitlar": ["uzun süre kilitli veya düşük likiditeli seçeneklerden kaçınma"],
+  "rm_notu": "Yoğun çalışma temposu nedeniyle net ve kısa bir hazırlık çıktısı istiyor."
+}

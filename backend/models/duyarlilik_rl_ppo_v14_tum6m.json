@@ -1,0 +1,102 @@
+{
+ "model": "rl_ppo_v14_tum6m",
+ "tarih": 202,
+ "kirpilan_oran": 0.01221122112211221,
+ "persona": {
+  "P01": {
+   "farkli_karar": 2,
+   "en_sik_pay": 0.554,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 1.0
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 1.0
+    }
+   }
+  },
+  "P02": {
+   "farkli_karar": 6,
+   "en_sik_pay": 0.495,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.34,
+     "karma_degisken": 0.34,
+     "fon_sepeti": 0.33
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.88,
+     "karma_degisken": 0.05,
+     "fon_sepeti": 0.05
+    }
+   }
+  },
+  "P03": {
+   "farkli_karar": 11,
+   "en_sik_pay": 0.465,
+   "en_sik": {
+    "kiymetli_maden": 0.2,
+    "hisse": 0.4,
+    "bist30_hisse": 0.4
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "kiymetli_maden": 0.18,
+     "hisse": 0.4,
+     "bist30_hisse": 0.4
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.61,
+     "kiymetli_maden": 0.06,
+     "hisse": 0.16,
+     "bist30_hisse": 0.18
+    }
+   }
+  },
+  "P04": {
+   "farkli_karar": 21,
+   "en_sik_pay": 0.376,
+   "en_sik": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.5
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.14,
+     "karma_degisken": 0.35,
+     "fon_sepeti": 0.27,
+     "eurobond_doviz": 0.22
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.44,
+     "para_piyasasi": 0.33,
+     "borclanma": 0.09,
+     "karma_degisken": 0.06,
+     "eurobond_doviz": 0.05
+    }
+   }
+  },
+  "P05": {
+   "farkli_karar": 5,
+   "en_sik_pay": 0.782,
+   "en_sik": {
+    "para_piyasasi": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 1.0
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "para_piyasasi": 0.7,
+     "borclanma": 0.3
+    }
+   }
+  }
+ }
+}

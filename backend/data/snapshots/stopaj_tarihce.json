@@ -1,0 +1,105 @@
+{
+ "source": "ING yatırım fonlarında vergilendirme tablosu (gerçek kişi)",
+ "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+ "as_of": "2026-10-09",
+ "toplayan": "Gamze Akkurt",
+ "not": "Oranlar fonun alım tarihine göre uygulanır. Eurobond/yabancı fonlar tabloda yok. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir.",
+ "donemler": [
+  {
+   "ad": "23.12.2020 Öncesi",
+   "baslangic": null,
+   "bitis": "2020-12-23"
+  },
+  {
+   "ad": "23.12.2020 - 30.04.2024",
+   "baslangic": "2020-12-23",
+   "bitis": "2024-04-30"
+  },
+  {
+   "ad": "01.05.2024 - 31.10.2024",
+   "baslangic": "2024-05-01",
+   "bitis": "2024-10-31"
+  },
+  {
+   "ad": "01.11.2024 - 31.01.2025",
+   "baslangic": "2024-11-01",
+   "bitis": "2025-01-31"
+  },
+  {
+   "ad": "01.02.2025 - 08.07.2025",
+   "baslangic": "2025-02-01",
+   "bitis": "2025-07-08"
+  },
+  {
+   "ad": "09.07.2025 ve sonrası",
+   "baslangic": "2025-07-09",
+   "bitis": null
+  }
+ ],
+ "kategoriler": {
+  "para_piyasasi": [
+   0.1,
+   0.0,
+   0.075,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "borclanma": [
+   0.1,
+   0.0,
+   0.075,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "fon_sepeti": [
+   0.1,
+   0.0,
+   0.075,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "kiymetli_maden": [
+   0.1,
+   0.0,
+   0.075,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "katilim": [
+   0.1,
+   0.0,
+   0.075,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "serbest": [
+   0.1,
+   0.1,
+   0.1,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "karma_degisken": [
+   0.1,
+   0.1,
+   0.1,
+   0.1,
+   0.15,
+   0.175
+  ],
+  "hisse": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ]
+ }
+}

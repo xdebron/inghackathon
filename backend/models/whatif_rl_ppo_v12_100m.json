@@ -1,0 +1,67 @@
+{
+ "senaryolar": {
+  "faiz_indirimi": {
+   "n": 780,
+   "yanlis_yon": 0.045,
+   "dogru_tepki": 0.001,
+   "ort_degisim": 0.0089,
+   "girdi_gorunur": 1.0
+  },
+  "faiz_artisi": {
+   "n": 780,
+   "yanlis_yon": 0.081,
+   "dogru_tepki": 0.015,
+   "ort_degisim": -0.0084,
+   "girdi_gorunur": 1.0
+  },
+  "enflasyon_artisi": {
+   "n": 780,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.006,
+   "ort_degisim": -0.0004,
+   "girdi_gorunur": 1.0
+  },
+  "enflasyon_dususu": {
+   "n": 780,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.008,
+   "ort_degisim": 0.0004,
+   "girdi_gorunur": 1.0
+  },
+  "kur_soku": {
+   "n": 108,
+   "yanlis_yon": 0.222,
+   "dogru_tepki": 0.0,
+   "ort_degisim": -0.0924,
+   "girdi_gorunur": 1.0
+  },
+  "kur_gevsemesi": {
+   "n": 108,
+   "yanlis_yon": 0.074,
+   "dogru_tepki": 0.0,
+   "ort_degisim": 0.0029,
+   "girdi_gorunur": 1.0
+  },
+  "borsa_dususu": {
+   "n": 72,
+   "yanlis_yon": 0.236,
+   "dogru_tepki": 0.0,
+   "ort_degisim": 0.0809,
+   "girdi_gorunur": 1.0
+  },
+  "borsa_yukselisi": {
+   "n": 72,
+   "yanlis_yon": 0.0,
+   "dogru_tepki": 0.0,
+   "ort_degisim": -0.0006,
+   "girdi_gorunur": 1.0
+  }
+ },
+ "yanlis_yon": 0.042,
+ "dogru_tepki": 0.007,
+ "en_kotu_senaryo_yanlis": 0.236,
+ "makul": false,
+ "ust_olasilik": 0.378,
+ "model": "rl_ppo_v12_100m",
+ "durum": 780
+}

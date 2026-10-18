@@ -1,0 +1,112 @@
+{
+ "model": "rl_ppo_v10",
+ "tarih": 202,
+ "kirpilan_oran": 0.05115511551155116,
+ "persona": {
+  "P01": {
+   "farkli_karar": 4,
+   "en_sik_pay": 0.678,
+   "en_sik": {
+    "mevduat_tl": 0.8,
+    "para_piyasasi": 0.2
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 0.1,
+     "para_piyasasi": 0.2,
+     "borclanma": 0.7
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.8,
+     "para_piyasasi": 0.2
+    }
+   }
+  },
+  "P02": {
+   "farkli_karar": 3,
+   "en_sik_pay": 0.678,
+   "en_sik": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.4,
+    "karma_degisken": 0.1
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 0.06,
+     "borclanma": 0.18,
+     "karma_degisken": 0.36,
+     "fon_sepeti": 0.35
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.5,
+     "para_piyasasi": 0.4,
+     "karma_degisken": 0.1
+    }
+   }
+  },
+  "P03": {
+   "farkli_karar": 3,
+   "en_sik_pay": 0.678,
+   "en_sik": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.4,
+    "karma_degisken": 0.1
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 0.06,
+     "borclanma": 0.18,
+     "karma_degisken": 0.36,
+     "fon_sepeti": 0.35
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.5,
+     "para_piyasasi": 0.4,
+     "karma_degisken": 0.1
+    }
+   }
+  },
+  "P04": {
+   "farkli_karar": 3,
+   "en_sik_pay": 0.678,
+   "en_sik": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.4,
+    "karma_degisken": 0.1
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 0.06,
+     "borclanma": 0.18,
+     "karma_degisken": 0.36,
+     "fon_sepeti": 0.35
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.5,
+     "para_piyasasi": 0.4,
+     "karma_degisken": 0.1
+    }
+   }
+  },
+  "P05": {
+   "farkli_karar": 4,
+   "en_sik_pay": 0.678,
+   "en_sik": {
+    "para_piyasasi": 0.5,
+    "borclanma": 0.4,
+    "katilim": 0.1
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.23,
+     "borclanma": 0.76
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "para_piyasasi": 0.5,
+     "borclanma": 0.4,
+     "katilim": 0.1
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,67 @@
+{
+  "imports": [
+    {
+      "_aktaran": "import_gamze",
+      "dosya": "46 adet TEFAS 'Fon Verileri' CSV dışa aktarımı (birleştirilmiş: tefas_prices_ing_universe.csv.gz)",
+      "toplayan": "Gamze Akkurt",
+      "yontem": "TEFAS sitesinden elle dışa aktarım",
+      "kaynak_export_zamani": "09.10.2026 18:27:42",
+      "iceri_alma_zamani": "2026-10-09T18:27:42",
+      "satir": 223829,
+      "fon_sayisi": 288,
+      "tarih_araligi": [
+        "2023-01-02",
+        "2026-10-09"
+      ],
+      "kalite": {
+        "header_count_mismatches": [],
+        "duplicate_rows_dropped": 36935,
+        "conflicting_duplicates": 0
+      }
+    },
+    {
+      "dosya": "tefas_tarihsel_2021-10-15_2026-10-15.csv",
+      "yontem": "tefascrawl (Playwright tarayıcı otomasyonu; kullanıcının açık talimatıyla yazıldı, bkz. tefascrawl/README.md). TEFAS Tarihsel Veriler, fon türü YAT.",
+      "iceri_alma_zamani": "2026-10-15T19:08:24+03:00",
+      "satir": 1719892,
+      "fon_sayisi": 2068,
+      "tarih_araligi": [
+        "2021-10-15",
+        "2026-10-15"
+      ],
+      "toplam_sonrasi": {
+        "satir": 1719892,
+        "fon": 2068,
+        "tarih_araligi": [
+          "2021-10-15",
+          "2026-10-15"
+        ]
+      }
+    }
+  ],
+  "conflicts": [],
+  "onarim": {
+    "zaman": "2026-10-15T19:08:16+03:00",
+    "neden": "15.10.2026 eşzamanlı içe aktarımlarda veri kaybı; dosya kaynaklardan yeniden kuruldu.",
+    "onceki_meta_yedegi": "_yedek_tefas/tefas_meta_onarim_oncesi_2026-10-15T190816_0300.json",
+    "onceki_kayit_sayisi": 3
+  },
+  "karsilastirma_imports": [
+    {
+      "dosya": "tefas_getiriler_2026-10-15.csv",
+      "iceri_alma_zamani": "2026-10-15T19:08:28+03:00",
+      "fon_sayisi": 1071,
+      "as_of": "2026-10-15",
+      "sutunlar": [
+        "getiri_1a",
+        "getiri_yb",
+        "getiri_1y",
+        "getiri_5y",
+        "getiri_3a",
+        "getiri_3y",
+        "getiri_6a"
+      ],
+      "yontem": "tefascrawl (Playwright tarayıcı otomasyonu; kullanıcının açık talimatıyla yazıldı, bkz. tefascrawl/README.md). TEFAS Tarihsel Veriler, fon türü YAT."
+    }
+  ]
+}

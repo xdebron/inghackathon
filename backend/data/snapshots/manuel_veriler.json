@@ -1,0 +1,236 @@
+{
+  "_aciklama": "API'si olmayan (veya EVDS anahtarı olmadan çekilemeyen) kamuya açık veriler. Her kayıtta source, url ve as_of (kaynaktaki tarih) zorunludur; eksikse değer kullanılmaz. Oranlar 0-1 arası yazılır (%46,5 -> 0.465). Bilinmeyen değeri boş (null) bırakın, tahmin girmeyin. EVDS'den başarıyla çekilen gösterge manuel değerin önüne geçer.",
+  "_ornek_mevduat": {
+    "banka": "Örnek Banka",
+    "tur": "mevduat | katilim",
+    "vade_gun": 32,
+    "oran": 0.0,
+    "min_tutar": 0,
+    "source": "Banka ürün sayfası",
+    "url": "https://...",
+    "as_of": "2026-10-15"
+  },
+  "_ornek_stopaj": {
+    "kategori": "para_piyasasi | borclanma | hisse | ... | mevduat_tl | katilim_hesabi",
+    "oran": 0.0,
+    "source": "Resmî Gazete / GİB",
+    "url": "https://...",
+    "as_of": "2026-10-15"
+  },
+  "_ornek_fon_ek_bilgi": {
+    "XXX": {
+      "yonetim_ucreti_yillik": 0.0,
+      "resmi_rd": 0,
+      "valor_satis_gun": 0,
+      "nitelikli_yatirimci": false,
+      "uyari_notu": "örn. SPK bülteninde ücret değişikliği",
+      "source": "KAP yatırımcı bilgi formu / izahname / SPK bülteni",
+      "url": "https://...",
+      "as_of": "2026-10-15"
+    }
+  },
+  "_ornek_benchmark": {
+    "ad": "BIST 100",
+    "kategoriler": [
+      "hisse"
+    ],
+    "getiri_1y": 0.0,
+    "source": "Borsa İstanbul",
+    "url": "https://...",
+    "as_of": "2026-10-15"
+  },
+  "_gosterge_listesi": "politika_faizi, tufe_yillik, mevduat_sektor_ortalamasi_1a, mevduat_sektor_ortalamasi_3a, mevduat_sektor_ortalamasi_6a, mevduat_sektor_ortalamasi_1y, altin_gram_tl, dibs_gosterge_2y, tmsf_sigorta_limiti_tl",
+  "gostergeler": {
+    "politika_faizi": {
+      "_aktaran": "import_gamze",
+      "deger": 0.37,
+      "source": "TCMB 1 hafta repo faizi sayfası",
+      "url": "https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Temel+Faaliyetler/Para+Politikasi/Merkez+Bankasi+Faiz+Oranlari/1+Hafta+Repo",
+      "as_of": "2026-01-23",
+      "fetched_at": "2026-10-09T18:00:48+00:00",
+      "not": "Yürürlük tarihi 2026-01-23; sayfa 2026-10-09 tarihinde okundu."
+    },
+    "tufe_yillik": {
+      "_aktaran": "import_gamze",
+      "deger": 0.2973,
+      "source": "TCMB tüketici fiyatları sayfası",
+      "url": "https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Istatistikler/Enflasyon+Verileri/Tuketici+Fiyatlari",
+      "as_of": "2026-09",
+      "fetched_at": "2026-10-09T18:09:16+00:00"
+    }
+  },
+  "mevduat": [
+    {
+      "_aktaran": "import_gamze",
+      "banka": "ING",
+      "tur": "mevduat",
+      "vade_gun": 32,
+      "oran": 0.355,
+      "min_tutar": 1000000,
+      "source": "ING mevduat hesaplayıcısı",
+      "url": "https://www.ing.com.tr/ProxyManagement/SiteManagerService_Script.aspx/DepositCalculationComposition",
+      "as_of": "2026-10-15",
+      "fetched_at": "2026-10-15T09:35:06+00:00",
+      "not": "1.000.000 TL kademesi (Private Banking için varsayım). Oranlar ING hesaplama aracından alınmıştır; kampanya/özel oran ve güncel şartlar RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "banka": "ING",
+      "tur": "mevduat",
+      "vade_gun": 46,
+      "oran": 0.355,
+      "min_tutar": 1000000,
+      "source": "ING mevduat hesaplayıcısı",
+      "url": "https://www.ing.com.tr/ProxyManagement/SiteManagerService_Script.aspx/DepositCalculationComposition",
+      "as_of": "2026-10-15",
+      "fetched_at": "2026-10-15T09:35:06+00:00",
+      "not": "1.000.000 TL kademesi (Private Banking için varsayım). Oranlar ING hesaplama aracından alınmıştır; kampanya/özel oran ve güncel şartlar RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "banka": "ING",
+      "tur": "mevduat",
+      "vade_gun": 92,
+      "oran": 0.36,
+      "min_tutar": 1000000,
+      "source": "ING mevduat hesaplayıcısı",
+      "url": "https://www.ing.com.tr/ProxyManagement/SiteManagerService_Script.aspx/DepositCalculationComposition",
+      "as_of": "2026-10-15",
+      "fetched_at": "2026-10-15T09:35:06+00:00",
+      "not": "1.000.000 TL kademesi (Private Banking için varsayım). Oranlar ING hesaplama aracından alınmıştır; kampanya/özel oran ve güncel şartlar RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "banka": "ING",
+      "tur": "mevduat",
+      "vade_gun": 181,
+      "oran": 0.34,
+      "min_tutar": 1000000,
+      "source": "ING mevduat hesaplayıcısı",
+      "url": "https://www.ing.com.tr/ProxyManagement/SiteManagerService_Script.aspx/DepositCalculationComposition",
+      "as_of": "2026-10-15",
+      "fetched_at": "2026-10-15T09:35:06+00:00",
+      "not": "1.000.000 TL kademesi (Private Banking için varsayım). Oranlar ING hesaplama aracından alınmıştır; kampanya/özel oran ve güncel şartlar RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "banka": "ING",
+      "tur": "mevduat",
+      "vade_gun": 365,
+      "oran": 0.34,
+      "min_tutar": 1000000,
+      "source": "ING mevduat hesaplayıcısı",
+      "url": "https://www.ing.com.tr/ProxyManagement/SiteManagerService_Script.aspx/DepositCalculationComposition",
+      "as_of": "2026-10-15",
+      "fetched_at": "2026-10-15T09:35:06+00:00",
+      "not": "1.000.000 TL kademesi (Private Banking için varsayım). Oranlar ING hesaplama aracından alınmıştır; kampanya/özel oran ve güncel şartlar RM tarafından teyit edilmelidir."
+    }
+  ],
+  "stopaj": [
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "para_piyasasi",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Para Piyasası', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "borclanma",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Borçlanma Araçları (Euroband,Yabancı hariç)', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "fon_sepeti",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Fon Sepeti (Yabancı, Döviz fonları hariç)', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "kiymetli_maden",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Kıymetli Madenler', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "katilim",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Katılım (Döviz fonları hariç)', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "serbest",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Serbest (Döviz fonlar dahil)', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "karma_degisken",
+      "oran": 0.175,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Karma ve Değişken', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "hisse",
+      "oran": 0.0,
+      "source": "ING yatırım fonlarında vergilendirme tablosu ('Hisse Senedi Yoğun', 09.07.2025 ve sonrası)",
+      "url": "https://www.ing.com.tr/tr/bilgi-destek/yatirim-fonlarinda-vergilendirme",
+      "as_of": "2026-10-09",
+      "fetched_at": "2026-10-09T23:20:58+00:00",
+      "not": "Gerçek kişiler için; iktisap tarihi esas, FIFO. Kaynaklar portföy şirketi ve banka sayfalarıdır (ING dahil), resmî karar metni değildir. Müşterinin vergi statüsü (gerçek kişi / şirket), fonun türü ve elde tutma süresine göre uygulanan oran RM tarafından teyit edilmelidir."
+    },
+    {
+      "_aktaran": "import_gamze",
+      "kategori": "mevduat_tl",
+      "oran": 0.175,
+      "source": "ING mevduat hesaplayıcısı (stopaj satırı)",
+      "url": "https://www.ing.com.tr/ProxyManagement/SiteManagerService_Script.aspx/DepositCalculationComposition",
+      "as_of": "2026-10-15",
+      "fetched_at": "2026-10-15T09:35:06+00:00",
+      "not": "Hesaplayıcının kendi stopaj hesabı; RM teyit etmeli."
+    }
+  ],
+  "fon_ek_bilgi": {},
+  "benchmarklar": [
+    {
+      "_aktaran": "import_gamze",
+      "ad": "BIST 100",
+      "kategoriler": [
+        "hisse"
+      ],
+      "getiri_1y": 0.19432157469866196,
+      "source": "TCMB EVDS (TP.MK.G.BILESIK): BIST 100 getiri endeksi (XU100-CFNNTLTL, temettü dahil)",
+      "url": "https://evds3.tcmb.gov.tr/igmevdsms-dis/",
+      "as_of": "2026-10-14",
+      "fetched_at": "2026-10-15T15:50:30+03:00"
+    }
+  ]
+}

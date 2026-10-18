@@ -1,0 +1,13 @@
+{
+  "source": "TEFAS arayüz API'si (fonFiyatBilgiGetir)",
+  "url": "https://www.tefas.gov.tr/api/funds/fonFiyatBilgiGetir",
+  "fetched_at": "2026-10-09T23:40:00+00:00",
+  "toplayan": "Gamze Akkurt",
+  "yontem": "script ile toplu çekim (09.10.2026). Yeniden çalıştırılmaz; yalnızca çapraz kontrol için ikincil kaynak.",
+  "fon_sayisi": 288,
+  "tarih_araligi": [
+    "2023-10-09",
+    "2026-10-09"
+  ],
+  "satir": 189204
+}

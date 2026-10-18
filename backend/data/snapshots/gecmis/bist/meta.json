@@ -1,0 +1,1160 @@
+{
+  "kaynak": "Yahoo Finance chart API: resmi Borsa İstanbul kaynağı değil",
+  "url": "https://query1.finance.yahoo.com/v8/finance/chart/<KOD>.IS",
+  "alinma": "2026-10-15T15:57:32+03:00",
+  "baslangic_istegi": "2021-01-01",
+  "bilesim": {
+    "kodlar": [
+      "AEFES",
+      "AKBNK",
+      "ASELS",
+      "ASTOR",
+      "BIMAS",
+      "DSTKF",
+      "EKGYO",
+      "ENKAI",
+      "EREGL",
+      "FROTO",
+      "GARAN",
+      "GUBRF",
+      "ISCTR",
+      "KCHOL",
+      "KRDMD",
+      "MGROS",
+      "PETKM",
+      "PGSUS",
+      "SAHOL",
+      "SASA",
+      "SISE",
+      "TAVHL",
+      "TCELL",
+      "THYAO",
+      "TOASO",
+      "TRALT",
+      "TTKOM",
+      "TUPRS",
+      "VAKBN",
+      "YKBNK"
+    ],
+    "kaynak": "Haber derlemesi: 09.09.2026 itibarıyla piyasa ekranlarında BIST 30 kapsamında izlenen hisseler",
+    "url": "https://haberkenti.com/bist-30-hisseleri-hangileri-2026-guncel-bist-30-listesi-belli-oldu",
+    "durum": "teyit edilmedi",
+    "notlar": [
+      "Borsa İstanbul'un resmi tam bileşen listesine erişilemedi; duyurular yalnızca giren/çıkan payları veriyor.",
+      "1 Ekim-31 Aralık 2026 dönemi için haberlere göre Destek Finans Faktoring (DSTKF) çıkıyor, TR Anadolu Metal Madencilik giriyor; giren şirketin borsa kodu doğrulanamadığı için liste değiştirilmedi. RM/ekip teyit etmeli.",
+      "Borsa İstanbul'un 19.06.2026 duyurusu (1 Temmuz-30 Eylül) BIST 30'a PASEU, HALKB, ULKER girişini gösteriyor; haber listesiyle çelişiyor, teyit edilmeli: https://www.borsaistanbul.com/en/announcement/15483/bist-stock-indices-periodic-review",
+      "Güncel bileşim 2021'e geriye uygulanır (hayatta kalma yanlılığı)."
+    ]
+  },
+  "seriler": {
+    "XU030": {
+      "tur": "endeks",
+      "aciklama": "BIST 30 fiyat endeksi",
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "BIST 30",
+      "temettu": [],
+      "bolunme": [],
+      "satir": 1432,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "XU100": {
+      "tur": "endeks",
+      "aciklama": "BIST 100 fiyat endeksi (EVDS ile doğrulama için)",
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "BIST 100",
+      "temettu": [],
+      "bolunme": [],
+      "satir": 1443,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "AEFES": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Anadolu Efes Biracilik ve Malt Sanayii Anonim Sirketi",
+      "temettu": [
+        {
+          "tarih": "2021-05-28",
+          "tutar": 0.19348
+        },
+        {
+          "tarih": "2022-05-20",
+          "tutar": 0.18545
+        },
+        {
+          "tarih": "2023-05-23",
+          "tutar": 0.10657
+        },
+        {
+          "tarih": "2023-09-18",
+          "tutar": 0.10657
+        },
+        {
+          "tarih": "2024-05-28",
+          "tutar": 0.235
+        },
+        {
+          "tarih": "2025-05-27",
+          "tutar": 0.1274
+        },
+        {
+          "tarih": "2026-05-13",
+          "tutar": 0.16975
+        },
+        {
+          "tarih": "2026-10-05",
+          "tutar": 0.16975
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2025-06-26",
+          "oran": "1000.0:100.0"
+        }
+      ],
+      "satir": 1447,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "AKBNK": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Akbank T.A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-03-26",
+          "tutar": 0.1204
+        },
+        {
+          "tarih": "2022-03-30",
+          "tutar": 0.233
+        },
+        {
+          "tarih": "2023-03-30",
+          "tutar": 1.73
+        },
+        {
+          "tarih": "2024-03-26",
+          "tutar": 1.9175
+        },
+        {
+          "tarih": "2025-03-26",
+          "tutar": 1.222
+        },
+        {
+          "tarih": "2026-03-26",
+          "tutar": 2.2018
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "ASELS": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "ASELSAN Elektronik Sanayi ve Ticaret Anonim Sirketi",
+      "temettu": [
+        {
+          "tarih": "2021-11-19",
+          "tutar": 0.087719
+        },
+        {
+          "tarih": "2022-11-16",
+          "tutar": 0.100877
+        },
+        {
+          "tarih": "2023-11-22",
+          "tutar": 0.087719
+        },
+        {
+          "tarih": "2024-11-25",
+          "tutar": 0.111842
+        },
+        {
+          "tarih": "2025-11-25",
+          "tutar": 0.234649
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2023-08-25",
+          "oran": "200.0:100.0"
+        }
+      ],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "ASTOR": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Astor Enerji A.S.",
+      "temettu": [
+        {
+          "tarih": "2023-05-02",
+          "tutar": 0.529033
+        },
+        {
+          "tarih": "2024-07-31",
+          "tutar": 1.320483
+        },
+        {
+          "tarih": "2025-08-18",
+          "tutar": 1.512088
+        },
+        {
+          "tarih": "2026-10-15",
+          "tutar": 2.191147
+        }
+      ],
+      "bolunme": [],
+      "satir": 933,
+      "ilk": "2023-01-18",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "BIMAS": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "BIM Birlesik Magazalar A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-01-08",
+          "tutar": 1.0
+        },
+        {
+          "tarih": "2021-05-20",
+          "tutar": 1.0
+        },
+        {
+          "tarih": "2021-11-17",
+          "tutar": 1.0
+        },
+        {
+          "tarih": "2022-06-15",
+          "tutar": 0.75
+        },
+        {
+          "tarih": "2022-12-14",
+          "tutar": 0.75
+        },
+        {
+          "tarih": "2023-06-14",
+          "tutar": 1.0
+        },
+        {
+          "tarih": "2023-12-20",
+          "tutar": 1.5
+        },
+        {
+          "tarih": "2024-07-17",
+          "tutar": 1.0
+        },
+        {
+          "tarih": "2024-10-02",
+          "tutar": 2.0
+        },
+        {
+          "tarih": "2024-12-18",
+          "tutar": 2.0
+        },
+        {
+          "tarih": "2025-06-18",
+          "tutar": 2.0
+        },
+        {
+          "tarih": "2025-09-17",
+          "tutar": 2.0
+        },
+        {
+          "tarih": "2025-12-17",
+          "tutar": 2.5
+        },
+        {
+          "tarih": "2026-06-17",
+          "tutar": 2.0
+        },
+        {
+          "tarih": "2026-09-16",
+          "tutar": 2.5
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2026-05-14",
+          "oran": "200.0:100.0"
+        }
+      ],
+      "satir": 1447,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "DSTKF": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Destek Finans Faktoring A.S.",
+      "temettu": [],
+      "bolunme": [],
+      "satir": 422,
+      "ilk": "2025-02-06",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "EKGYO": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Emlak Konut Gayrimenkul Yatirim Ortakligi A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-05-05",
+          "tutar": 0.0217
+        },
+        {
+          "tarih": "2022-04-25",
+          "tutar": 0.1027
+        },
+        {
+          "tarih": "2023-04-12",
+          "tutar": 0.239
+        },
+        {
+          "tarih": "2025-06-16",
+          "tutar": 0.4
+        },
+        {
+          "tarih": "2026-06-24",
+          "tutar": 0.6
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "ENKAI": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Enka Insaat ve Sanayi A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-13",
+          "tutar": 0.333333
+        },
+        {
+          "tarih": "2022-01-05",
+          "tutar": 0.186667
+        },
+        {
+          "tarih": "2022-04-13",
+          "tutar": 0.466667
+        },
+        {
+          "tarih": "2023-04-12",
+          "tutar": 0.363333
+        },
+        {
+          "tarih": "2024-01-03",
+          "tutar": 0.5
+        },
+        {
+          "tarih": "2024-05-14",
+          "tutar": 1.25
+        },
+        {
+          "tarih": "2025-04-16",
+          "tutar": 2.0
+        },
+        {
+          "tarih": "2025-06-11",
+          "tutar": 0.316667
+        },
+        {
+          "tarih": "2025-10-08",
+          "tutar": 0.833333
+        },
+        {
+          "tarih": "2026-01-14",
+          "tutar": 0.833333
+        },
+        {
+          "tarih": "2026-04-08",
+          "tutar": 2.1
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2022-06-06",
+          "oran": "107.14285:100.0"
+        }
+      ],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "EREGL": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Eregli Demir ve Çelik Fabrikalari T.A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-03-24",
+          "tutar": 0.925
+        },
+        {
+          "tarih": "2022-03-22",
+          "tutar": 2.225
+        },
+        {
+          "tarih": "2024-04-16",
+          "tutar": 0.25
+        },
+        {
+          "tarih": "2025-07-02",
+          "tutar": 0.25
+        },
+        {
+          "tarih": "2026-06-03",
+          "tutar": 0.55
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2024-11-27",
+          "oran": "200.0:100.0"
+        }
+      ],
+      "satir": 1447,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "FROTO": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Ford Otomotiv Sanayi A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-03-24",
+          "tutar": 0.642
+        },
+        {
+          "tarih": "2021-11-19",
+          "tutar": 0.372
+        },
+        {
+          "tarih": "2022-03-24",
+          "tutar": 1.3
+        },
+        {
+          "tarih": "2022-11-30",
+          "tutar": 0.57
+        },
+        {
+          "tarih": "2023-03-13",
+          "tutar": 1.425
+        },
+        {
+          "tarih": "2023-10-30",
+          "tutar": 2.976
+        },
+        {
+          "tarih": "2024-04-08",
+          "tutar": 4.33
+        },
+        {
+          "tarih": "2024-11-22",
+          "tutar": 1.425
+        },
+        {
+          "tarih": "2025-04-03",
+          "tutar": 1.71
+        },
+        {
+          "tarih": "2025-12-03",
+          "tutar": 6.05
+        },
+        {
+          "tarih": "2026-03-16",
+          "tutar": 3.64
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2025-05-07",
+          "oran": "1000.0:100.0"
+        }
+      ],
+      "satir": 1447,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "GARAN": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Turkiye Garanti Bankasi A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-05",
+          "tutar": 0.148523
+        },
+        {
+          "tarih": "2022-05-25",
+          "tutar": 0.311269
+        },
+        {
+          "tarih": "2023-04-14",
+          "tutar": 2.089613
+        },
+        {
+          "tarih": "2024-03-29",
+          "tutar": 3.11899
+        },
+        {
+          "tarih": "2025-03-28",
+          "tutar": 4.389285
+        },
+        {
+          "tarih": "2026-04-07",
+          "tutar": 5.266887
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "GUBRF": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Gübre Fabrikalari Türk Anonim Sirketi",
+      "temettu": [
+        {
+          "tarih": "2026-10-14",
+          "tutar": 4.491018
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "ISCTR": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Türkiye Is Bankasi A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-02",
+          "tutar": 0.027244
+        },
+        {
+          "tarih": "2022-03-29",
+          "tutar": 0.053872
+        },
+        {
+          "tarih": "2023-04-03",
+          "tutar": 0.369221
+        },
+        {
+          "tarih": "2024-04-01",
+          "tutar": 0.289058
+        },
+        {
+          "tarih": "2025-03-28",
+          "tutar": 0.18207
+        },
+        {
+          "tarih": "2026-04-01",
+          "tutar": 0.539521
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2022-06-14",
+          "oran": "222.21771:100.0"
+        },
+        {
+          "tarih": "2024-02-27",
+          "oran": "249.99751:100.0"
+        }
+      ],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "KCHOL": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Koç Holding A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-14",
+          "tutar": 0.585
+        },
+        {
+          "tarih": "2022-04-07",
+          "tutar": 0.902
+        },
+        {
+          "tarih": "2023-03-27",
+          "tutar": 1.733
+        },
+        {
+          "tarih": "2024-04-24",
+          "tutar": 8.0
+        },
+        {
+          "tarih": "2025-04-10",
+          "tutar": 6.88
+        },
+        {
+          "tarih": "2026-03-25",
+          "tutar": 6.83
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "KRDMD": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Kardemir Karabük Demir Çelik Sanayi Ve Ticaret A.S.",
+      "temettu": [
+        {
+          "tarih": "2022-06-28",
+          "tutar": 0.438596
+        },
+        {
+          "tarih": "2022-11-28",
+          "tutar": 0.438596
+        },
+        {
+          "tarih": "2023-06-21",
+          "tutar": 0.109649
+        },
+        {
+          "tarih": "2023-11-28",
+          "tutar": 0.109649
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "MGROS": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Migros Ticaret A.S.",
+      "temettu": [
+        {
+          "tarih": "2023-05-30",
+          "tutar": 2.606954
+        },
+        {
+          "tarih": "2024-05-27",
+          "tutar": 6.904009
+        },
+        {
+          "tarih": "2024-11-13",
+          "tutar": 2.872068
+        },
+        {
+          "tarih": "2025-05-28",
+          "tutar": 6.904009
+        },
+        {
+          "tarih": "2025-11-12",
+          "tutar": 3.590085
+        },
+        {
+          "tarih": "2026-05-13",
+          "tutar": 4.556646
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "PETKM": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Petkim Petrokimya Holding Anonim Sirketi",
+      "temettu": [],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "PGSUS": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Pegasus Hava Tasimaciligi Anonim Sirketi",
+      "temettu": [],
+      "bolunme": [
+        {
+          "tarih": "2024-05-14",
+          "oran": "488.75995:100.0"
+        }
+      ],
+      "satir": 1447,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "SAHOL": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Haci Ömer Sabanci Holding A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-05",
+          "tutar": 0.35
+        },
+        {
+          "tarih": "2022-04-01",
+          "tutar": 0.75
+        },
+        {
+          "tarih": "2023-04-03",
+          "tutar": 1.75
+        },
+        {
+          "tarih": "2024-05-02",
+          "tutar": 2.943
+        },
+        {
+          "tarih": "2025-04-02",
+          "tutar": 3.0
+        },
+        {
+          "tarih": "2026-04-01",
+          "tutar": 1.41356
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "SASA": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Sasa Polyester Sanayi A.S.",
+      "temettu": [],
+      "bolunme": [
+        {
+          "tarih": "2021-04-27",
+          "oran": "134.9397:100.0"
+        },
+        {
+          "tarih": "2022-05-05",
+          "oran": "2.0:1.0"
+        },
+        {
+          "tarih": "2023-05-23",
+          "oran": "23291.758:10000.0"
+        },
+        {
+          "tarih": "2024-08-12",
+          "oran": "8.0:1.0"
+        }
+      ],
+      "satir": 1447,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "SISE": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Türkiye Sise Ve Cam Fabrikalari A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-05-31",
+          "tutar": 0.163227
+        },
+        {
+          "tarih": "2022-05-31",
+          "tutar": 0.408068
+        },
+        {
+          "tarih": "2023-05-31",
+          "tutar": 0.685554
+        },
+        {
+          "tarih": "2024-05-31",
+          "tutar": 0.7182
+        },
+        {
+          "tarih": "2025-05-30",
+          "tutar": 0.652909
+        },
+        {
+          "tarih": "2026-06-01",
+          "tutar": 0.587618
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "TAVHL": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "TAV Havalimanlari Holding A.S.",
+      "temettu": [
+        {
+          "tarih": "2026-07-21",
+          "tutar": 1.80499
+        },
+        {
+          "tarih": "2026-09-22",
+          "tutar": 1.80499
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "TCELL": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Turkcell Iletisim Hizmetleri A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-30",
+          "tutar": 0.391785
+        },
+        {
+          "tarih": "2021-07-30",
+          "tutar": 0.391785
+        },
+        {
+          "tarih": "2021-10-27",
+          "tutar": 0.391785
+        },
+        {
+          "tarih": "2022-07-26",
+          "tutar": 0.571715
+        },
+        {
+          "tarih": "2023-12-20",
+          "tutar": 1.027273
+        },
+        {
+          "tarih": "2024-12-05",
+          "tutar": 2.853181
+        },
+        {
+          "tarih": "2025-06-20",
+          "tutar": 1.818182
+        },
+        {
+          "tarih": "2025-12-26",
+          "tutar": 1.818182
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "THYAO": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Türk Hava Yollari Anonim Ortakligi",
+      "temettu": [
+        {
+          "tarih": "2025-06-16",
+          "tutar": 3.442029
+        },
+        {
+          "tarih": "2025-09-02",
+          "tutar": 3.442029
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "TOASO": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Tofas Türk Otomobil Fabrikasi Anonim Sirketi",
+      "temettu": [
+        {
+          "tarih": "2021-03-23",
+          "tutar": 3.0
+        },
+        {
+          "tarih": "2022-03-22",
+          "tutar": 6.4
+        },
+        {
+          "tarih": "2023-03-21",
+          "tutar": 6.0
+        },
+        {
+          "tarih": "2024-04-04",
+          "tutar": 20.0
+        },
+        {
+          "tarih": "2025-04-03",
+          "tutar": 12.0
+        },
+        {
+          "tarih": "2026-03-23",
+          "tutar": 20.0
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "TRALT": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Turk Altin Isletmeleri A.S.",
+      "temettu": [
+        {
+          "tarih": "2022-07-07",
+          "tutar": 0.835682
+        },
+        {
+          "tarih": "2023-07-14",
+          "tutar": 0.4
+        },
+        {
+          "tarih": "2026-10-06",
+          "tutar": 0.5
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2023-02-17",
+          "oran": "2100.0:100.0"
+        }
+      ],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "TTKOM": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Türk Telekomünikasyon Anonim Sirketi",
+      "temettu": [
+        {
+          "tarih": "2021-04-01",
+          "tutar": 0.178336
+        },
+        {
+          "tarih": "2021-07-01",
+          "tutar": 0.178336
+        },
+        {
+          "tarih": "2021-10-01",
+          "tutar": 0.178336
+        },
+        {
+          "tarih": "2022-04-28",
+          "tutar": 1.41559
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "TUPRS": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Türkiye Petrol Rafinerileri A.S.",
+      "temettu": [
+        {
+          "tarih": "2023-03-10",
+          "tutar": 6.487455
+        },
+        {
+          "tarih": "2023-09-29",
+          "tutar": 15.050896
+        },
+        {
+          "tarih": "2024-04-03",
+          "tutar": 10.379928
+        },
+        {
+          "tarih": "2024-09-27",
+          "tutar": 11.936917
+        },
+        {
+          "tarih": "2025-03-28",
+          "tutar": 7.784946
+        },
+        {
+          "tarih": "2025-09-30",
+          "tutar": 7.421649
+        },
+        {
+          "tarih": "2026-03-16",
+          "tutar": 10.379928
+        },
+        {
+          "tarih": "2026-09-30",
+          "tutar": 6.746953
+        }
+      ],
+      "bolunme": [
+        {
+          "tarih": "2023-04-04",
+          "oran": "700.0:100.0"
+        }
+      ],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "VAKBN": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Türkiye Vakiflar Bankasi Türk Anonim Ortakligi",
+      "temettu": [],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    },
+    "YKBNK": {
+      "tur": "hisse",
+      "aciklama": null,
+      "para_birimi": "TRY",
+      "borsa": "IST",
+      "ad": "Yapi ve Kredi Bankasi A.S.",
+      "temettu": [
+        {
+          "tarih": "2021-04-01",
+          "tutar": 0.059192
+        },
+        {
+          "tarih": "2022-04-13",
+          "tutar": 0.118384
+        },
+        {
+          "tarih": "2023-03-20",
+          "tutar": 0.93654
+        },
+        {
+          "tarih": "2024-04-03",
+          "tutar": 1.20764
+        }
+      ],
+      "bolunme": [],
+      "satir": 1446,
+      "ilk": "2021-01-04",
+      "son": "2026-10-14",
+      "status": "ok"
+    }
+  },
+  "notlar": [
+    "kapanis: bölünme/bedelsiz düzeltilmiş (Yahoo close); duzeltilmis_kapanis: bölünme+temettü düzeltilmiş (Yahoo adjclose).",
+    "2026-10-15 tarihli seans içi satırlar çıkarıldı; yalnızca kesinleşmiş günler.",
+    "Doğrulama: XU100 Yahoo vs EVDS (TP.MK.F.BILESIK) 1442 ortak günde en büyük fark %0,004."
+  ]
+}

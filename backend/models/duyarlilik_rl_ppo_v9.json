@@ -1,0 +1,94 @@
+{
+ "model": "rl_ppo_v9",
+ "tarih": 202,
+ "kirpilan_oran": 0.32656765676567656,
+ "persona": {
+  "P01": {
+   "farkli_karar": 3,
+   "en_sik_pay": 0.941,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 1.0
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 1.0
+    }
+   }
+  },
+  "P02": {
+   "farkli_karar": 4,
+   "en_sik_pay": 0.941,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 1.0
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 1.0
+    }
+   }
+  },
+  "P03": {
+   "farkli_karar": 4,
+   "en_sik_pay": 0.965,
+   "en_sik": {
+    "mevduat_tl": 1.0
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 1.0
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 1.0
+    }
+   }
+  },
+  "P04": {
+   "farkli_karar": 2,
+   "en_sik_pay": 0.97,
+   "en_sik": {
+    "mevduat_tl": 0.5,
+    "para_piyasasi": 0.4,
+    "katilim": 0.1
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "mevduat_tl": 0.5,
+     "para_piyasasi": 0.4,
+     "katilim": 0.1
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "mevduat_tl": 0.5,
+     "para_piyasasi": 0.4,
+     "katilim": 0.1
+    }
+   }
+  },
+  "P05": {
+   "farkli_karar": 4,
+   "en_sik_pay": 0.931,
+   "en_sik": {
+    "para_piyasasi": 0.7,
+    "borclanma": 0.1,
+    "katilim": 0.2
+   },
+   "rejim": {
+    "2022-23 (negatif reel faiz)": {
+     "para_piyasasi": 0.7,
+     "borclanma": 0.1,
+     "katilim": 0.2
+    },
+    "2025-26 (pozitif reel faiz)": {
+     "para_piyasasi": 0.7,
+     "borclanma": 0.1,
+     "katilim": 0.2
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,38 @@
+{
+  "_aciklama": "TCMB EVDS göstergeleri. API anahtarı EVDS_API_KEY ortam değişkeninden (veya git'e girmeyen backend/.env dosyasından) okunur. Seri kodları 15.10.2026'da EVDS serieList uç noktasıyla doğrulandı. Değerler yüzde ise 'yuzde': true ile 0-1 oranına çevrilir; 'carpan' birim dönüşümü içindir.",
+  "base_url": "https://evds3.tcmb.gov.tr/igmevdsms-dis/",
+  "gun_geriye": 400,
+  "seriler": {
+    "tufe_yillik": {
+      "kod": "TP.GENENDEKS.T1", "formul": 3, "yuzde": true, "carpan": 1,
+      "ad": "TÜFE genel endeks (2003=100), yıllık % değişim", "veri_grubu": "bie_tukfiy2003", "siklik": "aylık", "dogrulandi": true,
+      "not": "TP.FG.J0 (arşiv) 2026 Ocak'ta durduğu için güncel seri kullanıldı."
+    },
+    "politika_faizi": {
+      "kod": "TP.BISPOLFAIZ.TUR", "formul": null, "yuzde": true, "carpan": 1,
+      "ad": "TCMB politika faizi (BIS veri seti)", "veri_grubu": "bie_bispolfaiz", "siklik": "aylık", "dogrulandi": true,
+      "not": "Aylık yayımlanır, 1-2 ay gecikmeli olabilir; PPK kararı sonrası RM teyit etmeli."
+    },
+    "mevduat_sektor_ortalamasi_1a": {
+      "kod": "TP.TRYTAS.MT01", "formul": null, "yuzde": true, "carpan": 1,
+      "ad": "TL tasarruf mevduatı faizi, 1 aya kadar vadeli (akım)", "veri_grubu": "bie_mt100h", "siklik": "haftalık", "dogrulandi": true
+    },
+    "mevduat_sektor_ortalamasi_3a": {
+      "kod": "TP.TRYTAS.MT02", "formul": null, "yuzde": true, "carpan": 1,
+      "ad": "TL tasarruf mevduatı faizi, 3 aya kadar vadeli (akım)", "veri_grubu": "bie_mt100h", "siklik": "haftalık", "dogrulandi": true
+    },
+    "mevduat_sektor_ortalamasi_6a": {
+      "kod": "TP.TRYTAS.MT03", "formul": null, "yuzde": true, "carpan": 1,
+      "ad": "TL tasarruf mevduatı faizi, 6 aya kadar vadeli (akım)", "veri_grubu": "bie_mt100h", "siklik": "haftalık", "dogrulandi": true
+    },
+    "mevduat_sektor_ortalamasi_1y": {
+      "kod": "TP.TRYTAS.MT04", "formul": null, "yuzde": true, "carpan": 1,
+      "ad": "TL tasarruf mevduatı faizi, 1 yıla kadar vadeli (akım)", "veri_grubu": "bie_mt100h", "siklik": "haftalık", "dogrulandi": true
+    },
+    "altin_gram_tl": {
+      "kod": "TP.ALTINPIYASA.KAP02", "formul": null, "yuzde": false, "carpan": 0.001,
+      "ad": "Altın kapanış fiyatı (BİST, TL/kg → TL/gr)", "veri_grubu": "bie_altinbistbul", "siklik": "iş günü", "dogrulandi": true,
+      "not": "TL/gr serisi (KAP05) Ağustos 2026'da durduğu için TL/kg serisi 1000'e bölünerek kullanıldı."
+    }
+  }
+}
