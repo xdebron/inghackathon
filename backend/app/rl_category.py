@@ -27,6 +27,7 @@ import numpy as np
 import pandas as pd
 
 from .config import CACHE_DIR, SNAPSHOT_DIR, decision_config
+from .db import store
 from .sources import evds, tefas_import
 
 CATS_V1 = ["mevduat_tl", "para_piyasasi", "borclanma", "katilim", "kiymetli_maden", "karma_degisken", "fon_sepeti",
@@ -63,48 +64,43 @@ def _fund_categories(codes: list[str]) -> dict[str, str]:
     return out
 
 
-GECMIS_DIR = SNAPSHOT_DIR / "gecmis"
 
 
 def hist(name: str) -> pd.Series:
-    """snapshots/gecmis/<ad>.csv (tarih, deger) tarihçe serisi. Kaynak bilgisi gecmis/meta.json'da."""
-    path = GECMIS_DIR / f"{name}.csv"
-    if not path.exists():
-        raise FileNotFoundError(f"Tarihçe serisi yok: {path}")
-    df = pd.read_csv(path)
+    """Veri tabanındaki tarihçe serisi (tarih, deger). Kaynak bilgisi seri.meta'da."""
+    df = store.series(name)
+    if df is None or "deger" not in df:
+        raise FileNotFoundError(f"Tarihçe serisi yok: {name}")
     s = pd.Series(df["deger"].to_numpy(dtype=float), index=pd.to_datetime(df["tarih"]))
     return s[~s.index.duplicated(keep="last")].sort_index()
 
 
 def hist_meta() -> dict:
-    path = GECMIS_DIR / "meta.json"
-    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    return store.series_meta("gecmis")
 
 
-BIST_DIR = GECMIS_DIR / "bist"
 BIST_INDEXES = ("XU030", "XU100")
 
 
 def bist_meta() -> dict:
-    path = BIST_DIR / "meta.json"
-    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    return store.document("bist_meta") or {}
 
 
 def bist_series(code: str, column: str = "duzeltilmis_kapanis") -> pd.Series:
-    """snapshots/gecmis/bist/<KOD>.csv: tarih, kapanis, duzeltilmis_kapanis (temettü/bölünme düzeltmeli), hacim."""
-    path = BIST_DIR / f"{code}.csv"
-    if not path.exists():
-        raise FileNotFoundError(f"BIST serisi yok: {path}")
-    df = pd.read_csv(path)
+    """Veri tabanındaki bist/<KOD> serisi: tarih, kapanis, duzeltilmis_kapanis (temettü/bölünme düzeltmeli), hacim."""
+    df = store.series(f"bist/{code}")
+    if df is None or column not in df:
+        raise FileNotFoundError(f"BIST serisi yok: {code}")
     s = pd.Series(df[column].to_numpy(dtype=float), index=pd.to_datetime(df["tarih"]))
     return s[~s.index.duplicated(keep="last")].sort_index().replace(0, np.nan)
 
 
 def bist_stock_codes() -> list[str]:
+    have = [k.split("/", 1)[1] for k in store.series_codes("bist")]
     codes = bist_meta().get("bilesim", {}).get("kodlar")
     if codes:
-        return [c for c in codes if (BIST_DIR / f"{c}.csv").exists()]
-    return sorted(f.stem for f in BIST_DIR.glob("*.csv") if f.stem not in BIST_INDEXES)
+        return [c for c in codes if c in have]
+    return sorted(c for c in have if c not in BIST_INDEXES)
 
 
 def bist_stock_returns(dates: pd.DatetimeIndex) -> pd.DataFrame:
@@ -292,7 +288,7 @@ _CI_CACHE: dict = {}
 
 
 def _category_levels() -> pd.DataFrame:
-    key = tefas_import._mtime(tefas_import.PRICES)
+    key = tefas_import.data_version()
     if key not in _CI_CACHE:
         _CI_CACHE.clear()
         _CI_CACHE[key] = category_indices()["level"]
@@ -614,8 +610,7 @@ def _stopaj_matrix(start_dates: pd.DatetimeIndex, cats: list[str] | None = None)
     doğrudan BIST hisseleri: config `bist30.stopaj` varsayımı)."""
     CATS = cats or CATS_V1
     notes = []
-    path = SNAPSHOT_DIR / "stopaj_tarihce.json"
-    hist = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    hist = store.stopaj_history()
     from .sources import manual
     current = {s["kategori"]: s["oran"] for s in manual.load_raw().get("stopaj", []) if s.get("oran") is not None}
     T = np.zeros((len(start_dates), len(CATS)))

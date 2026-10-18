@@ -21,11 +21,19 @@ def test_evds_parse_latest_skips_nulls_and_formula_suffix():
     assert evds.parse_latest(payload, "TP.FG.J0") == (33.5, "2026-08")
 
 
-def test_evds_without_key_is_missing(monkeypatch, tmp_path):
+def test_evds_without_key_is_missing(monkeypatch, tmp_db):
     monkeypatch.delenv("EVDS_API_KEY", raising=False)
-    monkeypatch.setattr(evds, "CACHE_DIR", tmp_path)
     dp = evds.fetch("tufe_yillik")
     assert dp.status == "missing" and "EVDS_API_KEY" in dp.note
+
+
+def test_evds_without_key_uses_last_saved_value_as_stale(monkeypatch, tmp_db):
+    from app.db import store
+    monkeypatch.delenv("EVDS_API_KEY", raising=False)
+    store.put_indicator("evds:tufe_yillik", 0.30, "oran", "TCMB EVDS (TP.GENENDEKS.T1)", "https://evds3.tcmb.gov.tr",
+                        "2026-9", "2026-10-01T10:00:00+03:00", None)
+    dp = evds.fetch("tufe_yillik")
+    assert dp.status == "stale" and dp.value == 0.30 and dp.fetched_at.startswith("2026-10-01")
 
 
 def test_indicator_source_priority(monkeypatch):

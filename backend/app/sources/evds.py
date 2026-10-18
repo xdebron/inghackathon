@@ -12,7 +12,8 @@ from functools import lru_cache
 
 import httpx
 
-from ..config import CACHE_DIR, CONFIG_DIR, now_iso
+from ..config import CONFIG_DIR, now_iso
+from ..db import store
 from ..models import DataPoint
 
 SOURCE = "TCMB EVDS"
@@ -23,8 +24,9 @@ def series_config() -> dict:
     return json.loads((CONFIG_DIR / "evds_series.json").read_text(encoding="utf-8"))
 
 
-def _cache(ind: str):
-    return CACHE_DIR / f"evds_{ind}.json"
+def _cached(ind: str) -> DataPoint | None:
+    r = store.get_indicator(f"evds:{ind}")
+    return DataPoint(key=ind, **r) if r else None
 
 
 def parse_latest(payload: dict, code: str) -> tuple[float, str] | None:
@@ -50,13 +52,9 @@ def fetch(ind: str, timeout: float = 15.0) -> DataPoint:
     if not cfg.get("kod"):
         return _missing(ind, cfg, "EVDS seri kodu tanımlı değil (config/evds_series.json).")
     key = os.getenv("EVDS_API_KEY")
-    cache = _cache(ind)
-    if cache.exists():
-        cached = DataPoint(**json.loads(cache.read_text(encoding="utf-8")))
-        if cached.fetched_at and cached.fetched_at[:10] == date.today().isoformat():
-            return cached
-    else:
-        cached = None
+    cached = _cached(ind)
+    if cached and cached.fetched_at and cached.fetched_at[:10] == date.today().isoformat():
+        return cached
     if not key:
         if cached:
             return cached.model_copy(update={"status": "stale", "note": "EVDS_API_KEY yok; son başarılı çekim kullanıldı."})
@@ -80,7 +78,8 @@ def fetch(ind: str, timeout: float = 15.0) -> DataPoint:
         dp = DataPoint(key=ind, value=value / 100 if cfg["yuzde"] else value, unit="oran" if cfg["yuzde"] else None,
                        source=f"{SOURCE} ({cfg['kod']})", url=base, as_of=as_of, fetched_at=now_iso(),
                        note=" ".join(notes) or None)
-        cache.write_text(dp.model_dump_json(), encoding="utf-8")
+        with store.Run(f"evds:{ind}") as run:
+            store.put_indicator(f"evds:{ind}", dp.value, dp.unit, dp.source, dp.url, dp.as_of, dp.fetched_at, dp.note, run)
         return dp
     except Exception as exc:
         if cached:
@@ -92,8 +91,8 @@ def fetch(ind: str, timeout: float = 15.0) -> DataPoint:
 def fetch_history(code: str, start: str = "01-01-2022", timeout: float = 30.0) -> dict:
     """Bir EVDS serisinin tüm geçmişi: {"points": [[tarih, değer], ...], "source", "fetched_at", "status"}.
     Günlük önbellek; çekilemezse son önbellek 'stale' döner, o da yoksa 'missing'."""
-    cache = CACHE_DIR / f"evds_hist_{code.replace('.', '_')}_{start.replace('-', '')}.json"  # başlangıç tarihi anahtarda
-    cached = json.loads(cache.read_text(encoding="utf-8")) if cache.exists() else None
+    doc = f"onbellek:evds_hist_{code.replace('.', '_')}_{start.replace('-', '')}"  # başlangıç tarihi anahtarda
+    cached = store.document(doc)
     if cached and cached["fetched_at"][:10] == date.today().isoformat():
         return cached
     key = os.getenv("EVDS_API_KEY")
@@ -115,7 +114,7 @@ def fetch_history(code: str, start: str = "01-01-2022", timeout: float = 30.0) -
         if not pts:
             raise ValueError("seride değer yok")
         out = {"code": code, "points": pts, "source": f"{SOURCE} ({code})", "url": base, "fetched_at": now_iso(), "status": "ok"}
-        cache.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
+        store.save_document(doc, out)
         return out
     except Exception as exc:
         if cached:

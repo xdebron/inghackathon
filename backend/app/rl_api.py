@@ -34,7 +34,7 @@ def _dataset(feature_set: str | None = None) -> dict:
     if feature_set is None:
         _, meta = rc._load_model()
         feature_set = (meta or {}).get("gosterge_seti", "v1")   # çıkarım modelin eğitildiği setle yapılır
-    key = (tefas_import._mtime(tefas_import.PRICES), config_hash(), feature_set)
+    key = (tefas_import.data_version(), config_hash(), feature_set)
     if key not in _DS_CACHE:
         _DS_CACHE.clear()
         _DS_CACHE[key] = rc.build_dataset(feature_set)

@@ -206,7 +206,7 @@ def test_window_ok_excludes_windows_touching_invalid_days():
     assert not ok[16:20].any() and ok[20]           # geri pencere 15'i içeriyor (16..19); 20 temiz
 
 
-@pytest.mark.skipif(not (rc.GECMIS_DIR / "meta.json").exists(), reason="tarihçe serileri yok")
+@pytest.mark.skipif(not rc.store.series_meta("gecmis"), reason="veri tabanında tarihçe serisi yok")
 def test_v2_feature_set_uses_history_series_and_is_gap_safe():
     ds2 = rc.build_dataset("v2")
     assert ds2["gosterge_seti"] == "v2"
@@ -219,7 +219,7 @@ def test_v2_feature_set_uses_history_series_and_is_gap_safe():
 
 # --- BIST 30 (doğrudan hisse) kategorisi -----------------------------------------------------------
 
-HAS_BIST = (rc.BIST_DIR / "meta.json").exists()
+HAS_BIST = bool(rc.bist_meta())
 
 
 def test_category_lists_are_versioned():

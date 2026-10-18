@@ -556,7 +556,7 @@ def run(shortlist: list, persona, view, as_of: date | None = None) -> dict:
     from .config import config_hash
     key = (tuple(s.product.product_id for s in shortlist), tuple(round(s.score, 4) for s in shortlist),
            persona.anapara_koruma_tercihi, view.horizon_years, tuple(sorted(r["id"] for r in view.rules)),
-           config_hash(), tefas_import._mtime(tefas_import.PRICES), date.today().isoformat())
+           config_hash(), tefas_import.data_version(), date.today().isoformat())
     if key not in _RUN_CACHE:
         _RUN_CACHE.clear()
         _RUN_CACHE[key] = _run(shortlist, persona, view, as_of)

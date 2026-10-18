@@ -71,3 +71,27 @@ def synthetic(monkeypatch):
     monkeypatch.setattr(evidence, "EVIDENCE_DIR", config.EVIDENCE_DIR / "_test")
     (config.EVIDENCE_DIR / "_test").mkdir(exist_ok=True)
     return synthetic_universe()
+
+
+@pytest.fixture
+def tmp_db(tmp_path, monkeypatch):
+    """Geçici SQLite veri tabanı: yazan testler gerçek veri tabanına dokunmaz."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+
+    from app.db import session, store
+    from app.sources import tefas_import
+
+    eng = create_engine(f"sqlite:///{(tmp_path / 'test.db').as_posix()}", future=True,
+                        connect_args={"timeout": 30})
+    monkeypatch.setattr(session, "engine", eng)
+    monkeypatch.setattr(session, "SessionLocal", sessionmaker(bind=eng, expire_on_commit=False, future=True))
+    monkeypatch.setattr(store, "engine", eng)
+    monkeypatch.setattr(store, "_ready", False)
+    monkeypatch.setattr(tefas_import, "engine", eng)
+    monkeypatch.setattr(tefas_import, "LOCK", tmp_path / ".lock")
+    tefas_import._CACHE.clear()
+    tefas_import._PRICE_CACHE.clear()
+    tefas_import._API_CACHE.clear()
+    store.ready()
+    return eng

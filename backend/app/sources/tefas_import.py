@@ -12,13 +12,14 @@ import re
 
 import pandas as pd
 
-from ..config import SNAPSHOT_DIR, decision_config, norm_text, now_iso
+from ..config import DATA_DIR, decision_config, norm_text, now_iso
+from ..db import store
+from ..db.models import FonGetiri
+from ..db.session import engine
 from ..models import DataPoint
 
 SOURCE = "TEFAS Tarihsel Veriler (manuel dışa aktarım)"
 URL = "https://www.tefas.gov.tr/TarihselVeriler.aspx"
-PRICES = SNAPSHOT_DIR / "tefas_fiyatlar.csv"
-META = SNAPSHOT_DIR / "tefas_meta.json"
 
 _COLUMNS = {
     "tarih": "tarih",
@@ -80,18 +81,14 @@ def parse_export(content: bytes, filename: str) -> pd.DataFrame:
 
 
 def _load_meta() -> dict:
-    if META.exists():
-        return json.loads(META.read_text(encoding="utf-8"))
-    return {"imports": [], "conflicts": []}
+    return store.document("tefas_meta") or {"imports": [], "conflicts": []}
 
 
-LOCK = SNAPSHOT_DIR / ".tefas_import.lock"
-BACKUP_DIR = SNAPSHOT_DIR / "_yedek_tefas"
-KEEP_BACKUPS = 5
+LOCK = DATA_DIR / ".tefas_import.lock"
 
 
 class _ImportLock:
-    """Süreçler arası kilit: aynı anda iki içe aktarımın birbirinin sonucunu ezmesini engeller."""
+    """Süreçler arası kilit: aynı anda iki içe aktarımın çelişki kontrolü ve meta kaydı birbirine karışmasın."""
 
     def __init__(self, timeout: float = 300.0):
         self.timeout = timeout
@@ -117,28 +114,23 @@ class _ImportLock:
         LOCK.unlink(missing_ok=True)
 
 
-def _backup_and_write(df: pd.DataFrame, meta: dict) -> str | None:
-    """Önce mevcut dosyaların yedeğini alır, sonra atomik yazar (yarım yazılmış dosya okunamaz)."""
-    import os
-    import shutil
-    backup = None
-    if PRICES.exists():
-        BACKUP_DIR.mkdir(exist_ok=True)
-        stamp = now_iso().replace(":", "").replace("+", "_")
-        backup = BACKUP_DIR / f"tefas_fiyatlar_{stamp}.csv"
-        shutil.copy2(PRICES, backup)
-        if META.exists():
-            shutil.copy2(META, BACKUP_DIR / f"tefas_meta_{stamp}.json")
-        for old in sorted(BACKUP_DIR.glob("tefas_fiyatlar_*.csv"))[:-KEEP_BACKUPS]:
-            old.unlink()
-            old.with_name(old.name.replace("tefas_fiyatlar_", "tefas_meta_").replace(".csv", ".json")).unlink(missing_ok=True)
-    tmp = PRICES.with_suffix(".csv.tmp")
-    df.to_csv(tmp, index=False)
-    os.replace(tmp, PRICES)
-    tmp_meta = META.with_suffix(".json.tmp")
-    tmp_meta.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    os.replace(tmp_meta, META)
-    return str(backup) if backup else None
+def _write_prices(new: pd.DataFrame, meta: dict, run) -> None:
+    """Yeni (fon, gün) satırlarını tek işlemde yazar: aynı anahtardaki eski satır yerini yenisine bırakır, diğer satırlara
+    dokunulmaz (birleştirme mevcut geçmişi asla azaltamaz). Hata olursa işlem geri alınır."""
+    from sqlalchemy import text
+    d = new.copy()
+    d["tarih"] = d["tarih"].astype(str)
+    d["kaynak"] = "tefas_export"
+    d["cekim_id"] = run.id
+    with engine.begin() as c:
+        c.execute(text("CREATE TEMP TABLE IF NOT EXISTS _yeni (kod TEXT, tarih TEXT)"))
+        c.execute(text("DELETE FROM _yeni"))
+        d[["kod", "tarih"]].to_sql("_yeni", c, if_exists="append", index=False, chunksize=10_000, method="multi")
+        c.execute(text("DELETE FROM fon_fiyat WHERE kaynak = 'tefas_export' AND (kod, tarih) IN (SELECT kod, tarih FROM _yeni)"))
+        d[["kaynak", "kod", "tarih", "ad", "fiyat", "pay", "kisi", "buyukluk", "cekim_id"]].to_sql(
+            "fon_fiyat", c, if_exists="append", index=False, chunksize=3_000, method="multi")
+    store.save_document("tefas_meta", meta, run)
+    run.satir += len(d)
 
 
 def _parse_dates(s: pd.Series) -> pd.Series:
@@ -159,22 +151,18 @@ def import_export(content: bytes, filename: str, yontem: str | None = None) -> d
 def _import_locked(new: pd.DataFrame, filename: str, yontem: str | None = None) -> dict:
     meta = _load_meta()
     conflicts = []
-    if PRICES.exists():
-        old = pd.read_csv(PRICES)
+    old = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
+    if not old.empty:
         old["tarih"] = _parse_dates(old["tarih"])
         merged = old.merge(new[["tarih", "kod", "fiyat"]], on=["tarih", "kod"], suffixes=("", "_yeni"))
         diff = merged[(merged["fiyat"] - merged["fiyat_yeni"]).abs() > 1e-9]
         for _, r in diff.iterrows():
             conflicts.append({"kod": r["kod"], "tarih": str(r["tarih"]), "eski": r["fiyat"], "yeni": r["fiyat_yeni"],
                               "dosya": filename})
-        combined = pd.concat([old, new]).drop_duplicates(subset=["tarih", "kod"], keep="last")
-        # Güvenlik: birleştirme mevcut (fon, gün) kayıtlarını asla azaltmamalı
-        old_keys = len(old.drop_duplicates(subset=["tarih", "kod"]))
-        if len(combined) < old_keys or old["tarih"].isna().any():
-            raise ValueError(f"İçe aktarım iptal edildi: mevcut {old_keys} kayıt birleştirme sonrası {len(combined)} olurdu "
-                             f"veya mevcut dosyada okunamayan tarih var. Dosyalara dokunulmadı.")
-    else:
-        combined = new
+        if old["tarih"].isna().any():
+            raise ValueError("İçe aktarım iptal edildi: veri tabanında okunamayan tarih var. Hiçbir satıra dokunulmadı.")
+    new = new.drop_duplicates(subset=["tarih", "kod"], keep="last")
+    keys = pd.concat([old[["tarih", "kod"]], new[["tarih", "kod"]]]).drop_duplicates()
     entry = {
         "dosya": filename,
         "yontem": yontem,
@@ -182,18 +170,19 @@ def _import_locked(new: pd.DataFrame, filename: str, yontem: str | None = None) 
         "satir": int(len(new)),
         "fon_sayisi": int(new["kod"].nunique()),
         "tarih_araligi": [str(new["tarih"].min()), str(new["tarih"].max())],
-        "toplam_sonrasi": {"satir": int(len(combined)), "fon": int(combined["kod"].nunique()),
-                           "tarih_araligi": [str(combined["tarih"].min()), str(combined["tarih"].max())]},
+        "toplam_sonrasi": {"satir": int(len(keys)), "fon": int(keys["kod"].nunique()),
+                           "tarih_araligi": [str(keys["tarih"].min()), str(keys["tarih"].max())]},
     }
     meta["imports"].append(entry)
     meta["conflicts"].extend(conflicts)
-    entry["yedek"] = _backup_and_write(combined.sort_values(["kod", "tarih"]), meta)
+    with store.Run("tefas_export", "yukleme") as run:
+        _write_prices(new, meta, run)
+        entry["cekim_id"] = run.id
     return {**entry, "celiskiler": conflicts}
 
 
 # --- Fon Karşılaştırma (getiri bazlı) dışa aktarımı ---------------------------------------------
 
-COMPARISON = SNAPSHOT_DIR / "tefas_karsilastirma.csv"
 COMPARISON_SOURCE = "TEFAS Fon Karşılaştırma (manuel dışa aktarım)"
 COMPARISON_URL = "https://www.tefas.gov.tr/tr/fon-getirileri"
 _RETURN_COLS = {"1ay": "getiri_1a", "3ay": "getiri_3a", "6ay": "getiri_6a", "yilbasi": "getiri_yb", "yb": "getiri_yb",
@@ -262,13 +251,18 @@ def parse_comparison(content: bytes, filename: str) -> pd.DataFrame:
 def import_comparison(content: bytes, filename: str, as_of: str | None) -> dict:
     df = parse_comparison(content, filename)
     df["as_of"] = as_of
-    with _ImportLock():  # meta dosyasını fiyat içe aktarımıyla aynı anda yazmamak için
-        df.to_csv(COMPARISON, index=False)
+    if not as_of:
+        raise ValueError("Fon Getirileri dışa aktarımı için dönem sonu tarihi (as_of) gerekli.")
+    df = df.drop_duplicates(subset=["kod"], keep="last")
+    with _ImportLock():  # meta kaydını fiyat içe aktarımıyla aynı anda yazmamak için
         meta = _load_meta()
         entry = {"dosya": filename, "iceri_alma_zamani": now_iso(), "fon_sayisi": int(len(df)), "as_of": as_of,
                  "sutunlar": [c for c in df.columns if c.startswith("getiri_")]}
         meta.setdefault("karsilastirma_imports", []).append(entry)
-        META.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        rows = df.astype(object).where(pd.notna(df), None).to_dict("records")
+        with store.Run("tefas_getiri", "yukleme") as run:
+            store.replace_rows(FonGetiri, rows, FonGetiri.as_of == as_of, run)
+            store.save_document("tefas_meta", meta, run)
     return {**entry, "satir": entry["fon_sayisi"], "celiskiler": []}
 
 
@@ -280,9 +274,9 @@ def import_any(content: bytes, filename: str, as_of: str | None = None) -> dict:
 
 
 def load_comparison() -> tuple[dict[str, dict], dict | None]:
-    if not COMPARISON.exists():
+    df = store.fund_returns()
+    if df.empty:
         return {}, None
-    df = pd.read_csv(COMPARISON)
     df = df.astype(object).where(pd.notna(df), None)
     meta = _load_meta().get("karsilastirma_imports", [])
     return {r["kod"]: r for r in df.to_dict("records")}, (meta[-1] if meta else None)
@@ -351,30 +345,33 @@ def compute_metrics(prices: pd.DataFrame) -> dict[str, dict]:
 _CACHE: dict = {}
 
 
-def _mtime(p) -> float:
-    return p.stat().st_mtime if p.exists() else 0.0
+def data_version() -> tuple:
+    """Veri tabanı içeriği değişince değişen anahtar (önbellekler için)."""
+    return store.version("tefas", "aktarim:tefas")
 
 
 def load() -> tuple[dict[str, dict], dict]:
-    """Kayıtlı fiyat geçmişinden metrikleri ve içe aktarım metasını döndürür (dosya değişmedikçe önbellekten)."""
+    """Kayıtlı fiyat geçmişinden metrikleri ve içe aktarım metasını döndürür (veri değişmedikçe önbellekten)."""
     meta = _load_meta()
-    if not PRICES.exists():
-        return {}, meta
-    key = ("metrics", _mtime(PRICES))
+    key = ("metrics", data_version())
     if key not in _CACHE:
+        prices = store.fund_prices("tefas_export")
+        if prices.empty:
+            return {}, meta
         _CACHE.clear()
-        _CACHE[key] = compute_metrics(pd.read_csv(PRICES))
+        _CACHE[key] = compute_metrics(prices)
     return _CACHE[key], meta
 
 
 def price_matrix(codes: list[str]) -> pd.DataFrame | None:
     """Verilen fonların günlük fiyatları (satır: tarih, sütun: fon kodu). Dosya değişmedikçe önbellekten."""
-    if not PRICES.exists():
-        return None
-    key = ("prices", _mtime(PRICES))
+    key = ("prices", data_version())
     if key not in _PRICE_CACHE:
+        df = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
+        if df.empty:
+            return None
+        df["tarih"] = pd.to_datetime(df["tarih"])
         _PRICE_CACHE.clear()
-        df = pd.read_csv(PRICES, usecols=["tarih", "kod", "fiyat"], parse_dates=["tarih"])
         _PRICE_CACHE[key] = df.pivot_table(index="tarih", columns="kod", values="fiyat", aggfunc="last").sort_index()
     wide = _PRICE_CACHE[key]
     present = [c for c in codes if c in wide.columns]
@@ -386,32 +383,28 @@ _PRICE_CACHE: dict = {}
 
 def price_names() -> dict[str, str]:
     """Fon kodu → son bilinen fon adı."""
-    if not PRICES.exists():
-        return {}
-    key = ("names", _mtime(PRICES))
+    key = ("names", data_version())
     if key not in _PRICE_CACHE:
-        df = pd.read_csv(PRICES, usecols=["tarih", "kod", "ad"])
+        df = store.fund_prices("tefas_export", ("tarih", "kod", "ad"))
         _PRICE_CACHE[key] = df.dropna(subset=["ad"]).sort_values("tarih").groupby("kod")["ad"].last().to_dict()
     return _PRICE_CACHE[key]
 
 
 # --- İkincil kaynak: TEFAS API fiyatları (yalnızca çapraz kontrol) ----------------------------
 
-API_PRICES = SNAPSHOT_DIR / "tefas_api_fiyatlar.csv"
-API_META = SNAPSHOT_DIR / "tefas_api_meta.json"
 API_TOL = 1e-4  # göreli fiyat farkı eşiği (kaynaklar 6 ondalıklı fiyat verir)
 
 
 def api_cross_check() -> tuple[dict[str, dict], dict | None]:
     """Asıl kaynak (elle dışa aktarım) ile ikincil kaynak (API) fiyatlarını ortak günlerde karşılaştırır."""
-    if not (PRICES.exists() and API_PRICES.exists()):
-        return {}, None
-    meta = json.loads(API_META.read_text(encoding="utf-8")) if API_META.exists() else None
-    key = ("api", _mtime(PRICES), _mtime(API_PRICES))
+    meta = store.document("tefas_api_meta")
+    key = ("api", data_version())
     if key not in _API_CACHE:
+        a = store.fund_prices("tefas_export", ("tarih", "kod", "fiyat"))
+        b = store.fund_prices("tefas_api", ("tarih", "kod", "fiyat"))
+        if a.empty or b.empty:
+            return {}, None
         _API_CACHE.clear()
-        a = pd.read_csv(PRICES, usecols=["tarih", "kod", "fiyat"])
-        b = pd.read_csv(API_PRICES, usecols=["tarih", "kod", "fiyat"])
         m = a.merge(b, on=["kod", "tarih"], suffixes=("", "_api"))
         m["fark"] = (m["fiyat"] - m["fiyat_api"]).abs() / m["fiyat_api"].abs()
         out = {}

@@ -1,19 +1,15 @@
-"""Elle toplanan kamuya açık veriler (mevduat oranları, politika faizi, stopaj, KAP fon bilgileri)."""
+"""Kaynaklı kayıt yardımcıları. Göstergeler, mevduat, stopaj ve benchmark kayıtları veri tabanındadır (toplayıcılar yazar);
+load_raw() bunları eski manuel_veriler.json şeklinde döndürür."""
 from __future__ import annotations
 
-import json
-
-from ..config import SNAPSHOT_DIR
+from ..db import store
 from ..models import DataPoint
 
-FILE = SNAPSHOT_DIR / "manuel_veriler.json"
 REQUIRED_PROVENANCE = ("source", "url", "as_of")
 
 
 def load_raw() -> dict:
-    if not FILE.exists():
-        return {}
-    return json.loads(FILE.read_text(encoding="utf-8"))
+    return store.manual_raw()
 
 
 def point(key: str, value, rec: dict, unit: str | None = None, fetched_at: str | None = None) -> DataPoint:

@@ -8,3 +8,4 @@ python-multipart==0.0.32
 uvicorn==0.54.0
 interpret-core==0.7.8   # RL açıklaması (EBM vekili) yalnızca çevrimdışı tools/explain_rl.py'de; çevrimiçi çıkarım tablo okur
 catboost==1.2.10        # tahmin + optimizasyon karar modeli (tools/catboost_karar.py; monoton getiri tahmini)
+sqlalchemy==2.0.43

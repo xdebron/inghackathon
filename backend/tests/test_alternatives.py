@@ -6,7 +6,7 @@ import pytest
 from app import universe
 from app.models import DataPoint
 
-pytestmark = pytest.mark.skipif(not (universe.GECMIS_DIR / "meta.json").exists(), reason="gecmis/ snapshot yok")
+pytestmark = pytest.mark.skipif(not universe.store.series_meta("gecmis"), reason="veri tabanında tarihçe serisi yok")
 
 
 def test_dibs_products_have_sourced_yield_and_assumed_rd():

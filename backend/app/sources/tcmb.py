@@ -1,17 +1,16 @@
 """TCMB gösterge döviz kurları (today.xml). Canlı çekilemezse son başarılı önbellek 'stale' olarak döner."""
 from __future__ import annotations
 
-import json
 import xml.etree.ElementTree as ET
 
 import httpx
 
-from ..config import CACHE_DIR, now_iso
+from ..config import now_iso
+from ..db import store
 from ..models import DataPoint
 
 URL = "https://www.tcmb.gov.tr/kurlar/today.xml"
 SOURCE = "TCMB gösterge kurlar"
-CACHE = CACHE_DIR / "tcmb_kurlar.json"
 CURRENCIES = ("USD", "EUR", "GBP")
 
 
@@ -39,15 +38,19 @@ def fetch(timeout: float = 10.0) -> list[DataPoint]:
         resp = httpx.get(URL, timeout=timeout)
         resp.raise_for_status()
         points = parse(resp.text, now_iso())
-        CACHE.write_text(json.dumps([p.model_dump() for p in points], ensure_ascii=False), encoding="utf-8")
+        with store.Run("tcmb_kurlar") as run:
+            for p in points:
+                if p.status == "ok":
+                    store.put_indicator(f"tcmb:{p.key}", p.value, p.unit, p.source, p.url, p.as_of, p.fetched_at, p.note, run)
         return points
     except Exception as exc:  # ağ hatası, parse hatası
-        if CACHE.exists():
-            cached = [DataPoint(**p) for p in json.loads(CACHE.read_text(encoding="utf-8"))]
-            for p in cached:
-                p.status = "stale"
-                p.note = f"Canlı çekim başarısız ({type(exc).__name__}); son başarılı çekim kullanıldı."
-            return cached
+        cached = [(c, store.get_indicator(f"tcmb:kur.{c}TRY")) for c in CURRENCIES]
+        if any(r for _, r in cached):
+            note = f"Canlı çekim başarısız ({type(exc).__name__}); son başarılı çekim kullanıldı."
+            return [DataPoint(key=f"kur.{c}TRY", status="stale", **{**r, "note": note}) if r else
+                    DataPoint(key=f"kur.{c}TRY", source=SOURCE, url=URL, fetched_at=now_iso(), status="missing",
+                              note=f"Canlı çekim başarısız ({type(exc).__name__}) ve kayıt yok.")
+                    for c, r in cached]
         return [DataPoint(key=f"kur.{c}TRY", source=SOURCE, url=URL, fetched_at=now_iso(), status="missing",
                           note=f"Canlı çekim başarısız ({type(exc).__name__}) ve önbellek yok.")
                 for c in CURRENCIES]

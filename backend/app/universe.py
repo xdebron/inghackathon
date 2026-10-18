@@ -11,6 +11,7 @@ import os
 from datetime import date
 
 from .config import BASE_DIR, SNAPSHOT_DIR, decision_config, norm_text, now_iso
+from .db import store
 from .models import DataPoint, Flag, Product
 from .sources import evds, manual, tcmb, tefas_import
 
@@ -122,12 +123,8 @@ def _add_real_return(p: Product, tufe: DataPoint | None):
 
 # --- Fonlar -----------------------------------------------------------------------------------
 
-def _json_or_none(path):
-    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
-
-
 def _kap_snapshot() -> dict:
-    d = _json_or_none(SNAPSHOT_DIR / "kap_fon_bilgileri.json")
+    d = store.kap_funds()
     return d["fonlar"] if d else {}
 
 
@@ -137,7 +134,7 @@ def _fund_products(metrics: dict, meta: dict, comparison: dict, cmp_meta: dict |
     tol = decision_config()["capraz_kontrol"]["tefas_getiri_fark_puan"]
     extra = {**_kap_snapshot(), **raw.get("fon_ek_bilgi", {})}  # elle girilen kayıt KAP aktarımının önüne geçer
     api_check, api_meta = tefas_import.api_cross_check()
-    ing_codes_src = _json_or_none(SNAPSHOT_DIR / "ing_fon_listesi.json")
+    ing_codes_src = store.platform_funds("ING")
     ing_codes = set(ing_codes_src["kodlar"]) if ing_codes_src else None
     products = []
     today = date.today()
@@ -349,15 +346,16 @@ def _deposit_products(raw: dict, stopaj: dict, ind: dict[str, DataPoint], flags:
 
 # --- Doğrudan BIST 30 hisseleri ---------------------------------------------------------------
 
-BIST_DIR = SNAPSHOT_DIR / "gecmis" / "bist"
 STOCK_CAT = "bist30_hisse"
 
 
-def _stock_metrics(path) -> dict | None:
+def _stock_metrics(kod: str) -> dict | None:
     """Düzeltilmiş kapanıştan (temettü ve bölünme dahil toplam getiri) fon metrikleriyle aynı tanımlar."""
     import numpy as np
     import pandas as pd
-    df = pd.read_csv(path)
+    df = store.series(f"bist/{kod}")
+    if df is None or "duzeltilmis_kapanis" not in df:
+        return None
     s = pd.Series(df["duzeltilmis_kapanis"].to_numpy(dtype=float), index=pd.to_datetime(df["tarih"])).replace(0, np.nan).dropna()
     s = s[~s.index.duplicated(keep="last")].sort_index()
     if len(s) < 2:
@@ -377,11 +375,12 @@ def _stock_metrics(path) -> dict | None:
 
 
 def _stock_products(stopaj: dict, flags: list[Flag]) -> list[Product]:
-    meta = _json_or_none(BIST_DIR / "meta.json")
+    meta = store.document("bist_meta")
     if not meta:
         return []
     comp = meta.get("bilesim", {})
-    codes = [c for c in comp.get("kodlar", []) if (BIST_DIR / f"{c}.csv").exists()]
+    have = {k.split("/", 1)[1] for k in store.series_codes("bist")}
+    codes = [c for c in comp.get("kodlar", []) if c in have]
     q = decision_config()["veri_kalitesi"]
     cat_cfg = decision_config()["kategoriler"][STOCK_CAT]
     src = meta.get("kaynak", "Yahoo Finance")
@@ -392,7 +391,7 @@ def _stock_products(stopaj: dict, flags: list[Flag]) -> list[Product]:
             f"({comp.get('kaynak', '?')}). Bileşim ve fiyatlar resmi Borsa İstanbul kaynağından teyit edilmeli.")))
     products = []
     for kod in codes:
-        m = _stock_metrics(BIST_DIR / f"{kod}.csv")
+        m = _stock_metrics(kod)
         if not m:
             continue
         s_meta = meta.get("seriler", {}).get(kod, {})
@@ -443,10 +442,9 @@ def _series_metrics(sid: str) -> dict | None:
     """gecmis/<sid>.csv fiyat serisinden fonlarla aynı tanımlarla getiri / volatilite / max düşüş."""
     import numpy as np
     import pandas as pd
-    f = GECMIS_DIR / f"{sid}.csv"
-    if not f.exists():
+    d = store.series(sid)
+    if d is None or "deger" not in d:
         return None
-    d = pd.read_csv(f)
     s = pd.Series(d["deger"].to_numpy(dtype=float), index=pd.to_datetime(d["tarih"])).replace(0, np.nan).dropna().sort_index()
     if len(s) < 2:
         return None
@@ -465,7 +463,7 @@ def _series_metrics(sid: str) -> dict | None:
 
 
 def _hist_dp(key: str, value, sid: str, as_of: str, unit=None, note=None) -> DataPoint:
-    meta = (_json_or_none(GECMIS_DIR / "meta.json") or {}).get(sid, {})
+    meta = store.series_meta("gecmis").get(sid, {})
     return DataPoint(key=key, value=value, unit=unit, source=meta.get("kaynak", "—"), url=meta.get("url"), as_of=as_of,
                      fetched_at=meta.get("alinma"), status="ok" if value is not None else "missing", note=note)
 
@@ -512,10 +510,10 @@ def _dibs_products(stopaj: dict, ind: dict[str, DataPoint], flags: list[Flag]) -
 def _fx_deposit_products(stopaj: dict, ind: dict[str, DataPoint], flags: list[Flag]) -> list[Product]:
     """ING mevduat hesaplayıcısının USD/EUR satırları (Gamze Akkurt; 15.10.2026 yenilemesi)."""
     cfg = decision_config()["alternatif_urunler"]["doviz_mevduat"]
-    src = BASE_DIR.parent / "gamze_work" / "AGENTIC AI HACKATHON-ING" / "data" / "processed" / "ing_deposit_rates.json"
-    d = _json_or_none(src)
-    if not d:
+    rows = store.fx_deposit_rows("ING")
+    if not rows:
         return []
+    d = {"rows": rows}
     products = []
     fx_vol = {}
     for cur, sid in (("USD", "usdtry"), ("EUR", "eurtry")):
@@ -602,7 +600,6 @@ def _metal_account_products(stopaj: dict, flags: list[Flag]) -> list[Product]:
 
 # --- Tarihçe serilerinden piyasa bağlamı (gecmis/) ------------------------------------------------
 
-GECMIS_DIR = SNAPSHOT_DIR / "gecmis"
 # id -> (bağlam anahtarı, en fazla kaç gün eski olabilir)
 HISTORY_MARKET = {
     "tlref": ("gecmis.tlref", 7), "tcmb_aofm": ("gecmis.tcmb_aofm", 7),
@@ -615,12 +612,11 @@ HISTORY_MARKET = {
 
 def history_point(sid: str, max_age_days: int, key: str | None = None) -> DataPoint | None:
     """gecmis/<sid>.csv serisinin son gözlemi; kaynak ve dönüşüm bilgisi gecmis/meta.json'dan."""
-    meta = (_json_or_none(GECMIS_DIR / "meta.json") or {}).get(sid)
-    f = GECMIS_DIR / f"{sid}.csv"
-    if not meta or not f.exists():
+    meta = store.series_meta("gecmis").get(sid)
+    s = store.series(sid)
+    if not meta or s is None or "deger" not in s:
         return None
-    import pandas as pd
-    s = pd.read_csv(f).dropna()
+    s = s[["tarih", "deger"]].dropna()
     if s.empty:
         return None
     last = s.iloc[-1]

@@ -46,3 +46,8 @@ tefascrawl/out/
 .DS_Store
 Thumbs.db
 *.log
+
+# Veri tabanı (kurulumda tools/db_aktar.py ve toplayıcılar oluşturur; her çekimde değiştiği için repoda tutulmaz)
+backend/data/veri.db
+backend/data/veri.db-*
+backend/data/.tefas_import.lock
