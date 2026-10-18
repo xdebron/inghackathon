@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from . import evidence, guard, pipeline, universe
 from .config import BASE_DIR, constraint_rules, decision_config
 from .models import RMDecision, RunRequest
+from .db import store
 from .sources import evds, manual, tefas_import
 
 app = FastAPI(title="RM Yatırım Karar Destek")
@@ -20,6 +21,8 @@ from .portal_api import router as portal_router  # noqa: E402
 app.include_router(portal_router)
 from .degerlendirme_api import router as degerlendirme_router  # noqa: E402
 app.include_router(degerlendirme_router)
+from .veri_api import router as veri_router  # noqa: E402
+app.include_router(veri_router)
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
                    allow_methods=["*"], allow_headers=["*"])
 
@@ -82,8 +85,8 @@ def data_status():
     return {
         "tefas": {"fon_sayisi": len(metrics), "imports": meta.get("imports", []), "conflicts": meta.get("conflicts", []),
                   "karsilastirma_fon_sayisi": len(comparison), "karsilastirma_imports": meta.get("karsilastirma_imports", [])},
-        "manuel": {"mevduat": len(raw.get("mevduat", [])), "stopaj": len(raw.get("stopaj", [])),
-                   "fon_ek_bilgi": len(raw.get("fon_ek_bilgi", {})), "benchmark": len(raw.get("benchmarklar", []))},
+        "veritabani": {"mevduat": len(raw.get("mevduat", [])), "stopaj": len(raw.get("stopaj", [])),
+                       "kap_fon": len((store.kap_funds() or {}).get("fonlar", {})), "benchmark": len(raw.get("benchmarklar", []))},
         "evds_anahtari": evds.has_key(),
         "gostergeler": {k: {"status": v.status, "source": v.source, "as_of": v.as_of, "note": v.note} for k, v in ind.items()},
     }

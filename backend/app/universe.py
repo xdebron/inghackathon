@@ -132,7 +132,7 @@ def _fund_products(metrics: dict, meta: dict, comparison: dict, cmp_meta: dict |
                    stopaj: dict, benchmarks: list[dict], flags: list[Flag]) -> list[Product]:
     q = decision_config()["veri_kalitesi"]
     tol = decision_config()["capraz_kontrol"]["tefas_getiri_fark_puan"]
-    extra = {**_kap_snapshot(), **raw.get("fon_ek_bilgi", {})}  # elle girilen kayıt KAP aktarımının önüne geçer
+    extra = {} if raw.get("kap_kapali") else {**_kap_snapshot(), **raw.get("fon_ek_bilgi", {})}
     api_check, api_meta = tefas_import.api_cross_check()
     ing_codes_src = store.platform_funds("ING")
     ing_codes = set(ing_codes_src["kodlar"]) if ing_codes_src else None
@@ -670,9 +670,20 @@ def build(disabled_sources: list[str] | None = None) -> tuple[list[Product], lis
     else:
         market += tcmb.fetch()
 
-    raw = {} if "manuel" in disabled else manual.load_raw()
+    # Kesinti simülasyonu anahtarları: tcmb, evds, tefas, ing (mevduat + stopaj), kap (fon bilgileri), gecmis (EVDS/Hazine
+    # tarihçe serileri), bist. Eski 'manuel' anahtarı geriye uyumluluk için 'ing' + 'kap' + yedek göstergeler demektir.
     if "manuel" in disabled:
-        flags.append(Flag(level="uyari", message="Manuel veri kaynağı devre dışı: mevduat, stopaj, KAP ve manuel göstergeler kullanılamıyor."))
+        disabled |= {"ing", "kap"}
+    raw = manual.load_raw()
+    if "manuel" in disabled:
+        raw = {**raw, "gostergeler": {}, "benchmarklar": []}
+    if "ing" in disabled:
+        raw = {**raw, "mevduat": [], "stopaj": []}
+        flags.append(Flag(level="uyari", message="ING kaynağı devre dışı: mevduat oranları ve stopaj tablosu kullanılamıyor."))
+    if "kap" in disabled:
+        raw = {**raw, "kap_kapali": True}
+        flags.append(Flag(level="uyari", message="KAP kaynağı devre dışı: resmi risk değeri, ücret, valör ve nitelikli yatırımcı bilgisi "
+                                                 "kullanılamıyor; risk değeri oynaklıktan tahmin edilir ve 'varsayım' işaretlenir."))
     ind = indicators(raw, disabled, flags)
     market += [dp.model_copy(update={"key": MARKET_KEYS.get(k, k)}) for k, dp in ind.items()]
     if "gecmis" not in disabled:
@@ -692,7 +703,7 @@ def build(disabled_sources: list[str] | None = None) -> tuple[list[Product], lis
             flags.append(Flag(level="bilgi", message="TEFAS Fon Karşılaştırma dosyası yüklenmedi; fon getirileri tek kaynaktan (fiyat geçmişi)."))
         products += _fund_products(metrics, meta, comparison, cmp_meta, raw, stopaj, benchmarks, flags)
     deposits = _deposit_products(raw, stopaj, ind, flags)
-    if not deposits and "manuel" not in disabled:
+    if not deposits and "ing" not in disabled:
         flags.append(Flag(level="uyari", message="Mevduat / katılım hesabı oranı girilmemiş; bu alternatifler değerlendirilemiyor."))
     products += deposits
     if "bist" not in disabled:
@@ -700,7 +711,7 @@ def build(disabled_sources: list[str] | None = None) -> tuple[list[Product], lis
     if "gecmis" not in disabled:
         products += _dibs_products(stopaj, ind, flags)
         products += _metal_account_products(stopaj, flags)
-    if "manuel" not in disabled:
+    if "ing" not in disabled:
         products += _fx_deposit_products(stopaj, ind, flags)
 
     for p in products:

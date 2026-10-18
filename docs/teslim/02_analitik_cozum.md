@@ -36,6 +36,7 @@ Her katmanın varsayımları ve parametreleri gerekçeleriyle iki dosyadadır: [
 | Piyasa bağlamı: politika faizi, TLREF, TÜFE, sektör mevduat faizleri, DİBS, kurlar, altın | TCMB, EVDS, Hazine ihale sonuçları | |
 
 **Veri kalitesi:**
+- Tüm veri bir veri tabanındadır (SQLAlchemy + SQLite) ve otomatik toplayıcılarla güncellenir; elle düzenlenen veri dosyası yoktur. Her satır, onu yazan toplama çalışmasının (çekim) kimliğini de taşır ([docs/veri_tabani.md](../veri_tabani.md)).
 - Her değer `kaynak · URL · veri tarihi · alınma zamanı · durum` olarak taşınır. Durum ok, bayat, eksik, çelişkili veya varsayım olabilir.
 - Veri çekilemezse değer uydurulmaz: alan "eksik" olur, kriter skora katılmaz ve güven skoru düşer.
 - Önbellekten gelen değer "bayat" etiketiyle ve kendi alınma zamanıyla gösterilir.

@@ -51,3 +51,7 @@ Thumbs.db
 backend/data/veri.db
 backend/data/veri.db-*
 backend/data/.tefas_import.lock
+backend/data/veri_yedek*.db
+
+# Veri tabanına aktarılmış eski snapshot dosyaları (yerel arşiv)
+backend/data/_eski_snapshots/

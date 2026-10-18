@@ -43,9 +43,9 @@ Ayrıntılı teslim belgeleri [docs/teslim](docs/teslim/README.md) klasöründe:
 
 | Hedef | Ölçü | Sonuç |
 |---|---|---|
-| Hazırlığı saniyelere indirmek | Uçtan uca hazırlık süresi | Ortalama 4,1 sn (önbellek boşken ~30 sn) |
+| Hazırlığı saniyelere indirmek | Uçtan uca hazırlık süresi | Ortalama 5,3 sn (önbellek boşken ~30 sn) |
 | Uyum riskini sıfırlamak | Kısa listede açık kısıta veya risk profiline aykırı ürün | 0 |
-| Her değeri kaynağıyla göstermek | Kaynağı veya veri tarihi eksik veri noktası | 0 / 982 |
+| Her değeri kaynağıyla göstermek | Kaynağı veya veri tarihi eksik veri noktası | 0 / 1.079 |
 
 **Yaklaşım:** deterministik çekirdek, LLM kenarda, RM her kapıda.
 - **Kod garanti eder:** uyum kuralları, veri ve skor.
@@ -57,14 +57,23 @@ Ayrıntı: [docs/teslim/01_problem_tanimi.md](docs/teslim/01_problem_tanimi.md).
 
 ## 2. Veri kaynakları ve temel sinyaller
 
-| Kaynak | Ne alınıyor | Nasıl |
+Tüm piyasa ve ürün verisi bir **veri tabanında** (SQLAlchemy; varsayılan SQLite, `DATABASE_URL` ile değiştirilebilir) tutulur. Elle düzenlenen veri dosyası yoktur.
+- Veri yalnızca **otomatik toplayıcılarla** ([backend/app/collectors](backend/app/collectors)) ya da TEFAS dışa aktarım **yüklemesiyle** girer.
+- Her satır kaynağını, URL'sini, kaynaktaki veri tarihini, alınma zamanını ve onu yazan **çekim** kaydını taşır.
+- Her toplama çalışması `cekim` tablosuna yazılır: kaynak, yöntem, zaman, durum, satır, hata.
+- Arayüzde **Veri** sayfası her toplayıcının son çekimini gösterir; toplama oradan da başlatılabilir.
+
+| Kaynak | Ne alınıyor | Toplayıcı |
 |---|---|---|
-| TCMB `today.xml` | USD, EUR, GBP gösterge kurları | Otomatik; başarısızsa önbellek "bayat" etiketiyle |
-| TCMB EVDS | TÜFE, politika faizi, sektör mevduat faizleri, TLREF, altın, gümüş, BIST 100 getiri endeksi | Otomatik (`EVDS_API_KEY`); seri kodları [evds_series.json](backend/config/evds_series.json) |
-| TEFAS | Fon fiyat geçmişi (2.068 fon), Fon Getirileri (ikinci kaynak) | Sitenin **Excel'e Aktar** çıktısı arayüzden yüklenir. Site bot korumalı; kullanım koşulları gereği koruma aşılmadı. |
-| KAP | Resmi risk değeri, yönetim ücreti, giriş/çıkış komisyonu, valör, nitelikli yatırımcı bilgisi (1.026 fon) | Toplanan snapshot |
-| Hazine ve Maliye Bakanlığı | DİBS ihale sonuçları (2y, 10y, TÜFE'ye endeksli) | Toplanan snapshot |
-| ING | Mevduat oranları (TL ve döviz), fon stopaj tablosu, fon listesi | Toplanan snapshot |
+| TCMB `today.xml` | USD, EUR, GBP gösterge kurları | Her hazırlıkta canlı; başarısızsa son başarılı çekim "bayat" etiketiyle |
+| TCMB EVDS (resmi API) | Kur, altın, gümüş, BIST 100, TLREF, fonlama maliyeti, sektör mevduat faizleri, eurobond, TÜFE serileri (2021 →) | `evds_seriler` (`EVDS_API_KEY` gerekli); anlık göstergeler her hazırlıkta canlı |
+| TCMB politika faizi sayfası | Güncel politika faizi ve karar tarihçesi | `tcmb_politika` |
+| Hazine ve Maliye Bakanlığı | DİBS ihale sonuçları (resmi PDF'ler; 2y, 10y, TÜFE'ye endeksli) | `hazine_dibs` |
+| KAP fon sayfaları | Resmi risk değeri, yönetim ücreti, giriş/çıkış komisyonu, ISIN, valör, nitelikli yatırımcı ibaresi | `kap_fon` (kademeli: en eski kayıt önce, istekler arası bekleme) |
+| ING | Mevduat hesaplayıcısı (TL ve döviz oranları, mevduat stopajı), fon vergilendirme tablosu, platformdaki fonlar | `ing_mevduat`, `ing_stopaj`, `ing_fonlar` |
+| Yahoo Finance | BIST 30 hisseleri ve endeksler (resmi kaynak değil; notta teyit maddesi) | `bist` |
+| Hesaplama | Eurobond fiyat vekili, vadeli kur primi, BIST 100 benchmark | `turetilmis` (istek atmaz; "varsayım" etiketli) |
+| TEFAS | Fon fiyat geçmişi (2.068 fon), Fon Getirileri (ikinci kaynak) | **Yükleme:** uygulama TEFAS'a istek atmaz; dışa aktarımlar Veri sayfasından yüklenir. Mevcut geçmiş sitenin "Excel'e Aktar" çıktıları ve kullanıcı talimatıyla yazılmış tarayıcı otomasyonu (`tefascrawl`) ile alındı; kullanım koşulları notu: [veri_kaynaklari.md](docs/veri_kaynaklari.md). |
 
 **Müşteri sinyalleri:**
 - risk profili,
@@ -201,12 +210,12 @@ Ayrıntı: [docs/ajan.md](docs/ajan.md).
 
 **Başarı göstergeleri** brief kurallarından seçildi: ortalama bir kalite skoru yerine sıfır tolerans ölçüleri. Bunlar kural ihlali, guard ihlali, kaynağı/tarihi eksik veri, uydurulmuş değer, eksik bilgide soru sorulması, tekrarlanabilirlik ve süre.
 
-**Değerlendirme takımı** ([tools/degerlendir.py](backend/tools/degerlendir.py)) **13/13 senaryo** geçti:
+**Değerlendirme takımı** ([tools/degerlendir.py](backend/tools/degerlendir.py)) **14/14 senaryo** geçti:
 
 | Senaryo grubu | Sonuç |
 |---|---|
 | 5 persona uçtan uca, her biri iki kez | 0 kural ihlali, 0 guard ihlali; tekrarlanabilir |
-| 4 veri kesintisi (TCMB, EVDS, TEFAS, manuel) | Akış tamamlandı, 0 uydurulmuş değer, eksikler işaretlendi |
+| 5 veri kesintisi (TCMB, EVDS, TEFAS, ING, KAP) | Akış tamamlandı, 0 uydurulmuş değer, eksikler işaretlendi |
 | Eksik / çelişkili bilgi | Öneri üretilmedi, RM teyit sorusu soruldu |
 | Jüri tipi değişiklikler (risk profili, yeni kısıt) | Liste yeni sınıra uydu ya da çelişki RM'e soruldu |
 
@@ -232,6 +241,7 @@ Tüm liste: [docs/teslim/04_test_ve_ogrenimler.md](docs/teslim/04_test_ve_ogreni
 
 ## 8. İzlenebilirlik: kaynak, zaman damgası, karar gerekçesi
 
+- **Veri tabanında her satır** kaynağını, URL'sini, veri tarihini, alınma zamanını ve onu yazan **çekim** kaydını taşır; çekim kaydı hangi toplayıcının ne zaman, hangi sonuçla çalıştığını gösterir ([docs/veri_tabani.md](docs/veri_tabani.md)).
 - **Her veri noktası** `kaynak · URL · veri tarihi · alınma zamanı · durum` olarak taşınır. Durum kaynaklı, bayat, eksik, çelişkili veya varsayım olabilir. Arayüzde her değerin yanında gösterilir.
 - **Her dışlama** kural kimliği ve gerekçesiyle kaydedilir; örneğin `R_RISK_PROFILI`: "Risk değeri RD 5, profil sınırı RD 3".
 - **Her sıralama** kriter bazında katkı dökümüyle kaydedilir: ağırlık, normalize skor, katkı, dayanak. Ağırlığın hangi persona alanından geldiği de yazılır.
@@ -282,6 +292,22 @@ python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt   # Linux/macOS: .venv/bin/python
 ```
 
+**Veri tabanı.** Repodaki tohumdan (`backend/data/seed/veri_tohum.db.gz`, Git LFS) kurulur:
+
+```bash
+cd backend
+.venv/Scripts/python tools/veri_kur.py
+```
+
+Güncel veriyle yenilemek için toplayıcılar çalıştırılır (ya da arayüzde **Veri → Hepsini topla**):
+
+```bash
+cd backend
+.venv/Scripts/python tools/veri_topla.py
+```
+
+`tools/veri_topla.py --liste` her toplayıcının son çalıştırmasını gösterir. Yalnızca birini çalıştırmak için adını verin, ör. `tools/veri_topla.py ing_mevduat`.
+
 **Frontend** (derlenir; backend aynı porttan sunar):
 
 ```bash
@@ -323,7 +349,7 @@ cd backend
 .venv/Scripts/python tools/degerlendir.py
 ```
 
-**Veri güncelleme.** TEFAS fiyat geçmişi tefas.gov.tr → Tarihsel Veriler → **Excel'e Aktar** ile indirilir ve arayüzde **Veri** sayfasından yüklenir. Diğer kaynakların durumu: [docs/veri_kaynaklari.md](docs/veri_kaynaklari.md).
+**Veri güncelleme.** Otomatik kaynaklar `tools/veri_topla.py` ya da **Veri → Hepsini topla** ile güncellenir. TEFAS fiyat geçmişi tefas.gov.tr → Tarihsel Veriler → **Excel'e Aktar** ile indirilip **Veri** sayfasından yüklenir. Repodaki tohumu güncellemek için `tools/veri_tohum.py`.
 
 **Jüri challenge'ı.** RM çalışma alanında **Profil ve veri ayarları**'ndan:
 - persona alanları ve açık kısıtlar değiştirilebilir,

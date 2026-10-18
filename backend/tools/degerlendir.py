@@ -35,7 +35,7 @@ evidence.EVIDENCE_DIR = config.EVIDENCE_DIR / "_degerlendirme"
 evidence.EVIDENCE_DIR.mkdir(exist_ok=True)
 
 DISCLAIMER = "RM onayı olmadan müşteriyle paylaşılamaz"
-OUTAGE_MARKERS = {"tcmb": "TCMB gösterge kurlar", "evds": "TCMB EVDS (", "tefas": "TEFAS"}
+OUTAGE_MARKERS = {"tcmb": "TCMB gösterge kurlar", "evds": "TCMB EVDS (", "tefas": "TEFAS", "ing": "ING ", "kap": "KAP "}
 
 
 def persona(pid: str) -> Persona:
@@ -43,7 +43,10 @@ def persona(pid: str) -> Persona:
 
 
 def after(ts: str | None, t0: str) -> bool:
-    return bool(ts) and datetime.fromisoformat(ts) >= datetime.fromisoformat(t0)
+    def aware(x):   # saat dilimi olmayan zaman damgası (eski içe aktarım kayıtları) yerel saat kabul edilir
+        d = datetime.fromisoformat(x)
+        return d if d.tzinfo else d.astimezone()
+    return bool(ts) and aware(ts) >= aware(t0)
 
 
 def run(req: RunRequest) -> tuple[dict, float]:
@@ -113,7 +116,7 @@ def main() -> None:
         print(pid, "tamam", flush=True)
 
     # 3. Veri kesintisi (P05)
-    for src in ["tcmb", "evds", "tefas", "manuel"]:
+    for src in ["tcmb", "evds", "tefas", "ing", "kap"]:
         t0 = datetime.now().astimezone().isoformat(timespec="seconds")
         r, t = run(RunRequest(persona_id="P05", disabled_sources=[src]))
         marker = OUTAGE_MARKERS.get(src)

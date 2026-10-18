@@ -10,7 +10,7 @@ Slaytlar: "RM Hazırlık Ajanı – Sunum" (claude.ai artifact; PowerPoint/PDF o
    ```
 2. Backend'i aç: `cd backend && .venv/Scripts/python -m uvicorn app.main:app --port 8010`. Dışarıdan erişim gerekiyorsa `cloudflared tunnel --url http://localhost:8010`.
 3. Tarayıcıda `http://localhost:8010` aç. P05 ve P03 için "Hazırlık üret"e bir kez basıp önbelleği ısıt (ilk çalıştırma ~30 sn, sonrakiler birkaç saniye).
-4. Değerlendirme sayfasının dolu olduğunu kontrol et (13/13).
+4. Değerlendirme sayfasının dolu olduğunu kontrol et (14/14).
 
 ## Akış
 
@@ -22,9 +22,9 @@ Slaytlar: "RM Hazırlık Ajanı – Sunum" (claude.ai artifact; PowerPoint/PDF o
 | 2:40 | **Canlı: not ve ajan** | "Ajan ve not" sekmesinde görüşme notu (teyit maddeleri, müşteriye sorulacaklar). Ajana soru: "Neden mevduat değil de para piyasası fonu?" → araç izi |
 | 3:20 | **Canlı: P03 what-if** | "Kur şoku" hazır senaryosu → olasılık ağırlıklı dağılımda döviz/altın payının artışı; belirsizlik uyarısı |
 | 3:50 | **Canlı: onay** | RM adı yaz, "Onayla" → Kanıt sekmesinde akış izi ve ham JSON |
-| 4:10 | Uyum, Veri, Sıralama | Kural kataloğu ve teyit sorusu; 982/982 kaynaklı ve tarihli veri; ağırlıkların persona alanlarından gelişi |
+| 4:10 | Uyum, Veri, Sıralama | Kural kataloğu ve teyit sorusu; 1.079/1.079 kaynaklı ve tarihli veri; ağırlıkların persona alanlarından gelişi |
 | 5:25 | RL, LLM | Modelin dürüst sonucu (kurala karşı), neden yardımcı görüş; lokal LLM + araçlar + guard |
-| 6:10 | Testler, Hatalar | 13/13, sıfır tolerans göstergeleri; beş hata ve iyileştirmesi |
+| 6:10 | Testler, Hatalar | 14/14, sıfır tolerans göstergeleri; beş hata ve iyileştirmesi |
 | 6:45 | Kapanış | Özet ve bilinen sınırlar |
 
 ## Jüri challenge'ı için hazır hamleler

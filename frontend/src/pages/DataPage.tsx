@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
 import { INDICATOR_LABEL } from '../format'
+import { DbPanel } from '../components/DbPanel'
 import type { DataStatusInfo } from '../types'
 
-// Veri kaynakları ve TEFAS dışa aktarım yüklemesi (eskiden kenar çubuğundaydı).
+// Veri kaynakları: TEFAS dışa aktarım yüklemesi, veri tabanı ve otomatik toplayıcılar, gösterge durumu.
 export function DataPage() {
   const [status, setStatus] = useState<DataStatusInfo | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
@@ -41,13 +42,14 @@ export function DataPage() {
           {msg && <div className="muted small">{msg}</div>}
         </section>
         <section className="card">
-          <h3 className="card-title">Manuel ve KAP verileri</h3>
-          <div className="stat"><span>Mevduat / katılım</span><strong>{status.manuel.mevduat}</strong></div>
-          <div className="stat"><span>Stopaj kategorisi</span><strong>{status.manuel.stopaj}</strong></div>
-          <div className="stat"><span>KAP fon bilgisi (elle)</span><strong>{status.manuel.fon_ek_bilgi}</strong></div>
-          <div className="stat"><span>Benchmark</span><strong>{status.manuel.benchmark}</strong></div>
+          <h3 className="card-title">Ürün ve vergi verisi (veri tabanı)</h3>
+          <div className="stat"><span>KAP fon bilgisi</span><strong>{status.veritabani.kap_fon} fon</strong></div>
+          <div className="stat"><span>TL mevduat ürünü (ING)</span><strong>{status.veritabani.mevduat}</strong></div>
+          <div className="stat"><span>Stopaj kategorisi</span><strong>{status.veritabani.stopaj}</strong></div>
+          <div className="stat"><span>Benchmark</span><strong>{status.veritabani.benchmark}</strong></div>
           <div className="stat"><span>EVDS anahtarı</span><strong>{status.evds_anahtari ? 'tanımlı' : 'yok'}</strong></div>
         </section>
+        <DbPanel />
         <section className="card wide">
           <h3 className="card-title">Göstergeler</h3>
           <div className="indicators">

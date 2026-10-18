@@ -29,10 +29,10 @@ Private Banking RM'i bir müşteri görüşmesine hazırlanırken faiz, fon geti
 
 | Etki | Nasıl ölçüyoruz | Bugünkü sonuç |
 |---|---|---|
-| Hazırlık süresi kısalır | Uçtan uca hazırlık süresi. Veri toplama, kurallar, puanlama, model ve metin taslağı dahil. | Ortalama 4,1 sn (değerlendirme takımı, 13 senaryo). Önbellek boşken ~30 sn. |
-| Uyum riski düşer | Kısa listede risk profiline veya açık kısıta aykırı ürün sayısı | 0 (13 senaryo, persona değişiklikleri dahil) |
-| Uydurma veri riski kalkar | Kaynak kapalıyken o kaynaktan "alınmış" görünen değer sayısı | 0 (4 kaynak kesintisi) |
-| İzlenebilirlik | Kaynağı veya veri tarihi eksik veri noktası | 0 / 982. Alınma zamanı 971'inde var; 11'i elle ölçülen valör, yalnızca ölçüm tarihi taşıyor. |
+| Hazırlık süresi kısalır | Uçtan uca hazırlık süresi. Veri toplama, kurallar, puanlama, model ve metin taslağı dahil. | Ortalama 5,3 sn (değerlendirme takımı, 14 senaryo). Önbellek boşken ~30 sn. |
+| Uyum riski düşer | Kısa listede risk profiline veya açık kısıta aykırı ürün sayısı | 0 (14 senaryo, persona değişiklikleri dahil) |
+| Uydurma veri riski kalkar | Kaynak kapalıyken o kaynaktan "alınmış" görünen değer sayısı | 0 (5 kaynak kesintisi) |
+| İzlenebilirlik | Kaynağı veya veri tarihi eksik veri noktası | 0 / 1.079. Alınma zamanı 1.068'inde var; 11'i elle ölçülen valör, yalnızca ölçüm tarihi taşıyor. |
 | Belirsizlik görünür olur | Eksik ya da çelişkili bilgi varsa öneri yerine RM teyit sorusu | 3/3 senaryoda soru üretildi, öneri üretilmedi |
 
 Hazırlık süresi kısalınca RM aynı sürede daha çok müşteriyle daha hazırlıklı görüşebilir. Uyum ve izlenebilirlik kazanımı ise denetim ve şikâyet durumunda önerinin dayanağını saniyeler içinde gösterebilmek demektir.

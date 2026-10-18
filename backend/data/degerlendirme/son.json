@@ -1,12 +1,12 @@
 {
- "calisma_zamani": "2026-10-18T17:42:25+03:00",
+ "calisma_zamani": "2026-10-18T20:15:36+03:00",
  "senaryolar": [
   {
    "grup": "Uçtan uca persona",
    "ad": "P01 hazırlık",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 13.9,
+   "sure_sn": 17.0,
    "kisa_liste": 5,
    "dislanan": 1942,
    "kontroller": {
@@ -27,17 +27,17 @@
    "rl_dagilim": {
     "mevduat_tl": 1.0
    },
-   "rl_secilen_olasilik": 24.8,
-   "run_id": "20261018-174225-P01-71167f"
+   "rl_secilen_olasilik": 25.0,
+   "run_id": "20261018-201536-P01-9a8884"
   },
   {
    "grup": "Uçtan uca persona",
    "ad": "P02 hazırlık",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 5.5,
+   "sure_sn": 6.3,
    "kisa_liste": 5,
-   "dislanan": 1727,
+   "dislanan": 1725,
    "kontroller": {
     "rd_ihlali": [],
     "dislanan_urun_listede": [],
@@ -56,17 +56,17 @@
    "rl_dagilim": {
     "mevduat_tl": 1.0
    },
-   "rl_secilen_olasilik": 8.0,
-   "run_id": "20261018-174253-P02-446659"
+   "rl_secilen_olasilik": 8.1,
+   "run_id": "20261018-201610-P02-f8f83c"
   },
   {
    "grup": "Uçtan uca persona",
    "ad": "P03 hazırlık",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 1.8,
+   "sure_sn": 2.3,
    "kisa_liste": 5,
-   "dislanan": 1333,
+   "dislanan": 1323,
    "kontroller": {
     "rd_ihlali": [],
     "dislanan_urun_listede": [],
@@ -84,16 +84,16 @@
     "bist30_hisse": 0.4
    },
    "rl_secilen_olasilik": 1.2,
-   "run_id": "20261018-174304-P03-1b1eff"
+   "run_id": "20261018-201623-P03-affa84"
   },
   {
    "grup": "Uçtan uca persona",
    "ad": "P04 hazırlık",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 1.0,
+   "sure_sn": 2.0,
    "kisa_liste": 5,
-   "dislanan": 1711,
+   "dislanan": 1710,
    "kontroller": {
     "rd_ihlali": [],
     "dislanan_urun_listede": [],
@@ -111,14 +111,14 @@
     "para_piyasasi": 0.5
    },
    "rl_secilen_olasilik": 2.4,
-   "run_id": "20261018-174308-P04-044071"
+   "run_id": "20261018-201628-P04-84f0ef"
   },
   {
    "grup": "Uçtan uca persona",
    "ad": "P05 hazırlık",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 5.9,
+   "sure_sn": 7.0,
    "kisa_liste": 5,
    "dislanan": 1912,
    "kontroller": {
@@ -140,14 +140,14 @@
     "para_piyasasi": 1.0
    },
    "rl_secilen_olasilik": 5.9,
-   "run_id": "20261018-174310-P05-4cfdfb"
+   "run_id": "20261018-201632-P05-e7b63b"
   },
   {
    "grup": "Veri kesintisi",
    "ad": "tcmb kapalı (P05)",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 0.9,
+   "sure_sn": 1.7,
    "kisa_liste": 5,
    "uydurulmus_deger": [],
    "eksik_veya_bayat_isaretli": 11,
@@ -165,14 +165,14 @@
     ],
     "veri_noktasi": 100
    },
-   "run_id": "20261018-174322-P05-9a8a69"
+   "run_id": "20261018-201646-P05-f3dec3"
   },
   {
    "grup": "Veri kesintisi",
    "ad": "evds kapalı (P05)",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 1.1,
+   "sure_sn": 2.0,
    "kisa_liste": 5,
    "uydurulmus_deger": [],
    "eksik_veya_bayat_isaretli": 13,
@@ -190,18 +190,18 @@
     ],
     "veri_noktasi": 98
    },
-   "run_id": "20261018-174322-P05-de2787"
+   "run_id": "20261018-201647-P05-98d5b2"
   },
   {
    "grup": "Veri kesintisi",
    "ad": "tefas kapalı (P05)",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 11.1,
+   "sure_sn": 11.9,
    "kisa_liste": 5,
    "uydurulmus_deger": [],
    "eksik_veya_bayat_isaretli": 8,
-   "uyari_sayisi": 9,
+   "uyari_sayisi": 7,
    "kontroller": {
     "rd_ihlali": [],
     "dislanan_urun_listede": [],
@@ -212,14 +212,14 @@
     "alinma_zamani_yok": [],
     "veri_noktasi": 72
    },
-   "run_id": "20261018-174324-P05-ea95e3"
+   "run_id": "20261018-201649-P05-a721cf"
   },
   {
    "grup": "Veri kesintisi",
-   "ad": "manuel kapalı (P05)",
+   "ad": "ing kapalı (P05)",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 10.9,
+   "sure_sn": 11.9,
    "kisa_liste": 5,
    "uydurulmus_deger": [],
    "eksik_veya_bayat_isaretli": 11,
@@ -236,7 +236,29 @@
     ],
     "veri_noktasi": 96
    },
-   "run_id": "20261018-174335-P05-8f9abe"
+   "run_id": "20261018-201701-P05-ba136d"
+  },
+  {
+   "grup": "Veri kesintisi",
+   "ad": "kap kapalı (P05)",
+   "gecti": true,
+   "durum": "rm_onayi_bekliyor",
+   "sure_sn": 10.9,
+   "kisa_liste": 5,
+   "uydurulmus_deger": [],
+   "eksik_veya_bayat_isaretli": 13,
+   "uyari_sayisi": 9,
+   "kontroller": {
+    "rd_ihlali": [],
+    "dislanan_urun_listede": [],
+    "rl_kapali_kategori": [],
+    "guard_ihlali": [],
+    "uyari_metni_var": true,
+    "kaynaksiz_veri": [],
+    "alinma_zamani_yok": [],
+    "veri_noktasi": 97
+   },
+   "run_id": "20261018-201713-P05-6aa0a3"
   },
   {
    "grup": "Eksik / çelişkili bilgi",
@@ -247,7 +269,7 @@
    "sorular": [
     "Müşterinin risk profili bilgisi nedir?"
    ],
-   "run_id": "20261018-174345-P01-c023e5"
+   "run_id": "20261018-201724-P01-2b9e4e"
   },
   {
    "grup": "Eksik / çelişkili bilgi",
@@ -259,14 +281,14 @@
     "Müşteri agresif risk profilinde ama anapara korumasını yüksek öncelik görüyor. Hangisi esas alınmalı?",
     "Risk profili 'Agresif' yüksek riskli ürünlere izin veriyor ama müşteri yüksek riskli ürün istemiyor. Kısıt mı, profil mi güncel?"
    ],
-   "run_id": "20261018-174345-P01-4a9ceb"
+   "run_id": "20261018-201724-P01-3d5b61"
   },
   {
    "grup": "Jüri tipi değişiklik",
    "ad": "P03 risk Agresif → Dengeli",
    "gecti": true,
    "durum": "rm_onayi_bekliyor",
-   "sure_sn": 1.0,
+   "sure_sn": 1.7,
    "rd_siniri": [
     7,
     5
@@ -290,7 +312,7 @@
     "alinma_zamani_yok": [],
     "veri_noktasi": 101
    },
-   "run_id": "20261018-174347-P03-ee6bdd"
+   "run_id": "20261018-201726-P03-e29261"
   },
   {
    "grup": "Jüri tipi değişiklik",
@@ -313,18 +335,18 @@
     "alinma_zamani_yok": [],
     "veri_noktasi": 0
    },
-   "run_id": "20261018-174348-P04-747c2f"
+   "run_id": "20261018-201728-P04-025824"
   }
  ],
  "ozet": {
-  "senaryo": 13,
-  "gecen": 13,
+  "senaryo": 14,
+  "gecen": 14,
   "kural_ihlali": 0,
   "guard_ihlali": 0,
   "kaynaksiz_veri": 0,
   "alinma_zamani_yok": 11,
   "uydurulmus_deger": 0,
-  "veri_noktasi": 982,
-  "ortalama_sure_sn": 4.1
+  "veri_noktasi": 1079,
+  "ortalama_sure_sn": 5.3
  }
 }

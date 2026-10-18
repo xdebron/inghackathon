@@ -28,21 +28,22 @@
 
 ## Test senaryoları ve sonuçlar
 
-Son çalıştırma 17.10.2026 tarihlidir. Metin deterministik şablonla üretildi; ölçülen şey kural ve veri davranışıdır.
+Son çalıştırma 18.10.2026 tarihlidir (veri tabanından, toplayıcıların güncellediği veriyle). Metin deterministik şablonla üretildi; ölçülen şey kural ve veri davranışıdır.
 
 | Grup | Senaryo | Sonuç | Gözlem |
 |---|---|---|---|
-| Uçtan uca | P01–P05 hazırlık, her biri iki kez | 5/5 geçti | Her personada kısa liste 5 ürün. 1.333–1.942 ürün gerekçesiyle dışlandı. Kural ve guard ihlali 0. İki çalıştırmada liste ve RL dağılımı aynı. |
+| Uçtan uca | P01–P05 hazırlık, her biri iki kez | 5/5 geçti | Her personada kısa liste 5 ürün. 1.323–1.942 ürün gerekçesiyle dışlandı. Kural ve guard ihlali 0. İki çalıştırmada liste ve RL dağılımı aynı. |
 | Veri kesintisi | TCMB kurları kapalı (P05) | Geçti | Akış tamamlandı. 11 değer eksik veya bayat işaretlendi, 9 uyarı. Uydurulmuş değer 0. |
 | Veri kesintisi | EVDS kapalı | Geçti | 13 değer eksik veya bayat. Göstergeler manuel kaynağa ve kendi tarihlerine düştü. |
 | Veri kesintisi | TEFAS kapalı | Geçti | Fonlar evrenden çıktı; liste mevduat, DİBS ve diğer ürünlerle kuruldu. 8 eksik, 9 uyarı. |
-| Veri kesintisi | Manuel veriler (mevduat, stopaj, KAP) kapalı | Geçti | 11 eksik. Stopaj yokken getiriler brüt gösterildi ve teyit notu düşüldü. |
+| Veri kesintisi | ING (mevduat, stopaj) kapalı | Geçti | 11 eksik. Stopaj yokken getiriler brüt gösterildi ve teyit notu düşüldü; mevduat alternatifleri çıktı. |
+| Veri kesintisi | KAP fon bilgileri kapalı | Geçti | 13 eksik veya varsayım. Resmi RD yerine oynaklıktan tahmin ('varsayım' etiketi), ücret ve valör eksik işaretlendi. |
 | Eksik bilgi | P01 risk profili silindi | Geçti | Öneri üretilmedi. Soru: "Müşterinin risk profili bilgisi nedir?" |
 | Çelişki | P01 risk "Agresif" yapıldı (anapara koruma Yüksek, yüksek risk yasağı var) | Geçti | Öneri üretilmedi, iki çelişki sorusu soruldu. |
 | Jüri değişikliği | P03 risk Agresif → Dengeli | Geçti | RD sınırı 7 → 5. Liste yeni sınıra uyuyor, RL dağılımı değişti. |
 | Jüri değişikliği | P04'e "yüksek riskli ürünlerden kaçınma" eklendi | Geçti | "Dengeli profil yüksek riske izin veriyor ama müşteri istemiyor" çelişkisi RM'e soruldu. |
 
-**Özet:** 13/13 senaryo geçti. Kural ihlali 0, guard ihlali 0, uydurulmuş değer 0. 982 veri noktasının hepsinde kaynak ve veri tarihi var. 971'inde alınma zamanı da var; kalan 11'i TEFAS valör simülatöründen elle alınmış ölçümler, yalnızca ölçüm tarihini (10.10.2026) taşıyor ve zaman uydurulmuyor. Ortalama süre 4,1 sn; önbellek boşken ~30 sn.
+**Özet:** 14/14 senaryo geçti. Kural ihlali 0, guard ihlali 0, uydurulmuş değer 0. 1.079 veri noktasının hepsinde kaynak ve veri tarihi var. 1.068'inde alınma zamanı da var; kalan 11'i TEFAS valör simülatöründen elle alınmış ölçümler, yalnızca ölçüm tarihini (10.10.2026) taşıyor ve zaman uydurulmuyor. Ortalama süre 5,3 sn; önbellek boşken ~30 sn.
 
 **RL modeli** (test: son 3 ay, bu dönemi görmeden eğitilmiş modeller):
 
@@ -64,8 +65,10 @@ Son çalıştırma 17.10.2026 tarihlidir. Metin deterministik şablonla üretild
 | 6 | RL kartı tek bir dağılımı kesin karar gibi gösteriyordu; model o dağılımı yalnızca %1–25 olasılıkla seçiyordu. | Politika düz. En olası dağılım (argmax) küçük girdi farklarına duyarlı. | Not, RL kartı ve what-if seçim olasılığını ve olasılık ağırlıklı dağılımı gösteriyor. %20 altında açık belirsizlik uyarısı var. |
 | 7 | RL v9 modeli bir personada 300 farklı rastgele piyasa durumunda aynı dağılımı öneriyordu; piyasaya duyarsızdı. | Model profili ezberlemişti. | Piyasa duyarlılığı ölçümü eklendi ve arayüzde gösteriliyor. Sonraki sürümler bu ölçüyle seçildi. |
 | 8 | Eşzamanlı iki TEFAS içe aktarımı fiyat geçmişini kısalttı (veri kaybı). | Yazma kilitsiz ve atomik değildi. | Kilit, yedek (son 5), atomik yazma ve "satır sayısı azalıyorsa yazma" koruması eklendi; `test_import_safety` ile sınanıyor. |
-| 9 | Değerlendirme takımı KAP, stopaj ve ING mevduat değerlerinde alınma zamanı olmadığını buldu (kural 2). | İçe aktarma, toplayan script'in çekim zamanını yalnızca güne kırpıp saklıyordu. | Gerçek çekim zamanları korunuyor. Elle girilmiş kayıtta zaman yoksa alan boş kalır, uydurulmaz. Elle ölçülen valörün fon kaydının KAP zamanını miras aldığı da bu sırada bulunup düzeltildi. Sonuç: 971/982 alınma zamanlı, 11 elle ölçüm yalnızca tarihli. |
+| 9 | Değerlendirme takımı KAP, stopaj ve ING mevduat değerlerinde alınma zamanı olmadığını buldu (kural 2). | İçe aktarma, toplayan script'in çekim zamanını yalnızca güne kırpıp saklıyordu. | Gerçek çekim zamanları korunuyor. Elle girilmiş kayıtta zaman yoksa alan boş kalır, uydurulmaz. Elle ölçülen valörün fon kaydının KAP zamanını miras aldığı da bu sırada bulunup düzeltildi. Sonuç: alınma zamanı olmayan yalnızca 11 elle ölçüm kaldı (yalnızca tarihli). |
 | 10 | Ajan iki ayrı çalıştırmada "300 rastgele piyasada 13 farklı karar" alanını "13'ünde farklı karar" diye okudu. RM, kanıt örneğinde bunu düzenleyerek onayladı. | Araç çıktısındaki alan adı (`rastgele_300_piyasada_farkli_karar`) iki şekilde okunabiliyordu. | Araç çıktısına okuma cümlesi eklendi: "toplam N farklı dağılım önerdi; bu bir senaryo sayısı değil". |
+| 11 | Veri tabanına geçişte yazılan toplayıcı testi, KAP risk değeri ayrıştırıcısının pay sınıfı ayracını ("TL 6, USD 3") ondalık sandığını gösterdi: 13 fonda RD olduğundan düşüktü (BSD, TLU: 1 yerine 6). | Virgülden sonra boşluk/harf gelse de rakam dışlanıyordu; birden çok değerde tutucu (yüksek) değer seçilemiyordu. | Ayrıştırıcı düzeltildi; ham KAP sayfaları yeniden okunup 13 kayıt güncellendi ve not aldı. Etkilenen fonların hiçbiri kısa listeye, RL eşlemesine ya da nota girmemişti. Regresyon testi eklendi. |
+| 12 | KAP yenileme sırası, farklı saat dilimindeki zaman damgalarını (+03:00 ve UTC) metin olarak karşılaştırdığı için eski kayıtları atlayabiliyordu. | Zaman damgası metin karşılaştırması. | Zaman olarak karşılaştırılıyor; testi var. |
 
 ## Öğrenimler ve sınırlar
 
@@ -78,4 +81,4 @@ Son çalıştırma 17.10.2026 tarihlidir. Metin deterministik şablonla üretild
   - doğrudan DİBS için stopaj yok.
 
   Hepsi notta "teyit" maddesi olarak RM'e gösteriliyor.
-- **TEFAS verisi güncellemesi elle yapılıyor.** Site bot korumalı ve kullanım koşullarına uymak için koruma aşılmadı.
+- **TEFAS verisi yüklemeyle güncelleniyor; uygulama TEFAS'a istek atmıyor.** Mevcut geçmişin bir kısmı kullanıcı talimatıyla yazılmış ve sitenin WAF'ını geçen tarayıcı otomasyonuyla (`tefascrawl`) alındı. Bu, kullanım koşullarıyla (kural 8) çelişebilir; teyit edilene kadar güncellemeler yalnızca sitenin "Excel'e Aktar" çıktısıyla yapılmalı.

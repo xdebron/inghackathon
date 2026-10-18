@@ -35,7 +35,9 @@ Persona (P01–P05, jüri değişiklikleri)
 |---|---|---|
 | Backend | Python 3.11+, FastAPI | Akış, kurallar, puanlama, kanıt kaydı, API. Frontend'i aynı porttan sunar. |
 | Frontend | React + TypeScript (Vite) | RM çalışma alanı, müşteri görünümü, model, veri, değerlendirme sayfaları |
-| Veri katmanı | `app/sources/*`, `app/universe.py` | Kaynak bağdaştırıcıları. Önbellek ve bayatlık, çapraz kontrol, kaynak kesintisi simülasyonu. |
+| Veri tabanı | SQLAlchemy + SQLite (`app/db`) | Tüm piyasa ve ürün verisi; her satır kaynak, URL, veri tarihi, alınma zamanı ve çekim kimliği taşır ([docs/veri_tabani.md](../veri_tabani.md)) |
+| Toplayıcılar | `app/collectors`, `tools/veri_topla.py` | TCMB, EVDS, Hazine, KAP, ING, BIST'ten otomatik ve kibar toplama; her çalıştırma bir çekim kaydı. TEFAS yüklemeyle. |
+| Veri katmanı | `app/sources/*`, `app/universe.py` | Veri tabanından ürün evreni ve göstergeler; bayatlık, çapraz kontrol, kaynak kesintisi simülasyonu |
 | Kural motoru | `app/rules.py`, `config/constraint_rules.json` | Kısıt metni → kural eşlemesi, dışlama, teyit sorusu |
 | Puanlama | `app/scoring.py` | Ağırlık türetme, normalize kriterler, güven, kısa liste |
 | RL modeli | `app/rl_category.py`, `app/rl_tools.py` | Numpy ile çevrimiçi çıkarım (torch gerekmez). Shapley, what-if, eşik ve benzer dönem araçları. |
@@ -66,5 +68,6 @@ Persona (P01–P05, jüri değişiklikleri)
 | Kural tabanlı uygunluk | Garanti, açıklanabilirlik | Yeni kısıt türü kataloğa eklenmeli; tanınmayan kısıtta akış durur (bilinçli) |
 | Min-max normalize puan | Basit, ürün evrenine göre göreli | Evren değişince puanlar kayar; mutlak değil göreli sıralama |
 | RL kategori modeli | Piyasa koşuluna duyarlı senaryo, what-if | Basit kuralı her personada geçemiyor; politika düz → yardımcı görüş olarak konumlandı |
-| TEFAS manuel dışa aktarım | Kullanım koşullarına uyum (bot koruması aşılmadı) | Fiyat güncellemesi elle yapılır |
+| TEFAS dışa aktarım yüklemesi | Uygulama TEFAS'a istek atmaz | Fiyat güncellemesi kullanıcının yüklemesiyle. Mevcut 2021-2026 geçmişinin bir kısmı, kullanıcı talimatıyla yazılmış ve sitenin WAF'ını geçen tarayıcı otomasyonuyla (`tefascrawl`) alındı; kullanım koşullarıyla çelişebilir, ekipçe teyit edilmeli |
+| Veri tabanı + otomatik toplayıcılar | Elle düzenlenen dosya yok; her satırda kaynak ve çekim kaydı; tek tıkla güncelleme | Kaynak sayfa yapısı değişirse toplayıcı hata verir (kayda geçer, değer uydurulmaz) |
 | Lokal LLM | KVKK | GPU gerektirir; kapalıyken şablon metin |

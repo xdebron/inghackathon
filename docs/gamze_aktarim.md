@@ -1,5 +1,9 @@
 # Gamze'nin Verilerinin Aktarımı
 
+> **Tarihsel not.** Bu aktarım 9-15 Ekim'de yapıldı. Veriler sonra veri tabanına taşındı ([veri_tabani.md](veri_tabani.md));
+> aktarım script'i ve snapshot dosyaları kaldırıldı. Aynı kaynaklar artık otomatik toplayıcılarla güncellenir: KAP → `kap_fon`,
+> ING → `ing_mevduat` / `ing_stopaj` / `ing_fonlar`, TCMB → `tcmb_politika`. Aşağıdaki bulgular kayıt için duruyor.
+
 Kaynak: `gamze_work/AGENTIC AI HACKATHON-ING/data/processed`. Veriyi Gamze Akkurt 9-14 Ekim 2026'da topladı. Aktarım script'i [backend/tools/import_gamze.py](../backend/tools/import_gamze.py).
 
 - Tekrar çalıştırılabilir: `backend/.venv/Scripts/python backend/tools/import_gamze.py`

@@ -16,7 +16,10 @@ const SOURCES: [string, string][] = [
   ['tcmb', 'TCMB kurları'],
   ['tefas', 'TEFAS fonları'],
   ['evds', 'EVDS göstergeleri'],
-  ['manuel', 'Manuel veriler (mevduat, stopaj, KAP)'],
+  ['ing', 'ING (mevduat, stopaj)'],
+  ['kap', 'KAP fon bilgileri'],
+  ['gecmis', 'Tarihçe serileri (EVDS, Hazine)'],
+  ['bist', 'BIST hisseleri'],
 ]
 
 interface Props {

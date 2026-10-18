@@ -1,83 +1,70 @@
-# Veri Kaynakları Checklist
+# Veri kaynakları
 
-Erişim testi 15.10.2026'da script (curl) ile yapıldı. "Kodda" sütunu bu kaynağın sistemde bugün desteklenip desteklenmediğini gösterir.
+Tüm piyasa ve ürün verisi veri tabanındadır: tablolar, kaynak alanları ve toplayıcılar [veri_tabani.md](veri_tabani.md) dosyasında. Bu sayfa kaynakları, nasıl alındıklarını ve kullanım koşullarıyla ilgili kararları özetler.
 
-**Her kayıt için zorunlu alanlar** (brief kural 2-3): `source`, `url`, `as_of` (kaynaktaki veri tarihi). Bulunamayan değer boş bırakılır, tahmin girilmez.
+**Her kayıt için zorunlu alanlar** (brief kural 2-3):
+- kaynak adı ve URL,
+- kaynaktaki veri tarihi,
+- alınma zamanı,
+- çekim kaydı.
 
-## P0: Demo için şart (18 Ekim'e kadar)
+Bulunamayan değer boş bırakılır, tahmin girilmez. Kaynağa erişilemezse son başarılı çekim "bayat" etiketiyle ve kendi tarihiyle kullanılır.
 
-| ✓ | Veri | Neden lazım | Kaynak | Erişim | Test sonucu | Kodda |
-|---|---|---|---|---|---|---|
-| [x] | USD/EUR/GBP kurları | Piyasa bağlamı, döviz ürünleri | TCMB `kurlar/today.xml` | Otomatik | ✅ 200 | ✅ |
-| [ ] | Fon fiyat geçmişi (≥12 ay, günlük) | Getiri, volatilite, max düşüş, tahmini RD | TEFAS → Tarihsel Veriler → Excel'e Aktar | Manuel indir, arayüzden yükle | ⛔ Script engelli | ✅ |
-| [ ] | TL mevduat oranları (3-5 banka; 32 / 92 / 181 gün) | Mevduat alternatifi, P01 ve P05 için kritik | Bankaların ürün/faiz sayfaları (ING, Garanti, İş, Akbank, YKB...) | Manuel, `manuel_veriler.json` → `mevduat` | ✅ ING sitesi erişilebilir | ✅ |
-| [ ] | Stopaj oranları (fon türü ve mevduat bazında) | Net getiri; brief kural 7: koda sabit yazılmaz | Resmî Gazete (GVK Geçici 67. md. Cumhurbaşkanı kararları), GİB | Manuel, `manuel_veriler.json` → `stopaj` | ✅ Erişilebilir | ✅ |
-| [ ] | Fon yönetim ücreti | Maliyet kriteri (BGP/DLY örneği) | KAP fon sayfası → izahname / yatırımcı bilgi formu | Manuel, kısa liste adaylarından başla (~20-30 fon) | ✅ KAP erişilebilir | ✅ |
-| [ ] | Resmi risk değeri (RD 1-7) | Uygunluk kuralı; volatiliteden yapılan tahminin teyidi | KAP → yatırımcı bilgi formu | Manuel, `fon_ek_bilgi.resmi_rd` | ✅ | ✅ (çelişki kontrolü var) |
-| [ ] | Alım/satım valörü | P05 likidite kısıtı | KAP → izahname | Manuel, `fon_ek_bilgi.valor_satis_gun` | ✅ | ✅ |
-| [ ] | Nitelikli yatırımcıya özel mi | Serbest fonların dışlanması | KAP → izahname ("sadece nitelikli yatırımcılara...") | Manuel, `fon_ek_bilgi.nitelikli_yatirimci` | ✅ | ✅ |
+## Kaynaklar
 
-## P1: Analiz kalitesini artıran
+| Veri | Neden lazım | Kaynak | Nasıl alınır |
+|---|---|---|---|
+| Döviz kurları (USD, EUR, GBP) | Piyasa bağlamı, döviz ürünleri | TCMB `kurlar/today.xml` | Her hazırlıkta canlı |
+| TÜFE, politika faizi, sektör mevduat faizleri, TLREF, fonlama maliyeti, altın, gümüş, BIST 100, eurobond stoku | Reel getiri, faiz ortamı, mevduat çapraz kontrolü, RL göstergeleri | TCMB EVDS resmi API | `evds_seriler` toplayıcısı (2021 → bugün) + anlık değerler her hazırlıkta canlı |
+| Politika faizi karar tarihçesi | Güncel oran ve adım serisi | TCMB 1 hafta repo sayfası | `tcmb_politika` |
+| DİBS ihale getirileri | Doğrudan tahvil alternatifi, borçlanma bağlamı | Hazine ve Maliye Bakanlığı duyuruları + resmi ihale sonucu PDF'leri | `hazine_dibs` |
+| Fon fiyat geçmişi (2.068 fon, 2021 →) | Getiri, oynaklık, max düşüş, tahmini RD | TEFAS | Kullanıcının TEFAS'tan aldığı dışa aktarımlar Veri sayfasından yüklenir (aşağıya bakın) |
+| TEFAS Fon Getirileri | İkinci kaynak: kendi hesapladığımız getirinin çapraz kontrolü, TEFAS'taki RD | TEFAS | Aynı yükleme alanı; tür otomatik tanınır |
+| Resmi risk değeri, yönetim ücreti, komisyonlar, ISIN, valör, nitelikli yatırımcı ibaresi | Uygunluk kuralları, maliyet kriteri, likidite kısıtı | KAP fon sayfaları | `kap_fon` (kademeli, en eski kayıt önce) |
+| Mevduat oranları (TL ve döviz) ve mevduat stopajı | Mevduat alternatifi, döviz mevduatı | ING mevduat hesaplayıcısı | `ing_mevduat` |
+| Fon stopajı (güncel ve dönemsel) | Net getiri; kural 7: koda sabit yazılmaz | ING vergilendirme tablosu | `ing_stopaj` |
+| ING platformundaki fonlar | Bilgi; `K_ING_PLATFORM` kısıtı | ING fon fiyatları sayfaları | `ing_fonlar` |
+| BIST 30 hisseleri ve endeksler | Doğrudan hisse alternatifi, RL göstergesi | Yahoo Finance (resmi Borsa İstanbul kaynağı değil) | `bist`; notta teyit maddesi |
+| BIST 100 benchmark, eurobond fiyat vekili, vadeli kur primi | Fon kıyası, döviz bağlamı | Hesaplama (veri tabanındaki serilerden) | `turetilmis`; "varsayım" etiketli |
+| KAP bildirim geçmişi ve YBF'lerden RD/ücret tarihçesi | RL araştırması | KAP bildirim sorgusu | `tools/fetch_kap_history.py` (çevrimdışı araç) |
 
-| ✓ | Veri | Neden lazım | Kaynak | Erişim | Test sonucu | Kodda |
-|---|---|---|---|---|---|---|
-| [ ] | TCMB politika faizi | Faiz ortamı bağlamı, mevduat/PPF karşılaştırması | tcmb.gov.tr veya EVDS | EVDS ya da manuel (`gostergeler.politika_faizi`) | ✅ | ✅ |
-| [ ] | TÜFE yıllık enflasyon | **Reel getiri** (enflasyon üstü getiri), RM için güçlü anlatı | TÜİK veri portalı, EVDS | Manuel ya da EVDS | ✅ veriportali.tuik.gov.tr | ✅ reel getiri |
-| [ ] | EVDS API anahtarı | Kur geçmişi, sektör ortalama mevduat faizi, TÜFE, altın tek API'den | evds2.tcmb.gov.tr (evds3'e yönleniyor) | Ücretsiz üyelik ve API key | ✅ `evds3.../igmevdsms-dis/` + `key` header doğrulandı; seri kodları anahtarla teyit edilecek | ✅ |
-| [ ] | Sektör ortalama mevduat faizi (TCMB) | Banka oranlarının **çapraz kontrolü** (aykırı değer, çelişki tespiti) | EVDS (vadeye göre ağırlıklı ortalama) | EVDS (seri kodu teyit edilecek) veya manuel | ⚠️ | ✅ sapma uyarısı |
-| [ ] | TEFAS Fon Karşılaştırma → getiri bazlı dışa aktarım | Tüm fonların dönemsel getirisi tek dosyada; kendi hesapladığımız getiriyle **ikinci kaynak** karşılaştırması | TEFAS → Fon Karşılaştırma → Excel | Manuel, arayüzden yükle (tür otomatik tanınır) | ⛔ Script engelli | ✅ çapraz kontrol |
-| [ ] | TMSF mevduat sigortası limiti | Mevduatın anapara koruması tutara bağlı; RM uyarısı | tmsf.org.tr | Manuel (`gostergeler.tmsf_sigorta_limiti_tl`) | ✅ | ✅ mevduat uyarısı |
-| [ ] | BIST endeksleri (BIST 100, tahvil endeksleri) | Hisse ve borçlanma fonları için benchmark | borsaistanbul.com veri sayfaları | Manuel (`benchmarklar`); lisans koşulları teyit edilmeli | ✅ site erişilebilir | ✅ benchmark farkı |
-
-## P2: Opsiyonel
-
-| ✓ | Veri | Neden lazım | Kaynak | Nereye girilir | Kodda |
-|---|---|---|---|---|---|
-| [ ] | DİBS gösterge faizleri / Hazine ihale sonuçları | Borçlanma fonları için faiz bağlamı | hmb.gov.tr | `gostergeler.dibs_gosterge_2y` | ✅ piyasa bağlamı |
-| [ ] | Gram altın / ons fiyatı | Kıymetli maden fonları bağlamı | EVDS, Borsa İstanbul KMP | EVDS ya da `gostergeler.altin_gram_tl` | ✅ piyasa bağlamı |
-| [ ] | SPK bülteni | Fon ücret ve izahname değişikliklerini yakalamak | spk.gov.tr | `fon_ek_bilgi.<KOD>.uyari_notu` | ✅ RM teyit uyarısı |
-| [ ] | Katılım bankası kâr payı oranları | Katılım alternatifi | Katılım bankalarının ürün sayfaları | `mevduat` kaydı, `"tur": "katilim"` | ✅ ayrı ürün kategorisi |
+Eksik kalan göstergeler (ör. DİBS ikincil piyasa getirisi, TMSF limiti) "eksik" olarak işaretlenir ve skora katılmaz.
 
 ## EVDS kurulumu
 
 1. evds3.tcmb.gov.tr adresinden ücretsiz üye olun ve profil sayfasından API anahtarını alın.
-2. Anahtarı `backend/.env` dosyasına `EVDS_API_KEY=...` satırı olarak yazın. Bu dosya git'e girmez. Alternatif olarak ortam değişkeni de kullanılabilir.
-3. Seri kodları 15.10.2026'da EVDS `serieList` uç noktasıyla doğrulandı ([evds_series.json](../backend/config/evds_series.json)):
+2. Anahtarı `backend/.env` dosyasına `EVDS_API_KEY=...` satırı olarak yazın. Bu dosya git'e girmez.
+3. Seri kodları [evds_series.json](../backend/config/evds_series.json) ve [evds_seriler.py](../backend/app/collectors/evds_seriler.py) içinde. 15.10.2026'da EVDS `serieList` uç noktasıyla doğrulandı.
 
-| Gösterge | Seri | Son değer (15.10.2026 çekimi) |
-|---|---|---|
-| TÜFE yıllık | `TP.GENENDEKS.T1`, formül 3 (yıllık % değişim) | %29,73 (2026-9) |
-| Politika faizi | `TP.BISPOLFAIZ.TUR` (BIS veri seti, aylık, gecikmeli) | %37,00 (2026-8) |
-| Tasarruf mevduatı 1A / 3A / 6A / 1Y | `TP.TRYTAS.MT01`–`MT04` | %44,00 / %43,82 / %42,03 / %37,75 (02-10-2026) |
-| Gram altın | `TP.ALTINPIYASA.KAP02` ÷ 1000 | 6.500 TL (14-10-2026) |
+İlk tahmin edilen kodlar hatalıydı:
+- `TP.FG.J0` 2026 Ocak'ta durmuştu.
+- `TP.TRY.MT02` "1 ay" değil "3 aya kadar" serisiydi ve tasarruf mevduatı değil toplam mevduatı ölçüyordu.
 
-Notlar:
-- İlk tahmin edilen kodlar hatalıydı. `TP.FG.J0` 2026 Ocak'ta durmuştu. `TP.TRY.MT02` ise "1 ay" değil "3 aya kadar" serisiydi ve tasarruf mevduatı değil toplam mevduatı ölçüyordu.
-- Tasarruf mevduatı değerleri, Gamze'nin Slack'te TCMB'den aktardığı rakamlarla birebir eşleşiyor.
+## Kullanım koşulları (brief kural 8)
 
-## Kullanmayacağımız kaynaklar
+**TEFAS.** Site bot korumalıdır ve kullanım koşulları otomatik çekimi kısıtlar.
+- **Uygulama TEFAS'a hiç istek atmaz.** Fiyat geçmişi kullanıcının yüklediği dışa aktarımlardan gelir.
+- **Veri tabanındaki geçmişin iki kaynağı vardır:**
+  - Gamze Akkurt'un sitenin "Excel'e Aktar" çıktısıyla aldığı 46 dosya,
+  - `tefascrawl/` paketiyle alınan 2021-2026 dışa aktarımı.
+- **`tefascrawl` hakkında:** gerçek bir tarayıcıyla (Playwright) sitenin WAF'ını geçip iç JSON API'lerine istek atar. 15.10.2026'da kullanıcının açık talimatıyla yazıldı ve çalıştırıldı.
+- **Doğrulama:** iki yöntem 223.829 ortak fon-günde sıfır çelişki verdi.
+- **Risk:** bu yöntem sitenin kullanım koşullarıyla çelişebilir. Riskler ve gerekçe: [tefascrawl/README.md](../tefascrawl/README.md) "Politika notu".
+- **Ekip kararı:** kullanım koşulları açısından teyit edilmedikçe yalnızca "Excel'e Aktar" dışa aktarımlarıyla güncellenmelidir.
 
-Brief kural 8 gereği kaynakların kullanım koşullarına uyuyoruz.
+**Yahoo Finance.** Kullanım koşulları otomatik çekime izin vermez; BIST 30 hisseleri için kullanıcı kararıyla kullanılıyor ve resmi kaynak olmadığı notta yazılıdır. Resmi Borsa İstanbul verisine geçilmesi önerilir.
 
-- ~~**TEFAS API'sini script ile çekmek:** bot korumasıyla engelliyor; aşmaya çalışmıyoruz, yalnızca sitenin kendi dışa aktarımını kullanıyoruz.~~
-  **Güncelleme (15.10.2026):** Bu karar kullanıcının açık talimatıyla değiştirildi.
-  `tefascrawl/` paketi, WAF'ı gerçek bir tarayıcıyla (Playwright) geçip sitenin iç
-  JSON API'lerine (fonGetiriBazliBilgiGetir, fonGnlBlgSiraliGetir, dagilimSiraliGetirT)
-  doğrudan istek atıyor. Riskler ve gerekçe için [tefascrawl/README.md](../tefascrawl/README.md)'deki
-  "Politika notu" bölümüne bakın.
-- **TSPB:** bot koruması var.
-- **investing.com, Fintables, Rasyonet vb.:** ticari veya kullanım koşulları otomatik çekime izin vermiyor.
+**KAP, ING, TCMB, Hazine.** Kamuya açık sayfalar ve uç noktalar. Toplayıcılar kibar çalışır:
+- istekler sıralıdır ve aralarında bekleme vardır,
+- 429 yanıtında geri çekilir,
+- art arda hatada durur.
 
-## Çapraz kontrol fikirleri
+**Kullanılmayanlar.** TSPB (bot korumalı); investing.com, Fintables, Rasyonet (ticari ya da otomatik çekime kapalı).
 
-Bunlar "çelişkili veri" kriteri için puan getirir:
+## Çapraz kontroller
 
-1. **TEFAS getirisi:** kendi hesapladığımız getiri ile Fon Karşılaştırma dışa aktarımındaki getiri karşılaştırılır. Fark eşiği aşarsa ürün `conflict` olarak işaretlenir.
-2. **RD:** volatiliteden yapılan tahmin ile KAP'taki resmi değer karşılaştırılır. Bu kontrol kodda zaten var.
-3. **Mevduat oranları:** banka oranı ile TCMB sektör ortalaması karşılaştırılır; aykırı değer RM'e uyarı olarak düşer.
-4. **Bayat veri:** son fiyat tarihi 7 günden eskiyse kayıt `stale` olarak işaretlenir. Bu kontrol kodda zaten var.
-
-## İş bölümü önerisi
-
-- **Gamze:** mevduat oranları, stopaj ve KAP fon bilgileri. Slack'teki araştırması bunların çoğunu zaten kapsıyor.
-- **Hakkı:** TEFAS dışa aktarımları (12 ay, ilgili fon türleri), EVDS anahtarı, TÜFE ve sektör ortalaması entegrasyonu.
+1. **TEFAS getirisi:** kendi hesapladığımız getiri, Fon Getirileri dışa aktarımındakiyle karşılaştırılır. Fark eşiği aşarsa ürün "çelişkili" işaretlenir.
+2. **TEFAS fiyatı:** dışa aktarım ile TEFAS API fiyatları ortak günlerde karşılaştırılır (ikincil kaynak).
+3. **Risk değeri:** KAP'taki resmi değer, TEFAS'taki değer ve oynaklıktan yapılan tahmin karşılaştırılır. 2 ve üzeri kademe farkta muhafazakâr değer alınır.
+4. **Mevduat oranları:** banka oranı TCMB sektör ortalamasıyla karşılaştırılır; aykırı değer RM'e uyarı olarak düşer.
+5. **Bayat veri:** son fiyat tarihi 7 günden eskiyse kayıt "bayat" işaretlenir.

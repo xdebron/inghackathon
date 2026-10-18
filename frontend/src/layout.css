@@ -166,3 +166,5 @@ aside.ws-side { overflow-y: auto; }
 .badge.ok { background: #e3f4ea; color: var(--ok); }
 .eval .card { margin-bottom: 16px; }
 .eval table td { vertical-align: top; }
+.db-panel table td { vertical-align: top; }
+.db-counts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 4px 18px; margin-top: 12px; }

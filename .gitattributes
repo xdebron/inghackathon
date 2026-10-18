@@ -1,2 +1,2 @@
 backend/models/**/*.npz filter=lfs diff=lfs merge=lfs -text
-backend/data/snapshots/tefas_fiyatlar.csv filter=lfs diff=lfs merge=lfs -text
+backend/data/seed/*.gz filter=lfs diff=lfs merge=lfs -text

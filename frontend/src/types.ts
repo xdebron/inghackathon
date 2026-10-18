@@ -185,7 +185,7 @@ export interface DataStatusInfo {
     karsilastirma_fon_sayisi: number
     karsilastirma_imports: { dosya: string; iceri_alma_zamani: string; fon_sayisi: number; as_of: string | null }[]
   }
-  manuel: { mevduat: number; stopaj: number; fon_ek_bilgi: number; benchmark: number }
+  veritabani: { mevduat: number; stopaj: number; kap_fon: number; benchmark: number }
   evds_anahtari: boolean
   gostergeler: Record<string, { status: DataStatus; source: string; as_of: string | null; note: string | null }>
 }

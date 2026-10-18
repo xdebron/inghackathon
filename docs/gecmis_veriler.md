@@ -1,13 +1,17 @@
 # Gösterge Tarihçesi (2021 → bugün)
 
-[backend/tools/fetch_history.py](../backend/tools/fetch_history.py) ile çekildi (15.10.2026).
+> Tüm seriler veri tabanındadır (`seri` + `seri_deger` tabloları) ve otomatik toplayıcılarla güncellenir; ayrıntı:
+> [veri_tabani.md](veri_tabani.md). Aşağıdaki kapsam ve doğrulama notları ilk çekime (15.10.2026) aittir; son güncellemede
+> EVDS, BIST ve DİBS serileri 16.10.2026'ya kadar uzadı.
+
+`evds_seriler` toplayıcısıyla çekilir ([backend/app/collectors/evds_seriler.py](../backend/app/collectors/evds_seriler.py)).
 
 - Kaynak: TCMB EVDS resmi API'si (anahtarlı). İstekler sıralı, aralarında 1 sn bekleme var.
-- Dosyalar: `backend/data/snapshots/gecmis/<id>.csv` (`tarih`, `deger`). Her serinin kaynağı, kodu, birimi, alınma zamanı ve dönüşümü `meta.json` içinde.
+- Veri tabanında her seri bir `seri` satırı (kaynak, seri kodu, birim, alınma zamanı, dönüşüm) ve `seri_deger` satırlarıdır (tarih, değer).
 - Yeniden çekmek için:
 
 ```bash
-backend/.venv/Scripts/python backend/tools/fetch_history.py --start 01-01-2021
+backend/.venv/Scripts/python backend/tools/veri_topla.py evds_seriler
 ```
 
 ## Seriler
@@ -61,7 +65,7 @@ Kontroller:
 
 ## DİBS getirileri (Hazine ihale sonuçları)
 
-[backend/tools/fetch_dibs.py](../backend/tools/fetch_dibs.py) ile çekildi.
+`hazine_dibs` toplayıcısıyla çekilir ([backend/app/collectors/hazine_dibs.py](../backend/app/collectors/hazine_dibs.py)).
 
 - **Kaynak:** Hazine ve Maliye Bakanlığı "Kamu Finansmanı" duyuruları (sitenin kendi portal API'si) ve her duyurudaki resmi ihale sonucu PDF'i. 2021-2026 arası 253 PDF; ham dosyalar `backend/data/raw/hmb_ihale/` altında.
 - **Neden EVDS değil:** EVDS'deki "DİBS gösterge değerleri" tahvil türüne göre fiyat, birim değer ya da reel getiri olarak karışık birimlerde geliyor. Güvenilir bir getiri eğrisi kurulamıyor.
@@ -97,7 +101,7 @@ Kontroller:
 Yeniden çekmek için (indirilmiş PDF'ler tekrar indirilmez):
 
 ```bash
-backend/.venv/Scripts/python backend/tools/fetch_dibs.py --after 2021-01-01
+backend/.venv/Scripts/python backend/tools/veri_topla.py hazine_dibs
 ```
 
 ## Fon dışı alternatifler için ek veriler
@@ -125,16 +129,16 @@ Türetilmiş serilerin değerleri dönemle uyumlu:
 Türetilmiş serileri yeniden üretmek için:
 
 ```bash
-backend/.venv/Scripts/python backend/tools/derive_series.py
+backend/.venv/Scripts/python backend/tools/veri_topla.py turetilmis
 ```
 
 ## Pipeline entegrasyonu (15.10.2026)
 
-**TEFAS fiyat dosyası yeniden kuruldu** ([backend/tools/rebuild_tefas.py](../backend/tools/rebuild_tefas.py)):
+**TEFAS fiyat geçmişi yeniden kuruldu** (tek seferlik araç; sonra veri tabanına aktarıldı, `fon_fiyat` tablosu):
 - **Kapsam:** 1.719.892 satır, 2068 yatırım fonu, 15.10.2021 → 15.10.2026.
 - **Kaynaklar:** taban olarak Gamze'nin 46 elle dışa aktarımı, üstüne `tefascrawl` çıktısı. tefascrawl, kullanıcının açık talimatıyla yazılmış bir Playwright tarayıcı otomasyonu; yöntemi meta kaydında yazılı.
 - **Doğrulama:** iki bağımsız yöntem 223.829 ortak fon-günde **sıfır çelişki** verdi.
-- **Yedek:** hasarlı önceki dosya `snapshots/_yedek_tefas/` altında.
+- **Yeni yüklemeler:** artık veri tabanına tek işlemde yazılıyor; yalnızca gelen fon-gün satırları değişir, geçmiş azalamaz.
 - **Getiri dosyası:** TEFAS getiri dosyası (1071 fon) "Fonun Risk Değeri" sütunuyla birlikte alındı.
 
 **Resmi RD artık iki kaynaktan:** KAP ve TEFAS.
@@ -163,16 +167,16 @@ backend/.venv/Scripts/python backend/tools/derive_series.py
 
 ## KAP bildirim geçmişi: RD ve ücret tarihçesi
 
-[backend/tools/fetch_kap_history.py](../backend/tools/fetch_kap_history.py) ile çekildi (15.10.2026).
+[backend/tools/fetch_kap_history.py](../backend/tools/fetch_kap_history.py) ile çekildi (15.10.2026). Çıktılar veri tabanındaki `ham_tablo` tablosundadır.
 - **Kaynak:** KAP'ın kendi bildirim sorgu API'si. İstekler sıralı ve 4-5 sn aralıklı; KAP'ın bağlantı kesmelerinde artan sürelerle geri çekilindi.
 - **Önbellek:** bildirim listesi ve ham PDF'ler `backend/data/raw/kap_liste/` ve `kap_ybf/` altında; tekrar çalıştırmada indirilmiş dosyalar atlanır.
 
-| Dosya | İçerik |
+| Ham tablo | İçerik |
 |---|---|
-| `gecmis/kap/kap_bildirimler.csv` | 1026 fonun YBF / İzahname / İzahname (Değişiklik) / Toplam Gider Oranı bildirimleri, 2021 → bugün |
-| `gecmis/kap/ybf_rd_ucret.csv` | 288 ING fonunun 1831 YBF PDF'inden okunan RD, yıllık yönetim ücreti, yıllık azami toplam gider oranı; her değerin metin kanıtı ve kaynak bildirim bağlantısı |
-| `gecmis/kap/ybf_degisimler.csv` | Fon bazında değişim zaman çizelgesi: **100 fonda 240 değişiklik** (157 RD, 83 ücret) |
-| `gecmis/kap/ybf_dogrulama.csv` | Her fonun en son YBF değeri ile KAP fon sayfasının 15.10 değeri |
+| `kap_kap_bildirimler` | 1026 fonun YBF / İzahname / İzahname (Değişiklik) / Toplam Gider Oranı bildirimleri, 2021 → bugün |
+| `kap_ybf_rd_ucret` | 288 ING fonunun 1831 YBF PDF'inden okunan RD, yıllık yönetim ücreti, yıllık azami toplam gider oranı; her değerin metin kanıtı ve kaynak bildirim bağlantısı |
+| `kap_ybf_degisimler` | Fon bazında değişim zaman çizelgesi: **100 fonda 240 değişiklik** (157 RD, 83 ücret) |
+| `kap_ybf_dogrulama` | Her fonun en son YBF değeri ile KAP fon sayfasının 15.10 değeri |
 
 **Kapsam ve doğruluk:**
 
@@ -198,13 +202,13 @@ backend/.venv/Scripts/python backend/tools/derive_series.py
 |---|---|---|
 | ING mevduat oranları | Hesaplayıcı yalnızca güncel oranı veriyor | `mevduat_tl_*` sektör serileri (TCMB) |
 | KAP fon bilgileri (RD, ücret) | Sayfa yalnızca güncel değeri gösteriyor | 10.10 ve 15.10 çekimleri karşılaştırılabilir (RD değişiklikleri: [gamze_aktarim.md](gamze_aktarim.md)) |
-| Stopaj | Dönem tablosu | `snapshots/stopaj_tarihce.json` (ING tablosu, 6 dönem) |
+| Stopaj | Dönem tablosu | `stopaj_donem` tablosu (ING tablosu, 6 dönem; `ing_stopaj` toplayıcısı) |
 | DİBS gösterge faizi (ikincil piyasa) | EVDS değerleri karışık birimli | Hazine ihale getirileri (yukarıda) |
 | TEFAS fon fiyatları | Kullanıcı ayrıca çekiyor | — |
 
 ## BIST 30 ve bileşen hisseler
 
-[backend/tools/fetch_bist.py](../backend/tools/fetch_bist.py) ile çekildi (15.10.2026). İstekler sıralı, aralarında 2 sn bekleme var. Dosyalar `backend/data/snapshots/gecmis/bist/<KOD>.csv`:
+`bist` toplayıcısıyla çekilir ([backend/app/collectors/bist.py](../backend/app/collectors/bist.py)). İstekler sıralı, aralarında 2 sn bekleme var. Veri tabanında `bist/<KOD>` serileri:
 
 | Sütun | Anlamı |
 |---|---|
@@ -212,7 +216,7 @@ backend/.venv/Scripts/python backend/tools/derive_series.py
 | `duzeltilmis_kapanis` | Bölünme + temettüye göre düzeltilmiş kapanış. **Toplam getiri için bu kullanılmalı.** |
 | `hacim` | Lot |
 
-Temettü ve bölünme olayları `bist/meta.json` içinde, hisse bazında.
+Temettü ve bölünme olayları seri metasında (ve `bist_meta` belgesinde), hisse bazında.
 
 - **Kaynak:** Yahoo Finance chart API. **Resmi Borsa İstanbul kaynağı değil**; Yahoo'nun kullanım koşulları otomatik çekime izin vermiyor. Kullanıcı kararıyla kullanılıyor.
 - **Doğrulama:** aynı kaynaktan çekilen BIST 100, resmi EVDS serisiyle 1442 ortak günde en fazla **%0,004** farklı.
@@ -231,9 +235,9 @@ Temettü ve bölünme olayları `bist/meta.json` içinde, hisse bazında.
 Yeniden çekmek için:
 
 ```bash
-backend/.venv/Scripts/python backend/tools/fetch_bist.py --start 2021-01-01
+backend/.venv/Scripts/python backend/tools/veri_topla.py bist
 ```
 
 ## Benchmark kaynağı değişti
 
-Fon kıyasında kullanılan BIST 100 artık Yahoo'dan değil, EVDS'nin resmi **getiri endeksinden** (`TP.MK.G.BILESIK`, temettü dahil) geliyor. Son 1 yıl (14.10.2025 → 14.10.2026): %19,4. EVDS dosyası yoksa aktarım Gamze'nin Yahoo serisine düşer.
+Fon kıyasında kullanılan BIST 100 artık Yahoo'dan değil, EVDS'nin resmi **getiri endeksinden** (`TP.MK.G.BILESIK`, temettü dahil) geliyor. Son 1 yıl (14.10.2025 → 14.10.2026): %19,4. `turetilmis` toplayıcısı her çalıştırmada yeniden hesaplar.

@@ -7,18 +7,17 @@ alınır: komut tekrar çalıştırıldığında kaldığı yerden devam eder.
 
 Adımlar:
   list   1026 fonun YBF / İzahname / İzahname (Değişiklik) / Toplam Gider Oranı bildirimleri, aylık pencerelerle
-         -> snapshots/gecmis/kap/kap_bildirimler.csv
-  ybf    ING fon listesindeki (snapshots/ing_fon_listesi.json) fonların YBF bildirimleri: detay sayfası + PDF ekleri
+         -> veri tabanı: ham_tablo 'kap_kap_bildirimler' + belge 'kap_gecmis_meta'
+  ybf    ING fon listesindeki (veri tabanı: platform_fon) fonların YBF bildirimleri: detay sayfası + PDF ekleri
          -> data/raw/kap_ybf/<index>.html, <index>_<n>.pdf
   parse  PDF'lerden risk değeri (RD), yıllık yönetim ücreti ve yıllık azami toplam gider oranı
-         -> snapshots/gecmis/kap/ybf_rd_ucret.csv (+ KAP 15.10 anlık görüntüsüyle doğrulama)
+         -> ham_tablo 'kap_ybf_rd_ucret' (+ veri tabanındaki KAP fon bilgisiyle doğrulama: 'kap_ybf_dogrulama')
 
 Kullanım: backend/.venv/Scripts/python backend/tools/fetch_kap_history.py list|ybf|parse [--pause 2.5]
 """
 from __future__ import annotations
 
 import argparse
-import gzip
 import json
 import logging
 import re
@@ -32,12 +31,11 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
-from app.config import SNAPSHOT_DIR, now_iso  # noqa: E402
+from app.config import now_iso  # noqa: E402
+from app.db import store  # noqa: E402
 
 BASE = "https://www.kap.org.tr"
-OUT = SNAPSHOT_DIR / "gecmis" / "kap"
 RAW = ROOT / "backend" / "data" / "raw" / "kap_ybf"
-REGISTRY = ROOT / "gamze_work" / "AGENTIC AI HACKATHON-ING" / "data" / "raw" / "kap_yatirim_fonlari_20261009T190450Z.html.gz"
 SUBJECTS = {
     "Yatırımcı Bilgi Formu": "8aca490d51153da6015115455c5f00b9",
     "İzahname": "8aca490d502dd03b01502deb982000e2",
@@ -87,15 +85,6 @@ class Polite:
         return None
 
 
-def registry() -> dict[str, dict]:
-    h = gzip.open(REGISTRY, "rt", encoding="utf-8").read().replace('\\"', '"')
-    reg = {}
-    for o in re.findall(r'\{"umbFundName":.*?"nonInactiveCount":\d+\}', h):
-        j = json.loads(o)
-        reg.setdefault(j["fundCode"], j)
-    return reg
-
-
 LIST_CACHE = ROOT / "backend" / "data" / "raw" / "kap_liste"
 
 
@@ -128,7 +117,6 @@ def months(start: date, end: date):
 
 
 def step_list(cli: Polite, start: date):
-    OUT.mkdir(parents=True, exist_ok=True)
     rows, gaps = [], []
 
     def fetch(a, b, name, oid):
@@ -153,18 +141,20 @@ def step_list(cli: Polite, start: date):
         print(f"{name:58} {len(rows) - n0:>6} bildirim", flush=True)
     df = pd.DataFrame(rows).drop_duplicates("bildirim_no")
     df["yayim_tarihi"] = pd.to_datetime(df["yayim"], format="%d.%m.%Y %H:%M:%S").dt.date
-    df.sort_values(["fon", "yayim_tarihi"]).to_csv(OUT / "kap_bildirimler.csv", index=False)
+    df["yayim_tarihi"] = df["yayim_tarihi"].astype(str)
     meta = {"kaynak": "KAP fon bildirim sorgusu (www.kap.org.tr/tr/api/disclosure/funds/byCriteria)", "alinma": now_iso(),
             "baslangic": str(start), "konular": SUBJECTS, "satir": int(len(df)), "fon_sayisi": int(df["fon"].nunique()),
             "eksik_pencereler": gaps, "not": "Fon türü: YF (yatırım fonları). Bildirim listesi; içerik değil."}
-    (OUT / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    with store.Run("kap_gecmis") as run:
+        store.save_raw_table("kap_kap_bildirimler", df.sort_values(["fon", "yayim_tarihi"]), run)
+        store.save_document("kap_gecmis_meta", {**(store.document("kap_gecmis_meta") or {}), **meta}, run)
     print(f"toplam {len(df)} bildirim, {df['fon'].nunique()} fon; eksik pencere {len(gaps)}", flush=True)
 
 
 def step_ybf(cli: Polite):
     RAW.mkdir(parents=True, exist_ok=True)
-    df = pd.read_csv(OUT / "kap_bildirimler.csv")
-    ing = set(json.loads((SNAPSHOT_DIR / "ing_fon_listesi.json").read_text(encoding="utf-8"))["kodlar"])
+    df = store.raw_table("kap_kap_bildirimler")
+    ing = set((store.platform_funds("ING") or {}).get("kodlar", []))
     todo = df[(df["konu"] == "Yatırımcı Bilgi Formu") & df["fon"].isin(ing)].sort_values("yayim_tarihi")
     print(f"{len(todo)} YBF bildirimi, {todo['fon'].nunique()} fon", flush=True)
     for i, idx in enumerate(todo["bildirim_no"], 1):
@@ -241,7 +231,7 @@ def parse_text(t: str) -> dict:
 def step_parse():
     from pypdf import PdfReader
     logging.disable(logging.CRITICAL)
-    df = pd.read_csv(OUT / "kap_bildirimler.csv")
+    df = store.raw_table("kap_kap_bildirimler")
     ybf = df[df["konu"] == "Yatırımcı Bilgi Formu"].set_index("bildirim_no")
     rows = []
     for f in sorted(RAW.glob("*_*.pdf")):
@@ -259,9 +249,8 @@ def step_parse():
         rows.append({"fon": b["fon"], "yayim_tarihi": b["yayim_tarihi"], "bildirim_no": idx, "ek": n, **rec, "durum": status,
                      "kaynak": f"{BASE}/tr/Bildirim/{idx}"})
     out = pd.DataFrame(rows).sort_values(["fon", "yayim_tarihi", "bildirim_no", "ek"])
-    out.to_csv(OUT / "ybf_rd_ucret.csv", index=False)
-    # Doğrulama: her fonun en son YBF değeri vs KAP fon sayfası (15.10.2026 anlık görüntüsü)
-    kap = json.loads((SNAPSHOT_DIR / "kap_fon_bilgileri.json").read_text(encoding="utf-8"))["fonlar"]
+    # Doğrulama: her fonun en son YBF değeri vs veri tabanındaki KAP fon sayfası kaydı
+    kap = (store.kap_funds() or {}).get("fonlar", {})
     last = out[out["durum"] == "ok"].groupby("fon").last()
     cmp = []
     for kod, r in last.iterrows():
@@ -277,13 +266,14 @@ def step_parse():
         "dogrulama_rd": {"karsilastirilan_fon": int(len(rd_ok)), "esit": int((rd_ok["ybf_rd"] == rd_ok["kap_rd"]).sum())},
         "dogrulama_ucret": {"karsilastirilan_fon": int(len(fee_ok)),
                             "esit": int(((fee_ok["ybf_ucret"] - fee_ok["kap_ucret"]).abs() < 1e-6).sum())},
-        "not": "Doğrulama: fonun en son YBF'sinden okunan değer ile KAP fon sayfasının 15.10.2026 anlık görüntüsü.",
+        "not": "Doğrulama: fonun en son YBF'sinden okunan değer ile KAP fon sayfasının veri tabanındaki son kaydı.",
     }
-    c.to_csv(OUT / "ybf_dogrulama.csv", index=False)
-    meta_path = OUT / "meta.json"
-    meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
-    meta["ybf_ayristirma"] = {**summary, "alinma": now_iso()}
-    meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    with store.Run("kap_gecmis") as run:
+        store.save_raw_table("kap_ybf_rd_ucret", out.astype({"yayim_tarihi": str}), run)
+        store.save_raw_table("kap_ybf_dogrulama", c, run)
+        meta = store.document("kap_gecmis_meta") or {}
+        meta["ybf_ayristirma"] = {**summary, "alinma": now_iso()}
+        store.save_document("kap_gecmis_meta", meta, run)
     print(json.dumps(summary, ensure_ascii=False, indent=1))
 
 
