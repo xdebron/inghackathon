@@ -46,7 +46,7 @@ export function AddClientPanel({ onAdded, onClose }: { onAdded: (pid: string, op
   const submitForm = async () => {
     setBusy(true); setMsg(null)
     try {
-      const body = { ...f, yas: f.yas ? Number(f.yas) : null, oncelikler: [...prio, ...extra(prioExtra)], acik_kisitlar: [...cons, ...extra(consExtra)] }
+      const body = { ...f, yas: f.yas ? Number(f.yas) : null, nitelikli_yatirimci: f.nitelikli_yatirimci ? f.nitelikli_yatirimci === 'evet' : null, oncelikler: [...prio, ...extra(prioExtra)], acik_kisitlar: [...cons, ...extra(consExtra)] }
       const r = await post('/api/musteriler', JSON.stringify(body))
       onAdded(r.persona.persona_id)
     } catch (e) { setMsg({ ok: false, text: (e as Error).message }) } finally { setBusy(false) }
@@ -108,6 +108,11 @@ export function AddClientPanel({ onAdded, onClose }: { onAdded: (pid: string, op
             ))}
             <label className="field"><span>Yatırım amacı</span><input value={f.yatirim_amaci ?? ''} onChange={(e) => set('yatirim_amaci', e.target.value)} /></label>
             <label className="field"><span>Durum</span><input value={f.durum ?? ''} onChange={(e) => set('durum', e.target.value)} placeholder="ör. Varlığı TL mevduat ağırlıklı" /></label>
+            <label className="field" title="SPK: serbest fonlar yalnızca nitelikli yatırımcıya satılabilir"><span>Nitelikli yatırımcı (SPK)</span>
+              <select value={f.nitelikli_yatirimci ?? ''} onChange={(e) => set('nitelikli_yatirimci', e.target.value)}>
+                <option value="">Teyit edilmedi</option><option value="evet">Evet</option><option value="hayir">Hayır</option>
+              </select>
+            </label>
             <label className="field"><span>Kimlik (isteğe bağlı)</span><input value={f.persona_id ?? ''} onChange={(e) => set('persona_id', e.target.value.toUpperCase())} placeholder={opt.sonraki_kimlik} /></label>
           </div>
           <div>

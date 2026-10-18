@@ -649,7 +649,7 @@ def rl_benzer_donemler(args: dict) -> dict:
             chosen.append(int(i))
         if len(chosen) == k:
             break
-    period = ctx.meta.get("donem", {})
+    period = rc.model_period(ctx.meta) or {}
 
     def which(t):
         s = str(t.date())
@@ -734,10 +734,12 @@ def rl_guvenilirlik(args: dict) -> dict:
     unseen = test.get("gorulmemis_profiller")
     return {
         "persona_id": ctx.persona.persona_id, "karar_tarihi": karar["karar_tarihi"],
-        "egitim_donemi": ctx.meta.get("donem"),
+        "egitim_donemi": rc.model_period(ctx.meta),
         "dagilim_disi_gostergeler": ood, "kirpilan_gostergeler": sat, "karar_marji": karar["marj_yorumu"],
         "piyasa_duyarliligi": sens,
         "persona_test_kiyasi": kiyas or None,
+        "gorulmemis_profil_testi_aciklama": ("Eğitimde görülmemiş binlerce sentetik profilin ortalaması; modelin genellemesini ölçer, "
+                                             "BU MÜŞTERİYE ÖZGÜ DEĞİLDİR. Bu müşterinin kıyası persona_test_kiyasi'dir."),
         "gorulmemis_profil_testi": ({k: {"ortalama_reel_kazanc": round(v["ortalama_reel_kazanc"] * 100, 1)}
                                      for k, v in unseen.items() if isinstance(v, dict) and v.get("ortalama_reel_kazanc") is not None}
                                     if isinstance(unseen, dict) else None),

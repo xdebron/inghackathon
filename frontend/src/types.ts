@@ -28,6 +28,7 @@ export interface Persona {
   oncelikler: string[]
   acik_kisitlar: string[]
   rm_notu?: string
+  nitelikli_yatirimci?: boolean | null
 }
 
 export interface Question {

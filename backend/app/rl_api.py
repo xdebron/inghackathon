@@ -56,7 +56,7 @@ def model_info():
     from . import rl_explain as rx
     _, meta = rc._load_model()
     expl = rc.load_explainer(meta) if meta else None
-    return {"durum": rc.model_status(), "meta": {k: meta.get(k) for k in META_KEYS} if meta else None,
+    return {"durum": rc.model_status(), "meta": {**{k: meta.get(k) for k in META_KEYS}, "donem": rc.model_period(meta)} if meta else None,
             "aciklama": rx.global_summary(expl) if expl else None, "canli_log": _live_log()}
 
 

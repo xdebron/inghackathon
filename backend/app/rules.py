@@ -14,8 +14,11 @@ def base_checks(p: Product, view: ProfileView) -> Exclusion | None:
     q = decision_config()["veri_kalitesi"]
     if p.category == "bilinmiyor":
         return _exclude(p, "R_KATEGORI", "Fon türü adından tespit edilemedi; sınıflandırılamayan ürün önerilmez.")
-    if p.category == "serbest" and p.v("nitelikli_yatirimci") is not False:
-        return _exclude(p, "R_NITELIKLI", "Serbest fon; personalarda nitelikli yatırımcı bilgisi yok ve fonun nitelikli yatırımcıya özel olmadığı teyit edilmedi.")
+    if p.category == "serbest" and view.qualified is not True:
+        # SPK: serbest fon katılma payları yalnızca nitelikli yatırımcıya satılabilir. KAP metninde ibare geçmemesi
+        # yeterli değil; müşterinin nitelikli yatırımcı olduğu RM tarafından teyit edilmeden serbest fon önerilmez.
+        return _exclude(p, "R_NITELIKLI", "Serbest fon; yalnızca nitelikli yatırımcıya satılabilir ve müşterinin nitelikli yatırımcı olduğu teyit edilmedi."
+                        if view.qualified is None else "Serbest fon; yalnızca nitelikli yatırımcıya satılabilir, müşteri nitelikli yatırımcı değil.")
     rd = p.v("rd")
     if rd is None:
         return _exclude(p, "R_RISK_BILINMIYOR", "Risk değeri belirlenemedi (resmi RD yok, volatilite için yeterli veri yok); riski bilinmeyen ürün önerilmez.")

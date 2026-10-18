@@ -71,6 +71,13 @@ export function PersonaPanel({ persona, original, onChange, onReset, disabled, o
           <span>Açık kısıtlar (satır başına bir)</span>
           <textarea rows={3} value={(persona.acik_kisitlar ?? []).join('\n')} onChange={(e) => list('acik_kisitlar', e.target.value)} />
         </label>
+        <label className={changed('nitelikli_yatirimci') ? 'field changed' : 'field'} title="SPK: serbest fonlar yalnızca nitelikli yatırımcıya satılabilir. Teyit edilmedikçe serbest fonlar değerlendirmeye alınmaz.">
+          <span>Nitelikli yatırımcı (SPK)</span>
+          <select value={persona.nitelikli_yatirimci == null ? '' : persona.nitelikli_yatirimci ? 'evet' : 'hayir'}
+            onChange={(e) => onChange({ ...persona, nitelikli_yatirimci: e.target.value === '' ? null : e.target.value === 'evet' })}>
+            <option value="">Teyit edilmedi</option><option value="evet">Evet</option><option value="hayir">Hayır</option>
+          </select>
+        </label>
       </div>
       <CurrentAllocInput value={current} onChange={onCurrent} />
       <div className="card-foot">

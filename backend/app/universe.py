@@ -333,8 +333,9 @@ def _deposit_products(raw: dict, stopaj: dict, ind: dict[str, DataPoint], flags:
                 diff = rate.value - sector.value
                 fields["sektor_farki"] = derived(f"{pid}.sektor_farki", diff, [rate, sector], "banka oranı − TCMB sektör ortalaması")
                 if abs(diff) > cc["mevduat_sektor_sapma_puan"]:
+                    dev = f"{'+' if diff >= 0 else '−'}{abs(diff) * 100:.1f}".replace(".", ",")
                     flags.append(Flag(product_id=pid, level="teyit",
-                                      message=f"{banka} {vade} gün oranı sektör ortalamasından {diff*100:+.1f} puan sapıyor; "
+                                      message=f"{banka} {vade} gün oranı sektör ortalamasından {dev} puan sapıyor; "
                                               f"oran ve koşullar (tutar, kampanya, yeni müşteri şartı) teyit edilmeli."))
         if cat in stopaj:
             fields["stopaj"] = stopaj[cat]
@@ -386,7 +387,7 @@ def _stock_products(stopaj: dict, flags: list[Flag]) -> list[Product]:
     src = meta.get("kaynak", "Yahoo Finance")
     today = date.today()
     if codes:
-        flags.append(Flag(level="teyit", message=(
+        flags.append(Flag(level="teyit", category=STOCK_CAT, message=(
             f"BIST 30 hisseleri ({len(codes)} pay): fiyatlar {src}; bileşim '{comp.get('durum', '?')}' "
             f"({comp.get('kaynak', '?')}). Bileşim ve fiyatlar resmi Borsa İstanbul kaynağından teyit edilmeli.")))
     products = []
@@ -503,7 +504,7 @@ def _dibs_products(stopaj: dict, ind: dict[str, DataPoint], flags: list[Flag]) -
         products.append(Product(product_id=pid, name=f"{tenor} yıl vadeli {label} devlet tahvili (son Hazine ihalesi)",
                                 category=cat, currency="TRY", fields=fields))
     if products and "dibs_tl" not in stopaj:
-        flags.append(Flag(level="teyit", message="Doğrudan DİBS için stopaj oranı yüklenmedi; tahvil faiz gelirinin vergilendirmesi RM tarafından teyit edilmeli."))
+        flags.append(Flag(level="teyit", category="dibs_tl", message="Doğrudan DİBS için stopaj oranı yüklenmedi; tahvil faiz gelirinin vergilendirmesi RM tarafından teyit edilmeli."))
     return products
 
 
@@ -594,7 +595,7 @@ def _metal_account_products(stopaj: dict, flags: list[Flag]) -> list[Product]:
         products.append(Product(product_id=pid, name=f"{label} hesabı (banka kıymetli maden hesabı)", category="maden_hesabi",
                                 currency=cur, fields=fields))
     if products:
-        flags.append(Flag(level="teyit", message="Kıymetli maden hesapları: banka alış-satış makası ve vergilendirme veride yok; RM teyit etmeli."))
+        flags.append(Flag(level="teyit", category="maden_hesabi", message="Kıymetli maden hesapları: banka alış-satış makası ve vergilendirme veride yok; RM teyit etmeli."))
     return products
 
 

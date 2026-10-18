@@ -53,7 +53,7 @@ Her katmanın varsayımları ve parametreleri gerekçeleriyle iki dosyadadır: [
    - `K_YOGUNLASMA`: kategori başına en fazla 1 ürün, en az 3 kategori.
    - `K_KISA_VADE_NAKIT_YOK`: likidite ağırlığı sabitlenir.
 3. **Eşleşmeyen kısıt veya eksik/çelişkili alan:** sistem tahmin yürütmez. Akış "RM teyidi bekliyor" durumunda durur ve soru üretir. Örnek: "Müşteri agresif risk profilinde ama anapara korumasını yüksek öncelik görüyor. Hangisi esas alınmalı?"
-4. **Diğer dışlamalar:** nitelikli yatırımcıya özel ya da bu bilgisi teyit edilmemiş serbest fonlar, getiri verisi olmayan ürünler, riski belirlenemeyen ürünler.
+4. **Diğer dışlamalar:** serbest fonlar (SPK: yalnızca nitelikli yatırımcıya satılabilir; müşterinin nitelikli yatırımcı olduğu RM tarafından teyit edilmedikçe), getiri verisi olmayan ürünler, riski belirlenemeyen ürünler.
 
 Her dışlama `kural kimliği + gerekçe` ile kayda geçer ve arayüzde listelenir. Örnek: "Risk değeri RD 5, müşteri profilinin üst sınırı RD 3."
 

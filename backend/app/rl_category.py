@@ -261,6 +261,18 @@ class PPOPolicy:
         return e / e.sum(axis=-1, keepdims=True)
 
 
+def model_period(meta: dict) -> dict | None:
+    """Dönem bilgisi. meta['donem']['test'] gösterge penceresiyle başlar (ilk test kararının 3 aylık geriye dönük
+    göstergeleri); test kararları meta['test_baslangic']'tan itibarendir. Metinde ve araçlarda test dönemi olarak
+    karar dönemi gösterilir, pencere ayrıca tutulur."""
+    d = dict(meta.get("donem") or {}) or None
+    tb = meta.get("test_baslangic")
+    if d and tb and d.get("test") and tb > d["test"][0]:
+        d["test_gosterge_penceresi"] = d["test"]
+        d["test"] = [tb, d["test"][1]]
+    return d
+
+
 def _load_model():
     from .rl import MLP
     mp, mt = MODEL_DIR / "model.npz", MODEL_DIR / "meta.json"
@@ -510,9 +522,9 @@ def infer(persona, view, scored: list, current: dict[str, float] | None = None) 
             "dislanan_kategoriler": why, "dagilim_disi": ood, "duyarlilik": sens, "notlar": notes,
             "gostergeler": [{"ad": n, "bugun": float(raw[k]), "egitim_ort": float(mu[k]), "egitim_std": float(sd[k]), "z": float(z[k])}
                             for k, n in enumerate(meta["gosterge_adlari"])],
-            "persona_testi": test, "model": {k: meta.get(k) for k in ("olusturma", "sure_dk", "guncelleme", "en_iyi_guncelleme",
-                                                                       "donem", "profil_sayisi", "kategori_rd", "model_turu",
-                                                                       "model_adi", "egitim_verisi")},
+            "persona_testi": test, "model": {**{k: meta.get(k) for k in ("olusturma", "sure_dk", "guncelleme", "en_iyi_guncelleme",
+                                                                          "profil_sayisi", "kategori_rd", "model_turu",
+                                                                          "model_adi", "egitim_verisi")}, "donem": model_period(meta)},
             "genel_test": ({k: meta["test"][k] for k in ("egitim_profilleri", "gorulmemis_profiller") if k in meta["test"]}
                            if "gorulmemis_profiller" in (meta.get("test") or {}) else None)}
 

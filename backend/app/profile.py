@@ -39,6 +39,7 @@ class ProfileView(BaseModel):
     rules: list[dict]  # eşleşen kısıt kuralları (+ kaynak kısıt metni)
     ignored_constraints: list[str]
     acknowledged: list[str]
+    qualified: bool | None = None   # nitelikli yatırımcı (RM teyidi); None = bilinmiyor
 
 
 def apply_answers(persona: Persona, answers: dict[str, Any]) -> Persona:
@@ -197,4 +198,5 @@ def interpret(persona: Persona, answers: dict[str, Any]) -> tuple[ProfileView | 
     if qs:
         return None, qs
     return ProfileView(risk_level=risk["seviye"], max_rd=risk["max_rd"], horizon_years=horizon, levels=levels,
-                       fx_pref=fx, rules=rules, ignored_constraints=ignored, acknowledged=acknowledged), []
+                       fx_pref=fx, rules=rules, ignored_constraints=ignored, acknowledged=acknowledged,
+                       qualified=persona.nitelikli_yatirimci), []

@@ -24,6 +24,7 @@ import httpx
 
 from . import guard, rl_tools
 from .config import decision_config, now_iso
+from .note import NOTE_SECTIONS, NOTE_TITLE
 
 DEFAULT_BASE = "http://127.0.0.1:8001/v1"
 MAX_RESULT_CHARS = 7000
@@ -105,9 +106,19 @@ def data_tools(rv: RunView) -> dict[str, tuple[dict, Callable[[dict], Any]]]:
                 "kriter_agirliklari": {k: {"agirlik": _pct(v["weight"], 0), "neden": v["explanation"]}
                                        for k, v in (rv.r.get("weights") or {}).items()}}
 
+    ni = rv.r.get("not_icerigi") or {}
+
     def kisa_liste(_):
         return {"urunler": [rv.product_brief(s) for s in rv.r.get("shortlist", [])],
-                "not": "Fon getirileri geçmiş performanstır; mevduat oranları sözleşme oranıdır. Skor 0-100, güven veri kalitesidir."}
+                "not": "Fon getirileri geçmiş performanstır; mevduat oranları sözleşme oranıdır. Skor 0-100, güven veri kalitesidir. "
+                       "Bu liste notun 4. bölümündeki karşılaştırmadır; önerilen dağılım onerilen_dagilim aracındadır."}
+
+    def onerilen_dagilim(_):
+        if not ni:
+            raise rl_tools.ToolError("Bu kayıtta hazır dağılım bölümü yok; rl_karar ve kisa_liste kullan.")
+        return {"baslik": ni.get("section3_title"), "satirlar": ni.get("section3"), "karsilastirma_satirlari": ni.get("section4"),
+                "not": "Notun 3. ve 4. bölümleri bu satırlara dayanır. Ürün adlarını, ağırlıkları, oranları ve tarihleri aynen kullan; "
+                       "kategori notlarını ve 'Dikkat' maddelerini birer kez yaz."}
 
     def urun_detay(a):
         pid = a.get("urun_id", "")
@@ -127,6 +138,9 @@ def data_tools(rv: RunView) -> dict[str, tuple[dict, Callable[[dict], Any]]]:
                                  f"{', '.join(valid)}")
 
     def dislananlar(_):
+        if ni.get("exclusions") is not None:
+            return {"gerekceler": ni["exclusions"], "uygun_ama_listede_olmayan": ni.get("others_count"),
+                    "not": "Dışlanan ürünlerin adlarını veya kodlarını metinde kullanma; gerekçeleri bu genel biçimde yaz."}
         out: dict[str, dict] = {}
         for e in rv.r.get("excluded", []):
             g = out.setdefault(e["rule_id"], {"adet": 0, "ornek_gerekce": e["reason"]})
@@ -136,24 +150,32 @@ def data_tools(rv: RunView) -> dict[str, tuple[dict, Callable[[dict], Any]]]:
                 "not": "Dışlanan ürünlerin adlarını veya kodlarını metinde kullanma; yalnızca gerekçeleri genel olarak anlat."}
 
     def piyasa(_):
+        if ni.get("market_lines"):
+            return {"gostergeler": ni["market_lines"], "not": "Değer, kaynak ve tarihleri aynen kullan."}
         return {"gostergeler": [{"ad": m["key"], "deger": _fmt_market(m), "kaynak": m.get("source"), "tarih": m.get("as_of"),
                                  "durum": m.get("status"), **({"not": m["note"]} if m.get("note") else {})}
                                 for m in rv.r.get("market", []) if m.get("value") is not None]}
 
     def teyitler(_):
+        if ni.get("confirmations") is not None:
+            return {"teyit_maddeleri": ni["confirmations"],
+                    "not": "Notun 6. bölümü yalnızca bu maddelerden oluşur; başka genel madde ekleme, aynı maddeyi tekrarlama."}
         return {"uyarilar": [{"seviye": f["level"], "mesaj": f["message"]} for f in rv.r.get("flags", [])],
                 "teyit_maddeleri": rv.r.get("teyitler", []),
                 "gizlenen_diger_urun_uyarisi": rv.r.get("hidden_flag_count", 0)}
 
     def sorular(_):
-        return {"oneriler": rv.r.get("musteri_sorulari", [])}
+        return {"oneriler": ni.get("client_questions") or rv.r.get("musteri_sorulari", [])}
 
     obj = lambda props=None, req=None: {"type": "object", "properties": props or {}, "required": req or []}
     return {
         "profil_ozeti": ({"description": "Müşteri personası, yorumlanmış risk sınırı, uygulanan kısıt kuralları ve kriter ağırlıkları.",
                           "parameters": obj()}, profil),
-        "kisa_liste": ({"description": "Kural motorunun kısa listesi: her ürün için skor, öne çıkan kriterler, göstergeler "
-                                       "(değer, kaynak, tarih, durum) ve uyarılar.", "parameters": obj()}, kisa_liste),
+        "onerilen_dagilim": ({"description": "Notun 3. bölümü: RL modelinin kategori dağılımı, eşlenen ürünler (ağırlık, rol, "
+                                             "göstergeler, dikkat notları), belirsizlik ve test dönemi kıyası; ayrıca 4. bölümün "
+                                             "karşılaştırma satırları.", "parameters": obj()}, onerilen_dagilim),
+        "kisa_liste": ({"description": "Kural ve puanlama kısa listesi (karşılaştırma): her ürün için skor, öne çıkan kriterler, "
+                                       "göstergeler (değer, kaynak, tarih, durum) ve uyarılar.", "parameters": obj()}, kisa_liste),
         "urun_detay": ({"description": "Bir ürünün tüm göstergeleri ve skor dökümü; kısa listede değilse nedeni.",
                         "parameters": obj({"urun_id": {"type": "string", "description": "örn. FON:BGP veya MEVDUAT:ING:32"}},
                                           ["urun_id"])}, urun_detay),
@@ -226,24 +248,20 @@ def allowed_percents(results: list) -> set[str]:
 SYSTEM_PREP = """Sen bir Private Banking Relationship Manager'ın (RM) görüşme öncesi hazırlık ajanısın. Araçları kullanarak verileri ve modelleri sorgula, sonra RM için Türkçe bir hazırlık notu yaz.
 
 Kurallar (kesin):
-1. Her sayı, oran ve ürün bilgisi bir araç çıktısından gelmeli. Sayıları araçtaki yazımla aynen kullan (örn. "%46,50"). Araçta olmayan oran, getiri veya tahmin yazma; bilmiyorsan "veri yok" de.
-2. Yalnızca kisa_liste'deki ürünleri alternatif olarak tartış. Dışlanan ürünlerin adını veya kodunu yazma; dışlama gerekçelerini genel olarak anlat.
-3. Getiri vaadi yok. "garanti", "kesin getiri", "risksiz", "tavsiye ediyorum" gibi ifadeler yasak. Geçmiş getirinin geleceği göstermediğini belirt.
-4. Metin RM içindir: müşteriye hitap etme, RM yerine karar verme; seçenekleri ve dikkat noktalarını sun.
-5. RL modeli geçmiş verilerle yapılmış bir simülasyona dayalı karar desteğidir. Dağılım görüşünü anlatırken rl_karar, rl_neden (tema Shapley açıklaması) ve rl_guvenilirlik sonuçlarını kullan; güvenilirlik uyarılarını ve modelin basit kurala karşı test sonuçlarını gizleme.
-6. Teyit gereken bilgileri teyit_listesi'nden al ve açıkça yaz.
+1. Her sayı, oran, tarih ve ürün bilgisi bir araç çıktısından gelmeli ve araçtaki yazımla aynen kullanılmalı (örn. "%46,50", "15.10.2026"). Araçta olmayan oran, getiri veya tahmin yazma; bilmiyorsan "veri yok" de. Oranları yüzde olarak yaz (0,3001 değil %30,0); ham alan adı, araç adı veya kod yazma.
+2. Önerilen dağılım RL modelinden gelir: 3. bölümü onerilen_dagilim aracının satırlarına dayandır. Kural ve puanlama kısa listesi 4. bölümde karşılaştırmadır. Dışlanan ürünlerin adını veya kodunu yazma.
+3. Getiri vaadi yok. "garanti", "kesin getiri", "risksiz", "tavsiye ediyorum" gibi ifadeler yasak. Geçmiş getirinin geleceği göstermediğini notta bir kez belirt.
+4. Metin RM içindir: müşteriye hitap etme, RM yerine karar verme.
+5. Modelin güvenilirlik uyarılarını ve basit kurala karşı test sonucunu gizleme. Bu müşteri için kıyas, onerilen_dagilim'daki "Test dönemi" satırıdır; rl_guvenilirlik'teki görülmemiş profil testi binlerce sentetik profilin genel ortalamasıdır, bu müşteriye özgü değildir ve "bu profilde" diye yazılmaz. Model nedenlerini rl_neden ile en fazla 3 maddede, güvenilirlik uyarılarını en fazla 2 cümlede 3. bölümün sonunda özetle.
+6. Teyit bölümü yalnızca teyit_listesi maddelerinden oluşur. Bir uyarıyı notta yalnızca bir kez yaz (ürünün altında ya da teyit bölümünde, ikisinde birden değil).
+7. Doğrudan notla başla: ilk satır başlıktır. "Notu yazıyorum", "---" gibi ara cümle ya da ayraç yazma.
 
-Önerilen çalışma sırası: profil_ozeti, kisa_liste, piyasa_baglami, teyit_listesi, dislanan_ozeti, musteri_sorulari, rl_karar, rl_neden, rl_guvenilirlik; gerekiyorsa rl_esik, rl_ne_olursa, rl_benzer_donemler. kisa_liste her ürünün göstergelerini zaten içerir; urun_detay'ı yalnızca skor dökümü gerekirse ve yalnızca kisa_liste'deki urun_id değerleriyle çağır, kimlik uydurma. Bilgiyi topladıktan sonra (en fazla 3-4 tur) notu yaz.
+Önerilen çalışma sırası: profil_ozeti, piyasa_baglami, onerilen_dagilim, rl_neden, rl_guvenilirlik, teyit_listesi, dislanan_ozeti, musteri_sorulari; gerekiyorsa kisa_liste, rl_esik, rl_ne_olursa. Bilgiyi topladıktan sonra (en fazla 3-4 tur) notu yaz.
 
-Not biçimi (düz metin, şu başlıklarla):
-GÖRÜŞME HAZIRLIK NOTU – <persona kodu> (<profil>)
-1) Görüşmenin amacı ve müşteri profili
-2) Piyasa bağlamı
-3) Tartışılabilecek alternatifler (her ürün için: portföydeki rolü, neden listede olduğu, temel göstergeler ve veri tarihi, dikkat noktası)
-4) Model destekli dağılım görüşü (RL): karar, nedenleri (temalar), ne değişirse kararın değişeceği, güvenilirlik
-5) Listede yer almayan seçenekler
-6) Görüşmeden önce teyit edilmesi gerekenler
-7) Müşteriye sorulabilecek sorular"""
+Not biçimi (düz metin; başlıklar aynen bu yazımla ve sırayla, yedisi de zorunlu):
+GÖRÜŞME HAZIRLIK NOTU – <persona kodu> (<profil>, <yaş>)
+""" + "\n".join(NOTE_SECTIONS) + """
+Son bölüm müşteriye sorulabilecek sorularla biter; 7. bölümden sonra not, özet ya da başka metin yazma. Metni yarıda bırakma, uzun listeleri kısalt."""
 
 SYSTEM_QA = """Sen bir Private Banking RM'inin hazırlık asistanısın. RM'in sorusunu araçları kullanarak, kısa ve kaynaklı biçimde Türkçe yanıtla.
 Kurallar: her sayı bir araç çıktısından gelmeli ve araçtaki yazımla aynen kullanılmalı; dışlanan ürünlerin adını veya kodunu yazma; getiri vaadi yok ("garanti", "kesin getiri", "risksiz", "tavsiye ediyorum" yasak); RM yerine karar verme. RL modeli bir simülasyondur; ne-olursa sorularında rl_ne_olursa veya rl_esik kullan ve güvenilirlik uyarılarını belirt. Cevabın sonunda kullandığın araçları ve verilerin tarihini kısaca an."""
@@ -279,16 +297,17 @@ class Agent:
             raise AgentError(f"LLM sunucusundan model adı alınamadı ({self.base}): {type(e).__name__}: {e}") from e
 
     def _chat(self, messages, tools, tool_choice="auto") -> tuple[dict, dict]:
-        payload = {"model": self._model_name(), "messages": messages, "temperature": 0.2, "max_tokens": 3500,
+        payload = {"model": self._model_name(), "messages": messages, "temperature": 0.2, "max_tokens": 6000,
                    "chat_template_kwargs": {"enable_thinking": False}}
         if tools:
             payload["tools"], payload["tool_choice"] = tools, tool_choice
         d = self._post(payload)
+        self.last_finish = d["choices"][0].get("finish_reason")
         return d["choices"][0]["message"], d.get("usage") or {}
 
     def run(self, rv: RunView, task: str, system: str, excluded_codes: list[str], allowed_names: list[str],
             append_disclaimer: bool = True, on_step: Callable[[dict], None] | None = None,
-            tool_names: list[str] | None = None, disclaimer: str | None = None) -> dict:
+            tool_names: list[str] | None = None, disclaimer: str | None = None, structure: bool = False) -> dict:
         tools_map = {**data_tools(rv), **model_tools(rv)}
         if tool_names is not None:     # görev bazında araç kısıtı (örn. müşteri metninde iç uyarılar yok)
             tools_map = {k: v for k, v in tools_map.items() if k in tool_names}
@@ -350,12 +369,23 @@ class Agent:
 
         required = decision_config()["metin_guard"]["zorunlu_ibare"]
         disclaimer = disclaimer or required
-        finish = lambda t: (t.rstrip() + "\n\n" + disclaimer) if append_disclaimer and disclaimer not in t else t
+        def finish(t: str) -> str:
+            if structure and NOTE_TITLE in t:      # baştaki ajan ara cümleleri/ayraçlar notun parçası değildir
+                t = t[t.index(NOTE_TITLE):]
+            return (t.rstrip() + "\n\n" + disclaimer) if append_disclaimer and disclaimer not in t else t
+
+        def violations_of(t: str) -> list[str]:
+            v = guard.check(check_text(t), excluded_codes, allowed, allowed_names)
+            if structure:
+                v += guard.structure(t)
+                if getattr(self, "last_finish", None) == "length":
+                    v.append("Metin uzunluk sınırında kesildi; listeleri kısaltarak notun tamamını yaz")
+            return v
         # Müşteri metninin ibaresi farklıdır; guard'ın zorunlu ibare kontrolü iç ibareyle karşılanır
         check_text = lambda t: t if required in t else t + "\n" + required
         allowed = allowed_percents(results)
         text = finish(text)
-        violations = guard.check(check_text(text), excluded_codes, allowed, allowed_names)
+        violations = violations_of(text)
         rounds = 0
         while violations and rounds < self.revisions:
             rounds += 1
@@ -363,7 +393,7 @@ class Agent:
                              + "\nYalnızca araç çıktılarındaki sayıları kullanarak, ihlalleri gidererek metnin TAMAMINI yeniden yaz."})
             msg, ms = chat(with_tools=False)
             text = finish((msg.get("content") or "").strip())
-            violations = guard.check(check_text(text), excluded_codes, allowed, allowed_names)
+            violations = violations_of(text)
             trace.append({"adim": steps + rounds, "tip": "duzeltme", "sure_ms": ms, "kalan_ihlal": len(violations)})
             messages.append({"role": "assistant", "content": text})
         return {"metin": text, "ihlaller": violations, "duzeltme_turu": rounds, "izin_verilen_oranlar": sorted(allowed),
@@ -397,7 +427,7 @@ class AgentClient:
         p = rv.persona
         task = (f"Persona {p.get('persona_id')} ({p.get('profil')}) için görüşme hazırlık notunu hazırla. "
                 f"Önce araçlarla bilgileri topla, sonra notu belirtilen biçimde yaz.")
-        res = self.agent.run(rv, task, SYSTEM_PREP, ctx["_excluded_codes"], ctx["_names"])
+        res = self.agent.run(rv, task, SYSTEM_PREP, ctx["_excluded_codes"], ctx["_names"], structure=True)
         self.name = f"ajan:{res['model']}"
         self.last = res
         return res["metin"]
@@ -417,7 +447,7 @@ def write(rec: dict, on_step=None) -> dict:
     codes, names = _codes_names(rec)
     task = (f"Persona {p.get('persona_id')} ({p.get('profil')}) için görüşme hazırlık notunu hazırla. "
             f"Önce araçlarla bilgileri topla, sonra notu belirtilen biçimde yaz.")
-    return Agent().run(rv, task, SYSTEM_PREP, codes, names, on_step=on_step)
+    return Agent().run(rv, task, SYSTEM_PREP, codes, names, on_step=on_step, structure=True)
 
 
 def answer(rec: dict, question: str, on_step=None) -> dict:

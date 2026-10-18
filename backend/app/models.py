@@ -36,6 +36,7 @@ class Persona(BaseModel):
     oncelikler: list[str] | None = None
     acik_kisitlar: list[str] | None = None
     rm_notu: str | None = None
+    nitelikli_yatirimci: bool | None = None   # SPK tanımı; serbest fonlar yalnızca nitelikli yatırımcıya satılabilir
 
 
 class ConfirmationQuestion(BaseModel):
@@ -69,6 +70,7 @@ class Exclusion(BaseModel):
 
 class Flag(BaseModel):
     product_id: str | None = None
+    category: str | None = None   # genel uyarı belirli bir ürün kategorisine aitse (notta yalnızca o kategori varsa gösterilir)
     level: Literal["bilgi", "uyari", "teyit"]
     message: str
 

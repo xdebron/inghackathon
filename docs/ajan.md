@@ -48,11 +48,12 @@ Müşteri tarafındaki ajan görevleri kısıtlı araçla çalışır: profil, k
 | Araç | Kaynak | Ne döndürür |
 |---|---|---|
 | `profil_ozeti` | profil yorumlayıcı | persona, RD sınırı, uygulanan kısıt kuralları, kriter ağırlıkları |
-| `kisa_liste` | kural motoru + skorlama | her ürün: skor, güven, öne çıkan kriterler, göstergeler (değer, kaynak, tarih, durum), uyarılar |
+| `onerilen_dagilim` | RL kategori modeli + ürün eşlemesi (`app/note.py`) | notun 3. bölümü: kategori dağılımı, eşlenen ürünler (ağırlık, rol, göstergeler, dikkat), belirsizlik, basit kurala karşı test; 4. bölümün karşılaştırma satırları |
+| `kisa_liste` | kural motoru + skorlama | karşılaştırma listesi; her ürün: skor, güven, öne çıkan kriterler, göstergeler (değer, kaynak, tarih, durum), uyarılar |
 | `urun_detay` | aynı | tek ürünün skor dökümü; geçersiz kimlikte geçerli kimlikleri listeler |
 | `dislanan_ozeti` | kural motoru | dışlanan ürünler, kural bazında sayı ve örnek gerekçe (ad/kod içermez) |
 | `piyasa_baglami` | TCMB, EVDS, Hazine vb. | göstergeler kaynak ve tarihiyle |
-| `teyit_listesi` | veri kalitesi | RM'in teyit etmesi gerekenler |
+| `teyit_listesi` | veri kalitesi | RM'in teyit etmesi gerekenler; yalnızca notta geçen ürünlerin ve kategorilerin maddeleri, her biri bir kez |
 | `musteri_sorulari` | profil | görüşmede sorulabilecek sorular |
 | `rl_karar` | RL modeli (gerçek ağ) | dağılım, alternatifler, PPO olasılıkları / karar marjı, güvenli kapı |
 | `rl_neden` | gerçek ağ, **tema Shapley** | ortalama piyasa → bugün karar farkının temalara kesin paylaştırılması |
@@ -65,6 +66,7 @@ Müşteri tarafındaki ajan görevleri kısıtlı araçla çalışır: profil, k
 
 - **Sayılar:** guard'ın izin listesi yalnızca o çalışmadaki araç çıktılarından üretilir. Metinde araçlarda olmayan bir oran geçerse ihlaldir.
 - **Dışlanan ürünler:** metinde adları ve kodları geçemez. Model türü etiketi bu yüzden "NN-politika": "PPO" bir TEFAS fon koduyla çakışıyordu (bkz. hata analizi).
+- **Not biçimi:** şablon ve ajan aynı yedi bölümü yazar (`note.NOTE_SECTIONS`): profil, piyasa, önerilen dağılım (RL), kural/skor karşılaştırması, listede olmayanlar, teyitler, sorular. `guard.structure` başlıkla başlamayan (ajan ara cümlesi), bölümü eksik ya da yarıda kesilmiş notu ihlal sayar; uzunluk sınırında kesilen yanıt da ihlaldir. Ajan düzeltemezse şablon kullanılır.
 - **Zorunlu ibare:** "yatırım tavsiyesi değildir / RM onayı" ibaresini kod ekler, modele bırakılmaz.
 - **Kanıt kaydı:** her ajan çalışması kayda girer: araç çağrıları (ad, argüman, süre, sonuç özeti), düzeltme turları, token kullanımı, model adı, uygulanıp uygulanmadığı. RM onayı ayrı ve zorunludur.
 
@@ -98,6 +100,14 @@ Ajan her personada temel araçları (profil, kısa liste, piyasa, teyitler, dı�
    - *Gözlem:* "politika faizi 5 puan düşerse" sorusunda ajan `degisim: -5` gönderdi. Göstergeler oran birimindedir (0,37), yani bu −%463 demektir. Kırpma yüzünden sonuç "değişmez" çıktı. Ajan kırpma uyarısını dürüstçe yazdı, ama hesap yanlıştı.
    - *İyileştirme:* araç tanımına birim açıklaması eklendi ("5 puan = −0.05"). Oran birimli göstergede |değişim| ≥ 1 gelirse yüzde puan olarak yorumlanıp çevriliyor ve çıktıda açıkça belirtiliyor.
    - *Test:* `test_percentage_point_change_is_interpreted_in_ratio_units`.
+
+4. **Not ile Öneriler sekmesinin ayrışması, kesik not, tekrarlar (18.10.2026).**
+   - *Gözlem:* Öneriler sekmesi RL dağılımına geçtikten sonra notlar hâlâ kısa listeyi "alternatifler" diye anlatıyordu (P03: not iki serbest fon ve bir BYF önerirken sekme %60 mevduat + %40 BIST 30 gösteriyordu). P04 notu uzunluk sınırında yarıda kesilmişti (5-7. bölümler yok) ve guard yakalamadı; P02 notu ajanın "Notu yazıyorum. ---" cümlesiyle başlıyordu. Her notta ilgisiz genel teyitler (DİBS stopajı, kıymetli maden, BIST 30), ürün uyarılarının iki-üç kez tekrarı, dört farklı tarih yazımı vardı. Ajan anahtar adındaki '1a'yı görüp yıllık kur primini "1 aylık" yazdı; şablon test dönemini gösterge penceresinin başıyla (2026-04-09) verdi, karar dönemi 15.07.2026'da başlıyor.
+   - *İyileştirme:* not içeriği tek yerde kurulur (`app/note.py`), ajan aynı içeriği `onerilen_dagilim`, `teyit_listesi`, `piyasa_baglami` araçlarından alır. Teyit listesi notta geçen ürün/kategorilerle sınırlı, her uyarı bir kez; tarihler tek biçim; piyasa göstergeleri insan okunur etiketle; test dönemi `test_baslangic`'tan; basit kural daha iyiyse not bunu açıkça yazar. `guard.structure` + `finish_reason == length` kontrolü; `max_tokens` 6000.
+   - *Test:* `tests/test_note.py`.
+5. **Serbest fonlar.**
+   - *Gözlem:* kural, KAP metninde "nitelikli yatırımcı" ibaresi geçmeyen serbest fonları uygun sayıyordu; P03 kısa listesine iki serbest fon girmişti. SPK düzenlemesine göre serbest fonlar yalnızca nitelikli yatırımcıya satılabilir.
+   - *İyileştirme:* müşterinin nitelikli yatırımcı olduğu RM tarafından teyit edilmedikçe (`nitelikli_yatirimci` alanı, profil ayarlarında ve müşteri ekleme formunda) serbest fon değerlendirmeye alınmaz; not bunu teyit maddesi ve müşteriye soru olarak yazar.
 
 ## Testler
 

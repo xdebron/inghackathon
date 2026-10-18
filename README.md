@@ -148,7 +148,7 @@ Persona (P01–P05, jüri değişiklikleri)
    ▼
 6 metin_taslagi       [llm]   lokal Qwen3.8-27B ajanı, araçlarla (kapalıysa deterministik şablon)
    ▼
-7 metin_guard         [kod]   yasaklı ifade · dışlanan ürün · kaynaksız oran · zorunlu ibare
+7 metin_guard         [kod]   yasaklı ifade · dışlanan ürün · kaynaksız oran · zorunlu ibare · 7 bölüm / kesik not
    ▼
 8 RM onayı            [rm]    onay / düzenleyerek onay / red + gerekçe ──► kanıt kaydı (JSON)
    ▼
