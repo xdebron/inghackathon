@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '../api'
+import { AddClientPanel } from '../components/AddClientPanel'
 import { PersonaPanel } from '../components/PersonaPanel'
 import { QuestionsPanel } from '../components/QuestionsPanel'
 import { ResultView } from '../components/ResultView'
@@ -30,12 +31,19 @@ export function RMWorkspace() {
   const [loading, setLoading] = useState(false)
   const [settings, setSettings] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [adding, setAdding] = useState(false)
+  const [added, setAdded] = useState<Set<string>>(new Set())
 
   const refresh = useCallback(async () => {
     try {
       const r = await fetch('/api/portal/personalar')
-      setOverview(await r.json())
+      const rows: Overview[] = await r.json()
+      setOverview(rows)
+      const c = await (await fetch('/api/musteriler')).json()
+      setAdded(new Set(c.filter((x: { eklenen: boolean }) => x.eklenen).map((x: Persona) => x.persona_id)))
+      return rows
     } catch (e) { setError(`Backend'e ulaşılamadı: ${(e as Error).message}`) }
+    return [] as Overview[]
   }, [])
 
   useEffect(() => { refresh() }, [refresh])
@@ -46,7 +54,7 @@ export function RMWorkspace() {
 
   const choose = async (o: Overview) => {
     const pid = o.persona.persona_id
-    setSelected(pid); setDraft(structuredClone(o.persona)); setCurrent({}); setRun(null); setError(null); setSettings(false)
+    setSelected(pid); setDraft(structuredClone(o.persona)); setCurrent({}); setRun(null); setError(null); setSettings(false); setAdding(false)
     loadArchive(pid)
     if (o.son) {
       setLoading(true)
@@ -69,13 +77,29 @@ export function RMWorkspace() {
     try { const r = await api.getRun(id); setRun(r); setDraft(r.persona) } catch (e) { setError((e as Error).message) } finally { setLoading(false) }
   }
 
+  const onAdded = async (pid: string, open = true) => {
+    const rows = await refresh()
+    const o = rows.find((x) => x.persona.persona_id === pid)
+    if (o && open) choose(o)
+  }
+
+  const removeClient = async () => {
+    if (!selected || !window.confirm(`${selected} müşterisi silinsin mi? Kanıt kayıtları silinmez.`)) return
+    const r = await fetch(`/api/musteriler/${selected}`, { method: 'DELETE' })
+    if (!r.ok) { setError((await r.json()).detail ?? r.statusText); return }
+    setSelected(null); setDraft(null); setRun(null); refresh()
+  }
+
   const sel = overview.find((o) => o.persona.persona_id === selected)
   const original = sel?.persona ?? null
 
   return (
     <div className="ws">
       <aside className="ws-side">
-        <div className="side-title">Müşteriler</div>
+        <div className="side-head">
+          <div className="side-title">Müşteriler</div>
+          <button className="ghost small" onClick={() => { setAdding(true); setSelected(null); setDraft(null); setRun(null) }}>+ Müşteri ekle</button>
+        </div>
         {overview.map((o) => {
           const s = o.son
           return (
@@ -95,7 +119,8 @@ export function RMWorkspace() {
 
       <section className="ws-main">
         {error && <div className="banner error">{error}</div>}
-        {!draft && (
+        {adding && <AddClientPanel onAdded={onAdded} onClose={() => setAdding(false)} />}
+        {!draft && !adding && (
           <div className="empty-state">
             <h2>RM çalışma alanı</h2>
             <p className="muted">Soldan bir müşteri seçin. Son hazırlık paketi açılır; ajanla not yazdırabilir, what-if senaryolarını deneyebilir ve müşteriye gidecek içeriği onaylayabilirsiniz.</p>
@@ -122,6 +147,7 @@ export function RMWorkspace() {
                     {archive.map((a) => <option key={a.run_id} value={a.run_id}>{fmtTime(a.created_at)} · {RUN_STATUS[a.status] ?? a.status}</option>)}
                   </select>
                 )}
+                {selected && added.has(selected) && <button className="ghost danger-text" onClick={removeClient}>Müşteriyi sil</button>}
                 <button className="ghost" onClick={() => setSettings(!settings)}>{settings ? 'Ayarları kapat' : 'Profil ve veri ayarları'}</button>
                 <button className="primary" onClick={() => execute()} disabled={running}>{running ? 'Hazırlanıyor…' : run ? 'Yeniden hazırla' : 'Hazırlık üret'}</button>
               </div>

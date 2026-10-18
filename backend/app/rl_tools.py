@@ -47,7 +47,7 @@ def whatif():
     if _WHATIF is None:
         _WHATIF = _whatif_module()
     return _WHATIF
-from .config import PERSONA_DIR, decision_config
+from .config import decision_config
 from .models import Persona
 from .profile import apply_answers, interpret
 
@@ -225,11 +225,14 @@ def _dataset(feature_set: str):
 def _persona(args: dict) -> Persona:
     if args.get("persona"):
         return Persona(**args["persona"])
+    from . import clients
     pid = args.get("persona_id")
-    path = PERSONA_DIR / f"{str(pid).lower()}.json"
-    if not pid or not path.exists():
-        raise ToolError("persona_id (P01-P05) ya da persona nesnesi gerekli.")
-    return Persona(**json.loads(path.read_text(encoding="utf-8")))
+    try:
+        if not pid:
+            raise KeyError(pid)
+        return clients.get(pid)
+    except KeyError:
+        raise ToolError("persona_id (ör. P01-P05 ya da eklenen müşteri kimliği) ya da persona nesnesi gerekli.") from None
 
 
 def context(args: dict, persona_override: dict | None = None) -> Ctx:

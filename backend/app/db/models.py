@@ -13,6 +13,7 @@ Tablolar
   benchmark      karşılaştırma ölçütleri (BIST 100 ...)
   platform_fon   ING platformunda sunulan fonlar
   belge          kaynak düzeyinde yapılandırılmış bilgi (BIST 30 bileşimi, KAP konu kodları, kalite raporları...)
+  musteri        RM'in eklediği müşteriler (form / JSON içe aktarım)
   ham_tablo      yalnızca çevrimdışı araçların kullandığı tablolar (KAP bildirim geçmişi, DİBS ihale listesi...)
 """
 from __future__ import annotations
@@ -168,6 +169,15 @@ class Belge(Base):
     icerik: Mapped[dict | list] = mapped_column(JSON)
     fetched_at: Mapped[str | None] = mapped_column(String(40))
     cekim_id: Mapped[int | None] = mapped_column(ForeignKey("cekim.id"))
+
+
+class Musteri(Base):
+    """RM'in eklediği müşteriler (form ya da JSON içe aktarım). Brief personaları (P01-P05) data/personas altında."""
+    __tablename__ = "musteri"
+    persona_id: Mapped[str] = mapped_column(String(16), primary_key=True)
+    veri: Mapped[dict] = mapped_column(JSON)
+    yontem: Mapped[str] = mapped_column(String(16))          # form | json
+    eklenme: Mapped[str] = mapped_column(String(40))
 
 
 class HamTablo(Base):

@@ -18,7 +18,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from . import evidence, guard, rl, rl_category, rules, scoring, universe
-from .config import PERSONA_DIR, config_hash, decision_config, now_iso
+from .config import config_hash, decision_config, now_iso
 from .llm import PlaceholderLLM, fmt_pct, get_client
 from .models import Flag, Persona, RunRequest, TraceStep
 from .profile import apply_answers, interpret
@@ -45,14 +45,14 @@ CATEGORY_ROLES = {
 
 
 def load_persona(persona_id: str) -> Persona:
-    path = PERSONA_DIR / f"{persona_id.lower()}.json"
-    if not path.exists():
-        raise KeyError(persona_id)
-    return Persona(**json.loads(path.read_text(encoding="utf-8")))
+    """Brief personası (data/personas) ya da RM'in eklediği müşteri (veri tabanı)."""
+    from . import clients
+    return clients.get(persona_id)
 
 
 def list_personas() -> list[dict]:
-    return [json.loads(p.read_text(encoding="utf-8")) for p in sorted(PERSONA_DIR.glob("*.json"))]
+    from . import clients
+    return clients.list_all()
 
 
 class Tracer:

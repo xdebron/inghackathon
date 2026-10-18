@@ -37,6 +37,7 @@ Kaynakta olmayan alan boş (`NULL`) kalır; değer uydurulmaz. Elle ölçülmü�
 | `benchmark` | Karşılaştırma ölçütleri (BIST 100) | `turetilmis` |
 | `platform_fon` | ING platformunda sunulan fonlar | `ing_fonlar` |
 | `belge` | Kaynak düzeyinde yapılandırılmış bilgi: BIST 30 bileşimi, TEFAS içe aktarım günlüğü, kalite raporu | Çeşitli |
+| `musteri` | RM'in eklediği müşteriler (form ya da JSON içe aktarım); brief personaları `data/personas` altında | Arayüz / `/api/musteriler` |
 | `ham_tablo` | Çevrimdışı araçların tabloları: DİBS ihale listesi, KAP bildirim geçmişi | `hazine_dibs`, `tools/fetch_kap_history.py` |
 
 ## Toplayıcılar

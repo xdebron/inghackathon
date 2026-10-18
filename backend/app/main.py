@@ -23,6 +23,8 @@ from .degerlendirme_api import router as degerlendirme_router  # noqa: E402
 app.include_router(degerlendirme_router)
 from .veri_api import router as veri_router  # noqa: E402
 app.include_router(veri_router)
+from .musteri_api import router as musteri_router  # noqa: E402
+app.include_router(musteri_router)
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
                    allow_methods=["*"], allow_headers=["*"])
 

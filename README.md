@@ -351,6 +351,12 @@ cd backend
 
 **Veri güncelleme.** Otomatik kaynaklar `tools/veri_topla.py` ya da **Veri → Hepsini topla** ile güncellenir. TEFAS fiyat geçmişi tefas.gov.tr → Tarihsel Veriler → **Excel'e Aktar** ile indirilip **Veri** sayfasından yüklenir. Repodaki tohumu güncellemek için `tools/veri_tohum.py`.
 
+**Müşteri ekleme.** RM çalışma alanında **+ Müşteri ekle** iki yol sunar:
+- **Seçerek ekle:** risk profili, ufuk, likidite, gelir, anapara, döviz tercihi seçim listelerinden; öncelikler ve açık kısıtlar (kısıt kataloğundan) işaretlenir, serbest metin de eklenebilir.
+- **JSON içe aktar:** persona biçiminde tek nesne ya da liste; metin olarak yapıştırılır ya da `.json` dosyası seçilir. Her kayıt ayrı doğrulanır, hatalılar raporlanır.
+
+Kimlik verilmezse sıradaki boş kimlik (P06, P07, ...) atanır. Eklenen müşteri P01-P05 ile aynı akıştan geçer: eksik ya da tanınmayan alan varsa RM'e teyit sorusu sorulur. Müşteri portalında da görünür; içerik yine yalnızca RM onayıyla yayınlanır. Eklenen müşteriler veri tabanındadır (`musteri` tablosu) ve silinebilir; kanıt kayıtları silinmez.
+
 **Jüri challenge'ı.** RM çalışma alanında **Profil ve veri ayarları**'ndan:
 - persona alanları ve açık kısıtlar değiştirilebilir,
 - "Veri kesintisi simülasyonu" ile bir kaynak kapatılabilir,

@@ -168,3 +168,12 @@ aside.ws-side { overflow-y: auto; }
 .eval table td { vertical-align: top; }
 .db-panel table td { vertical-align: top; }
 .db-counts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 4px 18px; margin-top: 12px; }
+.side-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-right: 8px; }
+.add-client .field-title { font-size: 13px; font-weight: 600; margin: 4px 0 6px; }
+.choice-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.choice { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; background: var(--panel); }
+.choice.on { border-color: var(--accent); background: #fff3eb; }
+.choice input { margin: 0; }
+.json-input { font-family: ui-monospace, Consolas, monospace; font-size: 12px; width: 100%; }
+.upload-inline { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.danger-text { color: var(--err); }
