@@ -6,6 +6,7 @@ import { RLView } from './RLView'
 import { RLCategoryView } from './RLCategoryView'
 import { RLSummaryCard } from './RLSummaryCard'
 import { AllocBar, CAT_LABEL } from './AllocBar'
+import { ShapChart, type ShapCat } from './ShapChart'
 import { AgentPanel } from './AgentPanel'
 import { WhatIfPanel } from './WhatIfPanel'
 import { CustomerFacingPanel } from './CustomerFacingPanel'
@@ -43,7 +44,8 @@ function SourceChip({ dp }: { dp: DataPoint }) {
   )
 }
 
-function ProductCard({ s, weight, note }: { s: Scored; weight?: number; note?: string | null }) {
+function ProductCard({ s, weight, note, shap }: { s: Scored; weight?: number; note?: string | null; shap?: { cat: string; d: ShapCat } | null }) {
+  const rl = weight !== undefined
   const [open, setOpen] = useState(false)
   const p = s.product
   const show = ['getiri_1y', 'reel_getiri_1y', 'getiri_1y_karsilastirma', 'benchmark_farki_1y', 'volatilite', 'max_dusus', 'rd',
@@ -57,10 +59,16 @@ function ProductCard({ s, weight, note }: { s: Scored; weight?: number; note?: s
           <strong>{p.name}</strong>
           <div className="muted small">{p.category} · {p.currency}{weight !== undefined ? ` · kural/skor sırası ${s.rank}` : ''}</div>
         </div>
-        <div className="score">
-          <div>{(s.score * 100).toFixed(0)}<span className="small">/100</span></div>
-          <div className={`small conf ${s.confidence < 0.7 ? 'low' : ''}`}>güven {(s.confidence * 100).toFixed(0)}%</div>
-        </div>
+        {rl ? (
+          <div className="rule-score" title="Uygunluk ve aday sırası için kullanılan 8 kriterli kural skoru; dağılımı RL modeli belirler">
+            kural skoru {(s.score * 100).toFixed(0)}/100<br />güven {(s.confidence * 100).toFixed(0)}%
+          </div>
+        ) : (
+          <div className="score">
+            <div>{(s.score * 100).toFixed(0)}<span className="small">/100</span></div>
+            <div className={`small conf ${s.confidence < 0.7 ? 'low' : ''}`}>güven {(s.confidence * 100).toFixed(0)}%</div>
+          </div>
+        )}
       </div>
       {note && <div className="banner warnbox small">{note}</div>}
       <div className="facts">
@@ -71,8 +79,15 @@ function ProductCard({ s, weight, note }: { s: Scored; weight?: number; note?: s
           </div>
         ))}
       </div>
-      <button className="ghost small" onClick={() => setOpen(!open)}>{open ? 'Skor dökümünü gizle' : 'Skor dökümünü göster'}</button>
-      {open && <Breakdown items={s.breakdown} />}
+      {rl ? (
+        shap ? <>
+          <button className="ghost small" onClick={() => setOpen(!open)}>{open ? 'Model açıklamasını gizle' : 'Model açıklaması (SHAP)'}</button>
+          {open && <ShapChart cat={shap.cat} d={shap.d} />}
+        </> : <p className="muted small">Bu hazırlıkta gösterge açıklaması yok; "Yeniden hazırla" ile üretilir.</p>
+      ) : <>
+        <button className="ghost small" onClick={() => setOpen(!open)}>{open ? 'Skor dökümünü gizle' : 'Skor dökümünü göster'}</button>
+        {open && <Breakdown items={s.breakdown} />}
+      </>}
     </div>
   )
 }
@@ -107,6 +122,7 @@ function RLRecommendations({ run }: { run: RunRecord }) {
           {pb.beklenen_dagilim && <div style={{ marginTop: 6 }}>Olasılık ağırlıklı ortalama dağılım:<AllocBar compact d={Object.fromEntries(Object.entries(pb.beklenen_dagilim).map(([c, v]) => [c, Math.round(v)]).filter(([, v]) => (v as number) > 0))} /></div>}
         </div>
       )}
+      {k.ozellik_shap && <p className="muted small">Ürün kartlarındaki model açıklaması: {k.ozellik_shap.yontem}. Değer: {k.ozellik_shap.deger.toLowerCase()}; taban: {k.ozellik_shap.taban.toLowerCase()}.</p>}
       {cats.map((cat) => {
         const items = rows.filter((m) => m.kategori === cat)
         const alts = k.kategori_alternatifleri?.[cat] ?? []
@@ -119,7 +135,8 @@ function RLRecommendations({ run }: { run: RunRecord }) {
                 <div key={i} className="product"><div className="product-head"><span className="rank weight">%{Math.round(m.agirlik * 100)}</span>
                   <div className="grow"><strong>{m.ad ?? 'Bu kategoride uygun ürün yok'}</strong>{m.takip_uyarisi && <div className="small muted">{m.takip_uyarisi}</div>}</div></div></div>
               )
-              return <ProductCard key={m.product_id} s={s} weight={m.agirlik} note={m.takip_uyarisi} />
+              const sh = k.ozellik_shap?.kategoriler[cat]
+              return <ProductCard key={m.product_id} s={s} weight={m.agirlik} note={m.takip_uyarisi} shap={sh ? { cat, d: sh } : null} />
             })}
             {alts.length > 0 && <p className="muted small">Aynı kategoride uygun alternatifler: {alts.map((a) => `${a.ad} (${Math.round(a.skor * 100)})`).join(' · ')}</p>}
           </div>

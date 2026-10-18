@@ -341,6 +341,46 @@ def _margin_text(margin, spread, probs, order) -> str:
             else "orta" if margin / (spread or 1) < 0.5 else "geniş")
 
 
+def ozellik_shap(args: dict, n_perm: int = 256, seed: int = 0) -> dict | None:
+    """Gösterge düzeyinde SHAP (permütasyon örneklemeli Shapley, antitetik): her piyasa göstergesinin, modelin her
+    kategoriye verdiği olasılık ağırlıklı paya (Σ π(a)·A[a]) katkısı. Taban: göstergeler eğitim ortalamasında (z=0);
+    profil, maske ve mevcut dağılım sabit. Değer fonksiyonu tek dağılım (argmax) değil beklenen paydır: argmax düz
+    politikada sıçradığı için katkıları gürültüye çevirir. Toplam özelliği kesin: Σφ = bugünkü pay − taban pay.
+    Yalnızca NN-politika modelleri (olasılık gerekir)."""
+    ctx = context(args)
+    if not ctx.is_ppo:
+        return None
+    F, C = len(ctx.names), len(ctx.cats)
+    z_today = ctx.z
+    rng = np.random.default_rng(seed)
+    half = [rng.permutation(F) for _ in range(n_perm // 2)]
+    perms = half + [p[::-1] for p in half]                      # antitetik çiftler: varyansı düşürür
+    Z = np.zeros((len(perms), F + 1, F))
+    for k, p in enumerate(perms):
+        for j in range(F):
+            Z[k, j + 1] = Z[k, j]
+            Z[k, j + 1, p[j]] = z_today[p[j]]
+    X = np.stack([ctx.x(z) for z in Z.reshape(-1, F)])
+    V = (ctx.net.probs(X, ctx.mask) @ ctx.A).reshape(len(perms), F + 1, C)
+    contrib = np.zeros((len(perms), F, C))
+    for k, p in enumerate(perms):
+        contrib[k, p] = V[k, 1:] - V[k, :-1]
+    phi, se = contrib.mean(0), contrib.std(0) / np.sqrt(len(perms))
+    base, today = V[0, 0], V[0, -1]
+    out = {}
+    for j, c in enumerate(ctx.cats):
+        if not ctx.mask.any() or (today[j] < 0.005 and base[j] < 0.005):
+            continue
+        rows = [{"gosterge": ctx.names[i], "tema": _theme_of(ctx.names[i]), "bugun": round(float(ctx.raw[i]), 4),
+                 "egitim_ort": round(float(ctx.mu[i]), 4), "z": round(float(z_today[i]), 2),
+                 "katki_puan": round(float(phi[i, j]) * 100, 2), "hata_puan": round(float(se[i, j]) * 100, 2)}
+                for i in np.argsort(-np.abs(phi[:, j]))]
+        out[c] = {"taban_pay": round(float(base[j]) * 100, 1), "bugun_pay": round(float(today[j]) * 100, 1), "katkilar": rows}
+    return {"model": ctx.version, "yontem": f"Permütasyon örneklemeli Shapley ({len(perms)} permütasyon, antitetik), gerçek politika ağı üzerinde",
+            "deger": "Kategoriye olasılık ağırlıklı pay (puan)", "taban": "Göstergeler eğitim dönemi ortalamasında (z=0); profil ve maske aynı",
+            "karar_tarihi": str(ctx.ds["dates"][ctx.today].date()), "kategoriler": out}
+
+
 def rl_neden(args: dict) -> dict:
     """Kesin tema Shapley'i: v(S) = S'deki temaların bugünkü değerde, diğerlerinin eğitim ortalamasında (z=0)
     olduğu durumda modelin seçtiği dağılım. φ_g = temanın 'ortalama piyasa → bugün' dağılım farkına katkısı (puan)."""

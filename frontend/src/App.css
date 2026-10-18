@@ -223,3 +223,7 @@ tr.warnrow td { background: #fffaf0; color: var(--warn); }
 .rank.weight { width: auto; min-width: 44px; padding: 0 8px; border-radius: 14px; font-size: 13px; }
 .rl-cat { margin-top: 14px; }
 .rl-cat h4 { margin: 0 0 6px; }
+.shap { margin-top: 8px; }
+.shap-pos { color: #ff6200; font-weight: 600; }
+.shap-neg { color: #2f6fdf; font-weight: 600; }
+.rule-score { text-align: right; font-size: 12px; color: var(--muted); line-height: 1.4; }

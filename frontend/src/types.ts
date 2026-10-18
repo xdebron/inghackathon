@@ -130,6 +130,7 @@ export interface RLCategoryResult {
   urun_eslemesi: { kategori: string; kategori_agirligi: number; agirlik: number; product_id: string | null; ad: string | null; kisa_listede: boolean; skor: number | null; takip_farki: number | null; takip_uyarisi: string | null; vekil_kategori?: string | null }[]
   urun_ayrintilari?: Record<string, Scored>
   kategori_alternatifleri?: Record<string, { product_id: string; ad: string; skor: number; kisa_listede: boolean }[]>
+  ozellik_shap?: { model: string; yontem: string; deger: string; taban: string; karar_tarihi: string; kategoriler: Record<string, import('./components/ShapChart').ShapCat> } | null
   politika_belirsizligi?: { secilen_olasilik?: number | null; beklenen_dagilim?: Record<string, number> | null; model?: string } | null
   mevcut_dagilim?: Record<string, number>
   devir?: number

@@ -32,6 +32,20 @@ def test_shapley_efficiency_matches_real_model(pid):
 
 
 @needs_model
+@pytest.mark.parametrize("pid", ["P03", "P05"])
+def test_feature_shap_is_additive_and_matches_expected_allocation(pid):
+    """Gösterge SHAP'i: katkılar toplamı = bugünkü pay − taban pay (permütasyon başına kesin) ve bugünkü pay rl_karar'ın
+    olasılık ağırlıklı dağılımıyla aynı; izinsiz kategori açıklamada yok."""
+    r = T.ozellik_shap({"persona_id": pid}, n_perm=32)
+    k = T.rl_karar({"persona_id": pid})
+    assert r["kategoriler"]
+    for c, v in r["kategoriler"].items():
+        assert c not in k["dislanan_kategoriler"]
+        assert abs(sum(x["katki_puan"] for x in v["katkilar"]) - (v["bugun_pay"] - v["taban_pay"])) < 0.6   # yuvarlama payı
+        assert abs(v["bugun_pay"] - k["beklenen_dagilim"].get(c, 0)) < 0.6   # <0,5 paylar rl_karar'da listelenmez
+
+
+@needs_model
 def test_what_if_without_changes_keeps_decision():
     r = T.rl_ne_olursa({"persona_id": "P01", "gostergeler": []})
     assert r["karar_degisti"] is False and r["onceki_dagilim"] == r["yeni_dagilim"]

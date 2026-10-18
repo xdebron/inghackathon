@@ -379,6 +379,13 @@ Kullanıcının bulduğu durum düzeldi: P05'te PP'nin 3 aylık getirisi −15 p
 - **Denenen ve reddedilen:** Karar kuralını beklenen dağılıma en yakın aksiyona çevirmek (`tools/gbrl/karar_kurali.py`). Doğrulamada argmax'tan kötü çıktı (tohum skoru ≈ −0,027'ye karşı ≈ 0), bu yüzden argmax kaldı.
 - **Çözüm:** Hazır senaryolar artık `whatif.apply` ile tutarlı uygulanıyor (`rl_ne_olursa senaryo.tur`).
 
+**Gösterge düzeyinde SHAP (Öneriler sekmesi, `rl_tools.ozellik_shap`).** Her ürün kartı, ürünün kategorisi için 30 piyasa göstergesinin katkısını gösterir.
+- **Değer fonksiyonu:** Modelin kategoriye verdiği olasılık ağırlıklı pay (Σ π(a)·A[a]). Tek dağılım (argmax) düz politikada sıçradığı için katkıları gürültüye çevirirdi.
+- **Taban:** Göstergeler eğitim ortalamasında (z=0); profil, maske ve mevcut dağılım aynı.
+- **Yöntem:** Permütasyon örneklemeli Shapley, 256 antitetik permütasyon, gerçek politika ağı üzerinde (~0,7 sn). Toplam özelliği kesin: katkılar toplamı = bugünkü pay − taban pay (test: `test_feature_shap_is_additive_and_matches_expected_allocation`). Grafik ipucunda her katkının örnekleme hatası da var.
+- **Tema Shapley'inden (`rl_neden`) farkı:** O tema düzeyinde ve seçilen tek dağılımı açıklar; bu gösterge düzeyinde ve kategori payını açıklar.
+- Kural skoru kartlarda yalnızca küçük bir bilgi olarak kalır (uygunluk ve aday sırası); dağılımı RL belirler.
+
 **Beklenen dağılımı doğrudan öneri yapmak (2026-10-18, reddedildi).** Olasılık ağırlıklı dağılım Σ π(a)·A[a] daha çeşitlendirilmiş ve girdi değişikliğine karşı daha kararlı. Bu yüzden en olası dağılımın (mod) yerine öneri olarak kullanılmasını ölçtük (`tools/gbrl/beklenen_degerlendir.py`).
 - **Kurulum:** Test dönemini eğitimde görmemiş v14 6M modelleri (`pilot_v14/tut10_s0`, `s1`). Senaryo izleri ve simülatör eğitimdekiyle aynı. Profil cezaları ağırlık vektörünün fonksiyonu olarak yeniden hesaplanıyor (wᵀΣw, Σw², likidite, gelir, sadelik, döviz). Ürüne çevrilmeyecek küçük paylar için alt eşik τ ∈ {0, 5, 10, 15} puan.
 - **Simülatör kontrolü:** Mod politikasının yeniden oynatılan test sonucu, eğitimde kaydedilen sonuçla birebir aynı (s0: ödül 0,1099, reel kazanç %13,21).

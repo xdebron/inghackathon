@@ -229,6 +229,21 @@ def _policy_uncertainty(original, req) -> dict | None:
             "model_tercihi": k["model_tercihi"], "model": k["model"]}
 
 
+def _feature_shap(original, req, cats: set[str]) -> dict | None:
+    """Öneriler sekmesindeki ürün kartları için gösterge düzeyinde SHAP (rl_tools.ozellik_shap), yalnızca eşlenen
+    kategoriler. Açıklama yardımcıdır: hesaplanamazsa öneri yine üretilir."""
+    from . import rl_tools
+    try:
+        r = rl_tools.ozellik_shap({"persona": original.model_dump(), "rm_answers": req.rm_answers or {},
+                                   "mevcut_dagilim": req.mevcut_dagilim})
+    except Exception:
+        return None
+    if r is None:
+        return None
+    r["kategoriler"] = {c: v for c, v in r["kategoriler"].items() if c in cats}
+    return r
+
+
 def _rlk_lines(r: dict, allowed: set[str]) -> list[str]:
     """Profile koşullu kategori modelinin sonucunu taslak metin satırlarına çevirir."""
     def pct(x):
@@ -349,6 +364,7 @@ def run(req: RunRequest) -> dict:
                 alts[cat] = [{"product_id": s.product.product_id, "ad": s.product.name, "skor": s.score, "kisa_listede": s.selected}
                              for s in pool[:3]]
             r["kategori_alternatifleri"] = alts
+            r["ozellik_shap"] = _feature_shap(original, req, {m["kategori"] for m in r["urun_eslemesi"]})
         return r
 
     rlk_result = tr.run("rl_kategori_modeli", "rl", run_rlk,
