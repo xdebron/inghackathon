@@ -260,7 +260,7 @@ Tüm liste: [docs/teslim/04_test_ve_ogrenimler.md](docs/teslim/04_test_ve_ogreni
 | Ekran | |
 |---|---|
 | **RM çalışma alanı:** görüşme hazırlık notu (lokal LLM ajanı), kısıtlar, teyit sayısı | ![](docs/ekran/01_rm_not.png) |
-| **Öneriler:** kısa liste, kaynak etiketli göstergeler, kriter bazında skor dökümü | ![](docs/ekran/02_oneriler_skor.png) |
+| **Öneriler:** RL modelinin kategori dağılımı ürünlere eşlenmiş hâliyle (ağırlık, seçim olasılığı, olasılık ağırlıklı dağılım, kategori alternatifleri); kaynak etiketli göstergeler, skor dökümü; kural/skor kısa listesi karşılaştırma olarak altta | ![](docs/ekran/02_oneriler_skor.png) |
 | **Kanıt:** teyit uyarıları, kaynak / veri tarihi / alınma zamanı, dışlananlar, akış izi | ![](docs/ekran/03_kanit.png) |
 | **Model (RL):** karar, seçim olasılığı, olasılık ağırlıklı dağılım, Shapley temaları | ![](docs/ekran/04_rl_ozet.png) |
 | **What-if:** "Kur şoku" tutarlı senaryosu, belirsizlik uyarısı | ![](docs/ekran/05_whatif_kur_soku.png) |

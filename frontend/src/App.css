@@ -220,3 +220,6 @@ tr.warnrow td { background: #fffaf0; color: var(--warn); }
 .md .md-table { width: auto; margin: 6px 0; }
 .md .md-table th, .md .md-table td { padding: 4px 10px; }
 .md hr { border: none; border-top: 1px solid var(--line); margin: 8px 0; }
+.rank.weight { width: auto; min-width: 44px; padding: 0 8px; border-radius: 14px; font-size: 13px; }
+.rl-cat { margin-top: 14px; }
+.rl-cat h4 { margin: 0 0 6px; }

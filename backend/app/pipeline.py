@@ -334,6 +334,21 @@ def run(req: RunRequest) -> dict:
             return {"durum": "hata", "neden": f"{type(exc).__name__}: {exc}"}
         if r.get("durum") == "tamam":
             r["politika_belirsizligi"] = _policy_uncertainty(original, req)
+            # Öneriler sekmesi RL dağılımından kurulur: eşlenen ürünlerin tam verisi (kaynaklı alanlar, skor dökümü) ve
+            # her kategori için aynı kategoriden bir sonraki uygun ürünler (RM alternatif olarak görür). Tümü kurallardan
+            # geçmiş uygun ürünlerdir; RL izinsiz kategori seçemez (profil maskesi).
+            by_id = {s.product.product_id: s for s in scored}
+            dump = lambda s: {"product": s.product.model_dump(), "score": s.score, "confidence": s.confidence,  # noqa: E731
+                              "rank": s.rank, "selected": s.selected, "breakdown": [c.model_dump() for c in s.breakdown]}
+            chosen = {m["product_id"] for m in r["urun_eslemesi"] if m.get("product_id")}
+            r["urun_ayrintilari"] = {pid: dump(by_id[pid]) for pid in chosen if pid in by_id}
+            alts = {}
+            for cat in {m["kategori"] for m in r["urun_eslemesi"]}:
+                pool = sorted((s for s in scored if rl_category.PRODUCT_TO_CAT.get(s.product.category, s.product.category) == cat
+                               and s.product.product_id not in chosen), key=lambda s: (not s.selected, -s.score))
+                alts[cat] = [{"product_id": s.product.product_id, "ad": s.product.name, "skor": s.score, "kisa_listede": s.selected}
+                             for s in pool[:3]]
+            r["kategori_alternatifleri"] = alts
         return r
 
     rlk_result = tr.run("rl_kategori_modeli", "rl", run_rlk,

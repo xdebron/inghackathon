@@ -39,7 +39,8 @@ Persona (P01–P05, jüri değişiklikleri)
 | Toplayıcılar | `app/collectors`, `tools/veri_topla.py` | TCMB, EVDS, Hazine, KAP, ING, BIST'ten otomatik ve kibar toplama; her çalıştırma bir çekim kaydı. TEFAS yüklemeyle. |
 | Veri katmanı | `app/sources/*`, `app/universe.py` | Veri tabanından ürün evreni ve göstergeler; bayatlık, çapraz kontrol, kaynak kesintisi simülasyonu |
 | Kural motoru | `app/rules.py`, `config/constraint_rules.json` | Kısıt metni → kural eşlemesi, dışlama, teyit sorusu |
-| Puanlama | `app/scoring.py` | Ağırlık türetme, normalize kriterler, güven, kısa liste |
+| Puanlama | `app/scoring.py` | Ağırlık türetme, normalize kriterler, güven, kısa liste (RL eşlemesinde aday sırası) |
+| Öneriler sekmesi | `app/pipeline.py` (`run_rlk`), `ResultView.tsx` | RL kategori dağılımı → uygun ürünler (`urun_eslemesi`, `urun_ayrintilari`, `kategori_alternatifleri`); kurallar yalnızca uygunluk filtresi |
 | RL modeli | `app/rl_category.py`, `app/rl_tools.py` | Numpy ile çevrimiçi çıkarım (torch gerekmez). Shapley, what-if, eşik ve benzer dönem araçları. |
 | LLM ajanı | `app/agent.py`, vLLM (WSL) üzerinde Qwen3.8-27B | Araç çağıran döngü (en fazla 6 adım), guard düzeltme turları, şablon yedeği |
 | Guard | `app/guard.py` | Metin güvenlik kontrolü; RM'e ve müşteri görünümüne giden her metin için |

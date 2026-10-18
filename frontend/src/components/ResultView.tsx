@@ -5,6 +5,7 @@ import type { Criterion, DataPoint, RunRecord, Scored } from '../types'
 import { RLView } from './RLView'
 import { RLCategoryView } from './RLCategoryView'
 import { RLSummaryCard } from './RLSummaryCard'
+import { AllocBar, CAT_LABEL } from './AllocBar'
 import { AgentPanel } from './AgentPanel'
 import { WhatIfPanel } from './WhatIfPanel'
 import { CustomerFacingPanel } from './CustomerFacingPanel'
@@ -42,7 +43,7 @@ function SourceChip({ dp }: { dp: DataPoint }) {
   )
 }
 
-function ProductCard({ s }: { s: Scored }) {
+function ProductCard({ s, weight, note }: { s: Scored; weight?: number; note?: string | null }) {
   const [open, setOpen] = useState(false)
   const p = s.product
   const show = ['getiri_1y', 'reel_getiri_1y', 'getiri_1y_karsilastirma', 'benchmark_farki_1y', 'volatilite', 'max_dusus', 'rd',
@@ -51,16 +52,17 @@ function ProductCard({ s }: { s: Scored }) {
   return (
     <div className="product">
       <div className="product-head" onClick={() => setOpen(!open)}>
-        <span className="rank">{s.rank}</span>
+        {weight !== undefined ? <span className="rank weight">%{Math.round(weight * 100)}</span> : <span className="rank">{s.rank}</span>}
         <div className="grow">
           <strong>{p.name}</strong>
-          <div className="muted small">{p.category} · {p.currency}</div>
+          <div className="muted small">{p.category} · {p.currency}{weight !== undefined ? ` · kural/skor sırası ${s.rank}` : ''}</div>
         </div>
         <div className="score">
           <div>{(s.score * 100).toFixed(0)}<span className="small">/100</span></div>
           <div className={`small conf ${s.confidence < 0.7 ? 'low' : ''}`}>güven {(s.confidence * 100).toFixed(0)}%</div>
         </div>
       </div>
+      {note && <div className="banner warnbox small">{note}</div>}
       <div className="facts">
         {show.filter((k) => p.fields[k]).map((k) => (
           <div key={k} className="fact">
@@ -72,6 +74,58 @@ function ProductCard({ s }: { s: Scored }) {
       <button className="ghost small" onClick={() => setOpen(!open)}>{open ? 'Skor dökümünü gizle' : 'Skor dökümünü göster'}</button>
       {open && <Breakdown items={s.breakdown} />}
     </div>
+  )
+}
+
+// Öneriler sekmesi RL kategori modelinden kurulur: model kategori dağılımını seçer, her kategori uygun (kurallardan geçmiş)
+// ürünlere eşlenir. Kurallar yalnızca uygunluk filtresidir; kısıtı ihlal eden ürün RL'in seçebileceği havuza hiç girmez.
+function RLRecommendations({ run }: { run: RunRecord }) {
+  const k = run.rl_kategori
+  if (!k || k.durum !== 'tamam') {
+    return (
+      <section className="card">
+        <div className="banner warnbox small">RL dağılımı bu hazırlıkta yok{k?.neden ? ` (${k.neden})` : ''}. Aşağıdaki kural ve puanlama kısa listesi gösteriliyor.</div>
+        {(run.shortlist ?? []).length === 0 && <p className="muted">Kısa listede ürün yok. "Kanıt" sekmesindeki uyarılara bakın.</p>}
+      </section>
+    )
+  }
+  const byId: Record<string, Scored> = { ...Object.fromEntries((run.shortlist ?? []).map((s) => [s.product.product_id, s])), ...(k.urun_ayrintilari ?? {}) }
+  const rows = k.urun_eslemesi.filter((m) => m.agirlik > 0)
+  const cats = [...new Set(rows.map((m) => m.kategori))]
+  const pb = k.politika_belirsizligi
+  const pctMap = Object.fromEntries(Object.entries(k.kategori_dagilimi).map(([c, v]) => [c, Math.round(v * 100)]))
+  return (
+    <section className="card">
+      <h3 className="card-title">RL modelinin önerdiği dağılım</h3>
+      <p className="muted small">Kategori ağırlıklarını RL kategori modeli (NN-PPO) seçer; her kategori yalnızca bu müşterinin kısıtlarından geçen ürünlere eşlenir (önce kısa listedekiler, sonra skora göre). Oranlar RM'in görüşmede değerlendireceği öneridir, müşteriye RM onayı olmadan gitmez.</p>
+      <AllocBar d={pctMap} />
+      {pb?.secilen_olasilik != null && (
+        <div className={`banner ${pb.secilen_olasilik < 20 ? 'warnbox' : 'info'} small`}>
+          {pb.secilen_olasilik < 20
+            ? <>Model bu dağılımı yalnızca <strong>%{pb.secilen_olasilik.toString().replace('.', ',')}</strong> olasılıkla seçiyor; oranları kesin değil, yön göstergesi olarak okuyun.</>
+            : <>Modelin bu dağılımı seçme olasılığı %{pb.secilen_olasilik.toString().replace('.', ',')}.</>}
+          {pb.beklenen_dagilim && <div style={{ marginTop: 6 }}>Olasılık ağırlıklı ortalama dağılım:<AllocBar compact d={Object.fromEntries(Object.entries(pb.beklenen_dagilim).map(([c, v]) => [c, Math.round(v)]).filter(([, v]) => (v as number) > 0))} /></div>}
+        </div>
+      )}
+      {cats.map((cat) => {
+        const items = rows.filter((m) => m.kategori === cat)
+        const alts = k.kategori_alternatifleri?.[cat] ?? []
+        return (
+          <div key={cat} className="rl-cat">
+            <h4>{CAT_LABEL[cat] ?? cat} <span className="muted small">· kategori ağırlığı %{Math.round(items[0].kategori_agirligi * 100)}</span></h4>
+            {items.map((m, i) => {
+              const s = m.product_id ? byId[m.product_id] : undefined
+              if (!s) return (
+                <div key={i} className="product"><div className="product-head"><span className="rank weight">%{Math.round(m.agirlik * 100)}</span>
+                  <div className="grow"><strong>{m.ad ?? 'Bu kategoride uygun ürün yok'}</strong>{m.takip_uyarisi && <div className="small muted">{m.takip_uyarisi}</div>}</div></div></div>
+              )
+              return <ProductCard key={m.product_id} s={s} weight={m.agirlik} note={m.takip_uyarisi} />
+            })}
+            {alts.length > 0 && <p className="muted small">Aynı kategoride uygun alternatifler: {alts.map((a) => `${a.ad} (${Math.round(a.skor * 100)})`).join(' · ')}</p>}
+          </div>
+        )
+      })}
+    </section>
   )
 }
 
@@ -126,7 +180,8 @@ export function ResultView({ run, onUpdated }: { run: RunRecord; onUpdated: (r: 
   const [tab, setTab] = useState<Tab>('Ajan ve not')
   const flags = run.flags ?? []
   const teyit = flags.filter((f) => f.level === 'teyit').length
-  const counts: Partial<Record<Tab, number>> = { 'Öneriler': run.shortlist?.length }
+  const rlCount = run.rl_kategori?.durum === 'tamam' ? run.rl_kategori.urun_eslemesi.filter((m) => m.product_id).length : undefined
+  const counts: Partial<Record<Tab, number>> = { 'Öneriler': rlCount ?? run.shortlist?.length }
 
   return (
     <section className="result">
@@ -162,23 +217,27 @@ export function ResultView({ run, onUpdated }: { run: RunRecord; onUpdated: (r: 
       {tab === 'What-if' && <section className="card"><WhatIfPanel run={run} onUpdated={onUpdated} /></section>}
 
       {tab === 'Öneriler' && (
-        <section className="card">
-          {(run.shortlist ?? []).length === 0 && <p className="muted">Kısa listede ürün yok. "Kanıt" sekmesindeki uyarılara bakın.</p>}
-          {(run.shortlist ?? []).map((s) => <ProductCard key={s.product.product_id} s={s} />)}
-          {(run.others ?? []).length > 0 && (
-            <details>
-              <summary className="small">Uygun ama kısa listeye girmeyen {run.others!.length} ürün</summary>
-              <table>
-                <thead><tr><th>Sıra</th><th>Ürün</th><th>Skor</th><th>Neden listede değil</th></tr></thead>
-                <tbody>
-                  {run.others!.slice(0, 50).map((o) => (
-                    <tr key={o.product_id}><td>{o.rank}</td><td>{o.name}</td><td>{(o.score * 100).toFixed(0)}</td><td className="small">{o.reason}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </details>
-          )}
-        </section>
+        <div className="stack">
+          <RLRecommendations run={run} />
+          <details className="card">
+            <summary>Kural ve puanlama kısa listesi (karşılaştırma için, {run.shortlist?.length ?? 0} ürün)</summary>
+            <p className="muted small">Uygun ürünlerin 8 kriterli puanlamayla sıralaması. RL dağılımı bu ürünleri öncelikli aday olarak kullanır; her ürünün skor dökümü burada.</p>
+            {(run.shortlist ?? []).map((s) => <ProductCard key={s.product.product_id} s={s} />)}
+            {(run.others ?? []).length > 0 && (
+              <details>
+                <summary className="small">Uygun ama kısa listeye girmeyen {run.others!.length} ürün</summary>
+                <table>
+                  <thead><tr><th>Sıra</th><th>Ürün</th><th>Skor</th><th>Neden listede değil</th></tr></thead>
+                  <tbody>
+                    {run.others!.slice(0, 50).map((o) => (
+                      <tr key={o.product_id}><td>{o.rank}</td><td>{o.name}</td><td>{(o.score * 100).toFixed(0)}</td><td className="small">{o.reason}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </details>
+            )}
+          </details>
+        </div>
       )}
 
       {tab === 'Model (RL)' && (
